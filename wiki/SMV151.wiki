@@ -1,4 +1,4 @@
-#SNES9x-1.51 movie file format
+#smv is the movie capture format of Snes9x emulators
 
 ==SMV 1.51 file format description==
 The format is very similar to the [http://code.google.com/p/snes9x-rr/wiki/SMV143 SMV 1.43 format]  with only the following changes:
