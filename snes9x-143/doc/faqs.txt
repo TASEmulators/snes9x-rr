@@ -1,0 +1,247 @@
+Le FAQ de Snes9x
+
+Wassail,
+This is the much anticipated and highly informative Frequently Asked Questions article,
+which contains, believe it or not, Frequently Asked Questions as well as Frequently
+Answered Answers!  I shall be your host on this gleeful sojourn through a text document,
+where anything can, but probably won't, happen.
+
+By popular demand the FAQ is now sorted in some form of coherent order, and has little
+liney things, which are supposedly neat.
+
+On our first section of this mystical journey you shall see various frequently asked
+questions, as well as their answers!
+
+________________________________________________________________________
+
+Chapter 1:
+Emulator Specific Questions
+  Or 
+It's Not the Size of an Emulator That Counts; It's How You Use it.
+
+Q: When is the next version (of Snes9x) coming out?
+  A: Chances are it will be coming out when enough changes have been made to suitably
+make a release.  You can generally guesstimate the release date by paying attention to the
+Developers forum at snes9x.com.
+
+Q: Why doesn't Snes9x have feature X?
+  A: There is no feature X, it is only an illusion... A trick of the mind, if you will.
+
+Q: Why do my games run too fast?
+  A: Through proper nutrition and training an increase in abilities is often found. It is
+possible that certain ROMs, whilst training for the annual Rohm race, surpassed a sane
+limit.  Generally not allowing them to run will cause atrophy, making them somewhat
+slower. Seriously though, try using the + and/or - keys to adjust the emulated speed. If
+you are feeling lucky, you might also wish to try holding down Shift, and pressing the +
+and/or - keys. In the display settings make sure the "Use Frame Limiter" and "Automatic
+Frame Skipping" boxes are checked.
+
+Q: Why doesn't Snes9x support transparencies?
+  A: It does!!!!
+
+Q: I recently purchased a game pad controller. Will it work on Snes9x?
+  A: More than likely yes. Any USB compatable controller will work. Generally this means
+any controller made within the past 7 years or so. Some Gravis Game pads seem to have more
+trouble than most however. Consider updating drivers and recalibrating your controller if
+it does not work.
+
+Q: Why can't I run forward while jumping and shooting?
+  A: Lack of cognitive exercise can often affect brain patterns, resulting in an inability to
+multitask.  An example would be an inability to rub ones tummy whilst patting ones
+head.  Occasionally the cognitive abilities can atrophy so much that you are unable to run
+and jump whilst carrying firearms. Alternatively, all keyboards can only input so much
+data to the CPU at a time. Depending on the brand and placement of the keys, this
+number can vary, however three keys does seem to be a standard limit.  There are
+multiple solutions to this problem.  Obtaining a game pad of some form is the most
+highly suggested method, as playing the Snes with a keyboard was not one of the greatest
+videogame ideas of the last century.  You can also try to reassign buttons to keys that
+allow more input; Ctrl and Alt for example.  The final method is to assign multiple tasks
+to a single key, though this can be frustrating in near-all instances.  As an example you
+could configure the spacebar to jump AND shoot, however the drawback is that you
+would not be able to jump without shooting, or shoot without jumping.
+
+Q: In Snes9x my game pad is having trouble inputting any diagonal directions on the D-Pad.
+How can I fix this?
+  A: While setting up your controller functions in Snes9x, make sure you do not setup the
+diagonal buttons; leave them blank. Ye olde Snes only had 4 buttons on the D-Pad: Up, down,
+left and right. By pressing two directions you would go in the appropriate diagonal
+direction(game specific of course).
+
+Q: Soooooooo... Why the heck do you have diagonals in the controller setup anyway?
+  A: Simple really. Some people enjoy using the keyboard, or have no other choice.
+A few questions up the topic of keyboard input limitations was addressed.  Being able to
+input the diagonals can help hinder that occurrence. It can also make keyboard usage
+a bit easier... assigning the directional controls to the number pad for instance.    
+
+Q: I gotsid me a translation patch (.ips) for my game. Now what do I do so I can use it?
+  A:  Make sure both your ROM image and .ips file are in the same folder. Finally make sure
+they have the exact same name (minus file extensions, of course). As an example "Pie.smc"
+should have "Pie.ips" and "Super_Pie3(E).smc" should have "Super_Pie3(E).ips". Now open up
+Snes9x, load your ROM and voila! 
+
+________________________________________________________________________
+
+Chapter 2:
+Game Specific Questions
+  Or
+How I learned To Stop Worrying and Love the ROM
+
+Q: Why doesn't Star Ocean/SFA 2 work?
+  A: These games contained a rare processor with a rather nasty compression scheme,
+making it hard to properly crack. It is possible to play these on Snes9x, though you need
+to obtain the aptly named "graphics packs" which contain the uncompressed graphics of
+the two games.  After you have obtained these you can fiddle with setting them up, which
+is explained in the read me, and then you too can play your emulated copy of the games
+you no doubt own.
+
+Q: Heeeeeey, Star Ocean is working, and I don't have this graphics pack thing you are
+talking about.
+  A: Yes, last time I mentioned it contained a processor that was difficult to completely
+emulate due to its compression scheme. Through vast work our crack team has bested the
+little bugger and now you can reap the benefits.  What this means is that games with said
+processing unit, the s-dd1, can now run without graphics packs. You can still use the
+graphics packs if you would like to, and it may increase speed and playability of said
+games. Snes9x will, by default, run these games without using the graphic packs but you
+can change this in the options menu. The exact ROMs that can now run without graphics
+packs are Star Ocean (J), Street Fighter Alpha 2 (E), Street Fighter Alpha 2 (U) and Street
+Fighter Zero 2 (J)
+
+Q: Why doesn't MegaManX2 and/or 3 work?
+  A: With the present state of economy it is often hard for valuable tradesmen to find
+long-standing jobs. As such, it is possible that it proves even more difficult for the
+aforementioned games. More than likely it does work, however depending on your
+operating system, it may not yet be implemented. If this is the case, upgrade your OS or,
+alternatively, bribe your port maintainer to implement the code.
+
+Q: Why doesn't game X work?
+  A: There are three possible answers to this question, depending on the scenario.  Answer
+one is that it does work, but your ROM dump is incorrect (this MAY be fixed by re
+attaching your cartridge to your copier and redumping). Answer two is that we have
+found a solution to the problem, but have not yet implemented a fix.  Answer three, a
+subsidiary of answer two, is that we do NOT know what is wrong with it, and as such
+have not yet implemented a fix.
+
+Q: Why doesn't Snes9x display SD3/Secret of Mana/other hi-res game?
+  A: To answer this one must first understand what hi-res games are.  There are games
+that used higher resolution than the Super Nintendo standard. You can easily activate the
+Hi-res mode by configuring it in the settings panel.  This may slow down game speed on
+some lower-end computers, which is why it is an optional feature.  
+
+Q: In some games, including Seiken Densetsu 3, the text and options screen seems
+stretched and distorted. How do I stop this?
+  A: First, make sure you have Hi-res enabled in the display screen. Also make sure your
+image filter is not set to "NONE." If you find the Hi-res checkbox is unselectable,
+increase your resolution in the Snes9x display options to at least 512 x 480.
+
+Q: I'm all like "Hey, Yoshi's Island" and it's all like "error" and I'm all like "Ooooh, no
+Yoshi's Island" but my friend is like "Yay, Yoshi's Island." Why?
+  A: Try selecting "mode 2" from the interleave dropdown box in the "open" menu before
+loading said ROM Image.
+
+________________________________________________________________________
+
+Chapter 3:
+All About Netplay
+  Or
+More Slow Than a Quadriplegic Ninja Turtle, But Only Half as Entertaining
+
+Q: Snes9x netplay sucks, can I make it better?
+  A: Yes you can! Snes9x is open source so all you need to make netplay better is
+advanced programming knowledge and a will to improve upon the Snes9x code. At
+present time Snes9x is more for LANplay, best used in a small network of local
+computers. I recommend Zsnes (www.zsnes.com) and zbattle (www.zbattle.net) for your
+random chaotic netplay needs.
+
+Q: I am using a Windows port of Snes9x. My friend is using a Mac. Can we netplay?
+  A: Yes... Just not with each other. Snes9x, at this time, does not support cross-platform
+netplay. Or good netplay.
+
+Q: Yea who don know dat but when i do what do afta y find som1
+  A: An excellent... ...question. I couldn't have worded it better myself. Despite my sarcasm
+however I must cringe at the fact I can actually understand it enough to answer. The answer
+depends on if you are acting as the server/host or the client. If you are the host you
+must first find your IP Address and give it to the person you intend to play online with.
+Next open Snes9x, load the ROM you wish to netplay, and then from the netplay menu, select
+"Act as server." Then you wait until the client connects... Now, if you are the client, first
+receive the IP address from the host, open Snes9x, and open the ROM you wish to netplay.  Select
+"connect to server" from the netplay menu, and fill out the nessecary information. Server
+address should contain the IP Address of the host. After that is done click "Connect."
+Assuming both parties have done their role correctly, a netplay match should soon start.
+
+Q: How do I chat with my partner duirng netplay?
+  A: I personally recommend yelling really loudly, but the telephone is also a somewhat
+plausible answer I suppose.  Seriously.
+
+________________________________________________________________________
+
+Chapter 4:
+Mac, Linux & Dreamcast Specific Questions
+  Or
+Don't Buy into the Paneful Propaganda
+
+Q: My buddy, whose soul has been lost to M$, says he can run games like Doom and
+Starfox2, but Snes9x on my Mac has all sorts of problems when running them. What I
+do?
+  A: The aforementioned games, as well as a few others, use a special chip called the
+Super FX. To emulate this chip the Windows port uses an i386 assembler core, while the
+Mac uses a c++ core. Full support for the Super FX chip has not yet been implemented
+due to the differences in coding.
+
+Q: Can I change the keybindings on Linux?
+  A:  From what I've been told the keymap is hardcoded to the source, making changing them rather difficult.  The only way to change them, for now, would be to edit and recompile the source, which from what I've been told isn't somethign everyone can do.
+
+________________________________________________________________________
+
+Chapter 5:
+Miscellaneous Questions
+  Or
+Q-Bert Is My Only Friend
+
+Q: Is it legal?!
+  A: This has been asked time and again, and the answer is yes.  Developing,
+downloading, or using the emulator, Snes9x, is completely legal.  Downloading games,
+called ROMS, however is not.  If you own the original cartridge of a game, you are still
+not entitled to download the ROM image of that game. You may create a single backup
+image of your own cartridge via proper hardware, but it must be YOUR cartridge and is
+only usable in place of the original... so only one may be active at any time. Many sites
+claim that you may legally download ROMs for up to 24 hours before they must be
+deleted. This is also wrong; you can't legally download these for "trial" purposes.  You
+can't download ROMs for educational purposes either. If you wish to use Super Nintendo
+Entertainment System games for educational purposes, contact your closest Nintendo
+Outlet and discuss educational programming with them.  Finally, a small number of
+ROMs are labeled "(PD)". This means public domain, and these games are not under
+copyright. As such they are legal to download at your hearts content. These include
+programs created by internet users such as yourself for use in Super Nintendo emulators. 
+As of this time there are no commercial videogames in the public domain.
+
+Q: My friend, Tibby, says that you are wrong and that game companies don't care if you
+download games!
+  A: Whilst not actually a question, and more of a statement, I am afraid Tibby is
+incorrect.  Feel free to peruse the various legal documentation sprawled throughout the
+World Wide Web or your local constituency. As for the blatant generalization that
+companies do not care; At least one does, and truthfully many more do as well, as such
+the statement is obviously a fallacy.  For those who think it is not fair, or shouldn't be the
+way it is... perhaps not, though as holders of a copyright it is up to Nintendo to decide
+how and when their products are distributed. 
+
+Q: I just purchased your fine program off eBay for $19.89, but my friend says I can
+download it for free. Can you guys give me my money back?
+  A: Okay, this question hasn't actually been asked, however our free downloadable
+program does seem to get sold on eBay more often than it should, which is to say at all.
+We cannot reimburse anyone who was unlucky enough to be scammed into purchasing
+Snes9x, just as McDonalds cannot reimburse you if you purchased 100 Happy Meals
+from a random stranger and he gave you a frozen fish. If you find yourself in this
+situation... Purchasing Snes9x, not frozen fish... Please take the time to inform eBay via
+their heavily disguised investigations department, and leave any negative feedback that
+you wish.  It would also be appreciated by the Snes9x team if you could mention where
+and when this happened so that we can take measures to stop it from happening again. 
+While the fact we aren't making money from the program in no way bothers us (It is
+freeware after all), that some grubby bastards are does.
+
+Q: So err, where exactly do I contact y'all, eh?
+  A: The most convenient way to contact us would be via www.snes9x.com.  There is a
+forum that is checked at least 12 times a day by regulars, and at least a few of us can
+actually give some advice.  E-mail is also a possibility, though it is much slower, and
+you'll hafta find the e-mail addresses on your own.  Be sure to read the FAQ and Read me
+before posting, as things already answered many a time will probably result in random
+insults or heavy sarcasm.
