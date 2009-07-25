@@ -261,7 +261,6 @@ INT_PTR CALLBACK test(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 #define WM_CUSTKEYUP	(WM_APP+51)
 
 static int KeyInDelayMSec;
-static int KeyInDelayInCount;
 static int KeyInRepeatMSec;
 
 #define NUM_HOTKEY_CONTROLS 20
@@ -484,130 +483,130 @@ SCustomKeys CustomKeys;
 void HotkeyUpResetGame ();
 void HotkeyUpScopePause ();
 void HotkeyUpFastForward ();
-void HotkeyRecentROM0 ();
-void HotkeyRecentROM1 ();
-void HotkeyRecentROM2 ();
-void HotkeyRecentROM3 ();
-void HotkeyRecentROM4 ();
-void HotkeyRecentROM5 ();
-void HotkeyRecentROM6 ();
-void HotkeyRecentROM7 ();
-void HotkeyRecentROM8 ();
-void HotkeyRecentROM9 ();
-void HotkeyOpenROM ();
-void HotkeyPause ();
-void HotkeyResetGame ();
-void HotkeySaveScreenShot ();
-void HotkeySaveSPC ();
-void HotkeySaveSRAM ();
-void HotkeySaveSPC7110Log ();
-void HotkeyRecordAVI ();
-void HotkeySave0 ();
-void HotkeySave1 ();
-void HotkeySave2 ();
-void HotkeySave3 ();
-void HotkeySave4 ();
-void HotkeySave5 ();
-void HotkeySave6 ();
-void HotkeySave7 ();
-void HotkeySave8 ();
-void HotkeySave9 ();
-void HotkeyLoad0 ();
-void HotkeyLoad1 ();
-void HotkeyLoad2 ();
-void HotkeyLoad3 ();
-void HotkeyLoad4 ();
-void HotkeyLoad5 ();
-void HotkeyLoad6 ();
-void HotkeyLoad7 ();
-void HotkeyLoad8 ();
-void HotkeyLoad9 ();
-void HotkeySelectSave0 ();
-void HotkeySelectSave1 ();
-void HotkeySelectSave2 ();
-void HotkeySelectSave3 ();
-void HotkeySelectSave4 ();
-void HotkeySelectSave5 ();
-void HotkeySelectSave6 ();
-void HotkeySelectSave7 ();
-void HotkeySelectSave8 ();
-void HotkeySelectSave9 ();
-void HotkeySlotPlus ();
-void HotkeySlotMinus ();
-void HotkeySlotSave ();
-void HotkeySlotLoad ();
-void HotkeyToggleJoypad0 ();
-void HotkeyToggleJoypad1 ();
-void HotkeyToggleJoypad2 ();
-void HotkeyToggleJoypad3 ();
-void HotkeyToggleJoypad4 ();
-void HotkeyToggleJoypad5 ();
-void HotkeyToggleJoypad6 ();
-void HotkeyToggleJoypad7 ();
-void HotkeyJoypadSwap ();
-void HotkeySwitchControllers ();
-void HotkeyTurboA ();
-void HotkeyTurboB ();
-void HotkeyTurboY ();
-void HotkeyTurboX ();
-void HotkeyTurboL ();
-void HotkeyTurboR ();
-void HotkeyTurboStart ();
-void HotkeyTurboSelect ();
-void HotkeyTurboLeft ();
-void HotkeyTurboUp ();
-void HotkeyTurboRight ();
-void HotkeyTurboDown ();
-void HotkeyScopeTurbo ();
-void HotkeyScopePause ();
-void HotkeySpeedUp ();
-void HotkeySpeedDown ();
-void HotkeySkipUp ();
-void HotkeySkipDown ();
-void HotkeyFastForward ();
-void HotkeyToggleFastForward ();
-void HotkeyFrameAdvance ();
-void HotkeyBGL1 ();
-void HotkeyBGL2 ();
-void HotkeyBGL3 ();
-void HotkeyBGL4 ();
-void HotkeyBGL5 ();
-void HotkeyClippingWindows ();
-void HotkeyTransparency ();
-void HotkeyHDMA ();
-void HotkeyBGLHack ();
-void HotkeyInterpMode7 ();
-void HotkeyGLCube ();
-void HotkeyToggleSound0 ();
-void HotkeyToggleSound1 ();
-void HotkeyToggleSound2 ();
-void HotkeyToggleSound3 ();
-void HotkeyToggleSound4 ();
-void HotkeyToggleSound5 ();
-void HotkeyToggleSound6 ();
-void HotkeyToggleSound7 ();
-void HotkeyMoviePlay ();
-void HotkeyMovieRecord ();
-void HotkeyMovieStop ();
-void HotkeyReadOnly ();
-void HotkeyShowPressed ();
-void HotkeyFrameCount ();
-void HotkeyLagCount ();
-void HotkeyFrameAndLagCount ();
-void HotkeyResetLagCounter ();
-void HotkeyToggleMacro0 ();
-void HotkeyToggleMacro1 ();
-void HotkeyToggleMacro2 ();
-void HotkeyToggleMacro3 ();
-void HotkeyToggleMacro4 ();
-void HotkeyToggleMacro5 ();
-void HotkeyToggleMacro6 ();
-void HotkeyToggleMacro7 ();
-void HotkeyEditMacro ();
-void HotkeyToggleCheats ();
-void HotkeyLoadLuaScript();
-void HotkeyReloadLuaScript();
-void HotkeyStopLuaScript();
+void HotkeyRecentROM0 (bool justPressed);
+void HotkeyRecentROM1 (bool justPressed);
+void HotkeyRecentROM2 (bool justPressed);
+void HotkeyRecentROM3 (bool justPressed);
+void HotkeyRecentROM4 (bool justPressed);
+void HotkeyRecentROM5 (bool justPressed);
+void HotkeyRecentROM6 (bool justPressed);
+void HotkeyRecentROM7 (bool justPressed);
+void HotkeyRecentROM8 (bool justPressed);
+void HotkeyRecentROM9 (bool justPressed);
+void HotkeyOpenROM (bool justPressed);
+void HotkeyPause (bool justPressed);
+void HotkeyResetGame (bool justPressed);
+void HotkeySaveScreenShot (bool justPressed);
+void HotkeySaveSPC (bool justPressed);
+void HotkeySaveSRAM (bool justPressed);
+void HotkeySaveSPC7110Log (bool justPressed);
+void HotkeyRecordAVI (bool justPressed);
+void HotkeySave0 (bool justPressed);
+void HotkeySave1 (bool justPressed);
+void HotkeySave2 (bool justPressed);
+void HotkeySave3 (bool justPressed);
+void HotkeySave4 (bool justPressed);
+void HotkeySave5 (bool justPressed);
+void HotkeySave6 (bool justPressed);
+void HotkeySave7 (bool justPressed);
+void HotkeySave8 (bool justPressed);
+void HotkeySave9 (bool justPressed);
+void HotkeyLoad0 (bool justPressed);
+void HotkeyLoad1 (bool justPressed);
+void HotkeyLoad2 (bool justPressed);
+void HotkeyLoad3 (bool justPressed);
+void HotkeyLoad4 (bool justPressed);
+void HotkeyLoad5 (bool justPressed);
+void HotkeyLoad6 (bool justPressed);
+void HotkeyLoad7 (bool justPressed);
+void HotkeyLoad8 (bool justPressed);
+void HotkeyLoad9 (bool justPressed);
+void HotkeySelectSave0 (bool justPressed);
+void HotkeySelectSave1 (bool justPressed);
+void HotkeySelectSave2 (bool justPressed);
+void HotkeySelectSave3 (bool justPressed);
+void HotkeySelectSave4 (bool justPressed);
+void HotkeySelectSave5 (bool justPressed);
+void HotkeySelectSave6 (bool justPressed);
+void HotkeySelectSave7 (bool justPressed);
+void HotkeySelectSave8 (bool justPressed);
+void HotkeySelectSave9 (bool justPressed);
+void HotkeySlotPlus (bool justPressed);
+void HotkeySlotMinus (bool justPressed);
+void HotkeySlotSave (bool justPressed);
+void HotkeySlotLoad (bool justPressed);
+void HotkeyToggleJoypad0 (bool justPressed);
+void HotkeyToggleJoypad1 (bool justPressed);
+void HotkeyToggleJoypad2 (bool justPressed);
+void HotkeyToggleJoypad3 (bool justPressed);
+void HotkeyToggleJoypad4 (bool justPressed);
+void HotkeyToggleJoypad5 (bool justPressed);
+void HotkeyToggleJoypad6 (bool justPressed);
+void HotkeyToggleJoypad7 (bool justPressed);
+void HotkeyJoypadSwap (bool justPressed);
+void HotkeySwitchControllers (bool justPressed);
+void HotkeyTurboA (bool justPressed);
+void HotkeyTurboB (bool justPressed);
+void HotkeyTurboY (bool justPressed);
+void HotkeyTurboX (bool justPressed);
+void HotkeyTurboL (bool justPressed);
+void HotkeyTurboR (bool justPressed);
+void HotkeyTurboStart (bool justPressed);
+void HotkeyTurboSelect (bool justPressed);
+void HotkeyTurboLeft (bool justPressed);
+void HotkeyTurboUp (bool justPressed);
+void HotkeyTurboRight (bool justPressed);
+void HotkeyTurboDown (bool justPressed);
+void HotkeyScopeTurbo (bool justPressed);
+void HotkeyScopePause (bool justPressed);
+void HotkeySpeedUp (bool justPressed);
+void HotkeySpeedDown (bool justPressed);
+void HotkeySkipUp (bool justPressed);
+void HotkeySkipDown (bool justPressed);
+void HotkeyFastForward (bool justPressed);
+void HotkeyToggleFastForward (bool justPressed);
+void HotkeyFrameAdvance (bool justPressed);
+void HotkeyBGL1 (bool justPressed);
+void HotkeyBGL2 (bool justPressed);
+void HotkeyBGL3 (bool justPressed);
+void HotkeyBGL4 (bool justPressed);
+void HotkeyBGL5 (bool justPressed);
+void HotkeyClippingWindows (bool justPressed);
+void HotkeyTransparency (bool justPressed);
+void HotkeyHDMA (bool justPressed);
+void HotkeyBGLHack (bool justPressed);
+void HotkeyInterpMode7 (bool justPressed);
+void HotkeyGLCube (bool justPressed);
+void HotkeyToggleSound0 (bool justPressed);
+void HotkeyToggleSound1 (bool justPressed);
+void HotkeyToggleSound2 (bool justPressed);
+void HotkeyToggleSound3 (bool justPressed);
+void HotkeyToggleSound4 (bool justPressed);
+void HotkeyToggleSound5 (bool justPressed);
+void HotkeyToggleSound6 (bool justPressed);
+void HotkeyToggleSound7 (bool justPressed);
+void HotkeyMoviePlay (bool justPressed);
+void HotkeyMovieRecord (bool justPressed);
+void HotkeyMovieStop (bool justPressed);
+void HotkeyReadOnly (bool justPressed);
+void HotkeyShowPressed (bool justPressed);
+void HotkeyFrameCount (bool justPressed);
+void HotkeyLagCount (bool justPressed);
+void HotkeyFrameAndLagCount (bool justPressed);
+void HotkeyResetLagCounter (bool justPressed);
+void HotkeyToggleMacro0 (bool justPressed);
+void HotkeyToggleMacro1 (bool justPressed);
+void HotkeyToggleMacro2 (bool justPressed);
+void HotkeyToggleMacro3 (bool justPressed);
+void HotkeyToggleMacro4 (bool justPressed);
+void HotkeyToggleMacro5 (bool justPressed);
+void HotkeyToggleMacro6 (bool justPressed);
+void HotkeyToggleMacro7 (bool justPressed);
+void HotkeyEditMacro (bool justPressed);
+void HotkeyToggleCheats (bool justPressed);
+void HotkeyLoadLuaScript(bool justPressed);
+void HotkeyReloadLuaScript(bool justPressed);
+void HotkeyStopLuaScript(bool justPressed);
 
 bool IsLastCustomKey (const SCustomKey *key)
 {
@@ -1885,7 +1884,7 @@ int HandleKeyMessage(WPARAM wParam, LPARAM lParam, int modifiers)
 		SCustomKey *key = CustomKeys.key;
 		while (!IsLastCustomKey(key)) {
 			if (wParam == key->key && modifiers == key->modifiers && key->handleKeyDown) {
-				key->handleKeyDown();
+				key->handleKeyDown(lParam & 0x40000000 ? false : true);
 				hitHotKey = true;
 			}
 			key++;
@@ -3944,47 +3943,47 @@ void HotkeyRecentROM (UINT i)
 	if (cmdID <= ID_RECENT_MAX)
 		PostMenuCommand(cmdID);
 }
-void HotkeyRecentROM0 () { HotkeyRecentROM(0); }
-void HotkeyRecentROM1 () { HotkeyRecentROM(1); }
-void HotkeyRecentROM2 () { HotkeyRecentROM(2); }
-void HotkeyRecentROM3 () { HotkeyRecentROM(3); }
-void HotkeyRecentROM4 () { HotkeyRecentROM(4); }
-void HotkeyRecentROM5 () { HotkeyRecentROM(5); }
-void HotkeyRecentROM6 () { HotkeyRecentROM(6); }
-void HotkeyRecentROM7 () { HotkeyRecentROM(7); }
-void HotkeyRecentROM8 () { HotkeyRecentROM(8); }
-void HotkeyRecentROM9 () { HotkeyRecentROM(9); }
+void HotkeyRecentROM0 (bool justPressed) { HotkeyRecentROM(0); }
+void HotkeyRecentROM1 (bool justPressed) { HotkeyRecentROM(1); }
+void HotkeyRecentROM2 (bool justPressed) { HotkeyRecentROM(2); }
+void HotkeyRecentROM3 (bool justPressed) { HotkeyRecentROM(3); }
+void HotkeyRecentROM4 (bool justPressed) { HotkeyRecentROM(4); }
+void HotkeyRecentROM5 (bool justPressed) { HotkeyRecentROM(5); }
+void HotkeyRecentROM6 (bool justPressed) { HotkeyRecentROM(6); }
+void HotkeyRecentROM7 (bool justPressed) { HotkeyRecentROM(7); }
+void HotkeyRecentROM8 (bool justPressed) { HotkeyRecentROM(8); }
+void HotkeyRecentROM9 (bool justPressed) { HotkeyRecentROM(9); }
 
-void HotkeyOpenROM () { PostMenuCommand(ID_FILE_LOAD_GAME); }
-void HotkeyPause () { PostMenuCommand(ID_FILE_PAUSE); }
-void HotkeyResetGame () { PostMenuCommand(ID_FILE_RESET); }
+void HotkeyOpenROM (bool justPressed) { PostMenuCommand(ID_FILE_LOAD_GAME); }
+void HotkeyPause (bool justPressed) { PostMenuCommand(ID_FILE_PAUSE); }
+void HotkeyResetGame (bool justPressed) { PostMenuCommand(ID_FILE_RESET); }
 void HotkeyUpResetGame () { }
-void HotkeySaveScreenShot () { PostMenuCommand(ID_SAVESCREENSHOT); }
-void HotkeySaveSPC () { PostMenuCommand(ID_FILE_SAVE_SPC_DATA); }
-void HotkeySaveSRAM () { PostMenuCommand(ID_FILE_SAVE_SRAM_DATA); }
-void HotkeySaveSPC7110Log () { PostMenuCommand(IDM_LOG_7110); }
-void HotkeyRecordAVI () { PostMenuCommand(ID_FILE_AVI_RECORDING); }
+void HotkeySaveScreenShot (bool justPressed) { PostMenuCommand(ID_SAVESCREENSHOT); }
+void HotkeySaveSPC (bool justPressed) { PostMenuCommand(ID_FILE_SAVE_SPC_DATA); }
+void HotkeySaveSRAM (bool justPressed) { PostMenuCommand(ID_FILE_SAVE_SRAM_DATA); }
+void HotkeySaveSPC7110Log (bool justPressed) { PostMenuCommand(IDM_LOG_7110); }
+void HotkeyRecordAVI (bool justPressed) { PostMenuCommand(ID_FILE_AVI_RECORDING); }
 
-void HotkeySave0 () { PostMenuCommand(ID_FILE_SAVE0); }
-void HotkeySave1 () { PostMenuCommand(ID_FILE_SAVE1); }
-void HotkeySave2 () { PostMenuCommand(ID_FILE_SAVE2); }
-void HotkeySave3 () { PostMenuCommand(ID_FILE_SAVE3); }
-void HotkeySave4 () { PostMenuCommand(ID_FILE_SAVE4); }
-void HotkeySave5 () { PostMenuCommand(ID_FILE_SAVE5); }
-void HotkeySave6 () { PostMenuCommand(ID_FILE_SAVE6); }
-void HotkeySave7 () { PostMenuCommand(ID_FILE_SAVE7); }
-void HotkeySave8 () { PostMenuCommand(ID_FILE_SAVE8); }
-void HotkeySave9 () { PostMenuCommand(ID_FILE_SAVE9); }
-void HotkeyLoad0 () { PostMenuCommand(ID_FILE_LOAD0); }
-void HotkeyLoad1 () { PostMenuCommand(ID_FILE_LOAD1); }
-void HotkeyLoad2 () { PostMenuCommand(ID_FILE_LOAD2); }
-void HotkeyLoad3 () { PostMenuCommand(ID_FILE_LOAD3); }
-void HotkeyLoad4 () { PostMenuCommand(ID_FILE_LOAD4); }
-void HotkeyLoad5 () { PostMenuCommand(ID_FILE_LOAD5); }
-void HotkeyLoad6 () { PostMenuCommand(ID_FILE_LOAD6); }
-void HotkeyLoad7 () { PostMenuCommand(ID_FILE_LOAD7); }
-void HotkeyLoad8 () { PostMenuCommand(ID_FILE_LOAD8); }
-void HotkeyLoad9 () { PostMenuCommand(ID_FILE_LOAD9); }
+void HotkeySave0 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_SAVE0); }
+void HotkeySave1 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_SAVE1); }
+void HotkeySave2 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_SAVE2); }
+void HotkeySave3 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_SAVE3); }
+void HotkeySave4 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_SAVE4); }
+void HotkeySave5 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_SAVE5); }
+void HotkeySave6 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_SAVE6); }
+void HotkeySave7 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_SAVE7); }
+void HotkeySave8 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_SAVE8); }
+void HotkeySave9 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_SAVE9); }
+void HotkeyLoad0 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_LOAD0); }
+void HotkeyLoad1 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_LOAD1); }
+void HotkeyLoad2 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_LOAD2); }
+void HotkeyLoad3 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_LOAD3); }
+void HotkeyLoad4 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_LOAD4); }
+void HotkeyLoad5 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_LOAD5); }
+void HotkeyLoad6 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_LOAD6); }
+void HotkeyLoad7 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_LOAD7); }
+void HotkeyLoad8 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_LOAD8); }
+void HotkeyLoad9 (bool justPressed) { if (justPressed) PostMenuCommand(ID_FILE_LOAD9); }
 
 void HotkeySelectSave (int i)
 {
@@ -3995,18 +3994,18 @@ void HotkeySelectSave (int i)
 	S9xSetInfoString(str);
 }
 
-void HotkeySelectSave0 () { HotkeySelectSave(0); }
-void HotkeySelectSave1 () { HotkeySelectSave(1); }
-void HotkeySelectSave2 () { HotkeySelectSave(2); }
-void HotkeySelectSave3 () { HotkeySelectSave(3); }
-void HotkeySelectSave4 () { HotkeySelectSave(4); }
-void HotkeySelectSave5 () { HotkeySelectSave(5); }
-void HotkeySelectSave6 () { HotkeySelectSave(6); }
-void HotkeySelectSave7 () { HotkeySelectSave(7); }
-void HotkeySelectSave8 () { HotkeySelectSave(8); }
-void HotkeySelectSave9 () { HotkeySelectSave(9); }
+void HotkeySelectSave0 (bool justPressed) { HotkeySelectSave(0); }
+void HotkeySelectSave1 (bool justPressed) { HotkeySelectSave(1); }
+void HotkeySelectSave2 (bool justPressed) { HotkeySelectSave(2); }
+void HotkeySelectSave3 (bool justPressed) { HotkeySelectSave(3); }
+void HotkeySelectSave4 (bool justPressed) { HotkeySelectSave(4); }
+void HotkeySelectSave5 (bool justPressed) { HotkeySelectSave(5); }
+void HotkeySelectSave6 (bool justPressed) { HotkeySelectSave(6); }
+void HotkeySelectSave7 (bool justPressed) { HotkeySelectSave(7); }
+void HotkeySelectSave8 (bool justPressed) { HotkeySelectSave(8); }
+void HotkeySelectSave9 (bool justPressed) { HotkeySelectSave(9); }
 
-void HotkeySlotPlus ()
+void HotkeySlotPlus (bool justPressed)
 {
 	GUI.CurrentSaveSlot++;
 	if(GUI.CurrentSaveSlot > 9)
@@ -4017,7 +4016,7 @@ void HotkeySlotPlus ()
 	S9xSetInfoString(str);
 }
 
-void HotkeySlotMinus ()
+void HotkeySlotMinus (bool justPressed)
 {
 	GUI.CurrentSaveSlot--;
 	if(GUI.CurrentSaveSlot < 0)
@@ -4028,26 +4027,26 @@ void HotkeySlotMinus ()
 	S9xSetInfoString(str);
 }
 
-void HotkeySlotSave ()
+void HotkeySlotSave (bool justPressed)
 {
 	FreezeUnfreeze (GUI.CurrentSaveSlot, true);
 }
 
-void HotkeySlotLoad ()
+void HotkeySlotLoad (bool justPressed)
 {
 	FreezeUnfreeze (GUI.CurrentSaveSlot, false);
 }
 
-void HotkeyToggleJoypad0 () { PostMenuCommand(ID_JOYPAD_1); }
-void HotkeyToggleJoypad1 () { PostMenuCommand(ID_JOYPAD_2); }
-void HotkeyToggleJoypad2 () { PostMenuCommand(ID_JOYPAD_3); }
-void HotkeyToggleJoypad3 () { PostMenuCommand(ID_JOYPAD_4); }
-void HotkeyToggleJoypad4 () { PostMenuCommand(ID_JOYPAD_5); }
-void HotkeyToggleJoypad5 () { }
-void HotkeyToggleJoypad6 () { }
-void HotkeyToggleJoypad7 () { }
+void HotkeyToggleJoypad0 (bool justPressed) { PostMenuCommand(ID_JOYPAD_1); }
+void HotkeyToggleJoypad1 (bool justPressed) { PostMenuCommand(ID_JOYPAD_2); }
+void HotkeyToggleJoypad2 (bool justPressed) { PostMenuCommand(ID_JOYPAD_3); }
+void HotkeyToggleJoypad3 (bool justPressed) { PostMenuCommand(ID_JOYPAD_4); }
+void HotkeyToggleJoypad4 (bool justPressed) { PostMenuCommand(ID_JOYPAD_5); }
+void HotkeyToggleJoypad5 (bool justPressed) { }
+void HotkeyToggleJoypad6 (bool justPressed) { }
+void HotkeyToggleJoypad7 (bool justPressed) { }
 
-void HotkeyJoypadSwap ()
+void HotkeyJoypadSwap (bool justPressed)
 {
 	if(!S9xMoviePlaying())
 	{
@@ -4056,7 +4055,7 @@ void HotkeyJoypadSwap ()
 	}
 }
 
-void HotkeySwitchControllers ()
+void HotkeySwitchControllers (bool justPressed)
 {
 	if((!S9xMovieActive()))
 	{
@@ -4098,25 +4097,25 @@ void HotkeySwitchControllers ()
 	}
 }
 
-void HotkeyTurboA () { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_A),(LPARAM)(NULL)); }
-void HotkeyTurboB () { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_B),(LPARAM)(NULL)); }
-void HotkeyTurboY () { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_Y),(LPARAM)(NULL)); }
-void HotkeyTurboX () { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_X),(LPARAM)(NULL)); }
-void HotkeyTurboL () { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_L),(LPARAM)(NULL)); }
-void HotkeyTurboR () { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_R),(LPARAM)(NULL)); }
-void HotkeyTurboStart () { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_START),(LPARAM)(NULL)); }
-void HotkeyTurboSelect () { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_SELECT),(LPARAM)(NULL)); }
-void HotkeyTurboLeft () { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_LEFT),(LPARAM)(NULL)); }
-void HotkeyTurboUp () { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_UP),(LPARAM)(NULL)); }
-void HotkeyTurboRight () { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_RIGHT),(LPARAM)(NULL)); }
-void HotkeyTurboDown () { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_DOWN),(LPARAM)(NULL)); }
+void HotkeyTurboA (bool justPressed) { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_A),(LPARAM)(NULL)); }
+void HotkeyTurboB (bool justPressed) { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_B),(LPARAM)(NULL)); }
+void HotkeyTurboY (bool justPressed) { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_Y),(LPARAM)(NULL)); }
+void HotkeyTurboX (bool justPressed) { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_X),(LPARAM)(NULL)); }
+void HotkeyTurboL (bool justPressed) { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_L),(LPARAM)(NULL)); }
+void HotkeyTurboR (bool justPressed) { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_R),(LPARAM)(NULL)); }
+void HotkeyTurboStart (bool justPressed) { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_START),(LPARAM)(NULL)); }
+void HotkeyTurboSelect (bool justPressed) { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_SELECT),(LPARAM)(NULL)); }
+void HotkeyTurboLeft (bool justPressed) { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_LEFT),(LPARAM)(NULL)); }
+void HotkeyTurboUp (bool justPressed) { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_UP),(LPARAM)(NULL)); }
+void HotkeyTurboRight (bool justPressed) { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_RIGHT),(LPARAM)(NULL)); }
+void HotkeyTurboDown (bool justPressed) { PostMessage(GUI.hWnd, WM_COMMAND, (WPARAM)(ID_TURBO_DOWN),(LPARAM)(NULL)); }
 
-void HotkeyScopeTurbo ()
+void HotkeyScopeTurbo (bool justPressed)
 {
 	GUI.superscope_turbo = 1;
 }
 
-void HotkeyScopePause ()
+void HotkeyScopePause (bool justPressed)
 {
 	GUI.superscope_pause = 1;
 }
@@ -4125,10 +4124,10 @@ void HotkeyUpScopePause ()
 	GUI.superscope_pause = 0;
 }
 
-void HotkeySpeedUp () { PostMenuCommand(ID_FRAMESKIP_THROTTLE_INCREASE); }
-void HotkeySpeedDown () { PostMenuCommand(ID_FRAMESKIP_THROTTLE_DECREASE); }
+void HotkeySpeedUp (bool justPressed) { PostMenuCommand(ID_FRAMESKIP_THROTTLE_INCREASE); }
+void HotkeySpeedDown (bool justPressed) { PostMenuCommand(ID_FRAMESKIP_THROTTLE_DECREASE); }
 
-void HotkeySkipUp ()
+void HotkeySkipUp (bool justPressed)
 {
 	if (Settings.SkipFrames == AUTO_FRAMERATE)
 		Settings.SkipFrames = 1;
@@ -4147,7 +4146,7 @@ void HotkeySkipUp ()
 	}
 }
 
-void HotkeySkipDown ()
+void HotkeySkipDown (bool justPressed)
 {
 	if (Settings.SkipFrames <= 1)
 		Settings.SkipFrames = AUTO_FRAMERATE;
@@ -4166,7 +4165,7 @@ void HotkeySkipDown ()
 	}
 }
 
-void HotkeyFastForward ()
+void HotkeyFastForward (bool justPressed)
 {
 	if(Settings.SPC7110RTC)
 		return;
@@ -4180,7 +4179,7 @@ void HotkeyUpFastForward ()
 	Settings.TurboMode = FALSE;
 }
 
-void HotkeyToggleFastForward ()
+void HotkeyToggleFastForward (bool justPressed)
 {
 	if(Settings.SPC7110RTC)
 		return;
@@ -4192,7 +4191,7 @@ void HotkeyToggleFastForward ()
 	//	S9xMessage (S9X_INFO, S9X_TURBO_MODE, WINPROC_TURBOMODE_OFF);
 }
 
-void HotkeyFrameAdvance ()
+void HotkeyFrameAdvance (bool justPressed)
 {
 	if (Settings.Paused)
 	{
@@ -4207,27 +4206,27 @@ void HotkeyFrameAdvance ()
 	}
 }
 
-void HotkeyBGL1 () { PostMenuCommand(ID_VIDEO_LAYERS_BG1); }
-void HotkeyBGL2 () { PostMenuCommand(ID_VIDEO_LAYERS_BG2); }
-void HotkeyBGL3 () { PostMenuCommand(ID_VIDEO_LAYERS_BG3); }
-void HotkeyBGL4 () { PostMenuCommand(ID_VIDEO_LAYERS_BG4); }
-void HotkeyBGL5 () { PostMenuCommand(ID_VIDEO_LAYERS_SPRITES); }
-void HotkeyClippingWindows () { PostMenuCommand(ID_VIDEO_CLIPPINGWIDOWS); }
-void HotkeyTransparency () { PostMenuCommand(ID_VIDEO_TRANSPARENCY); }
-void HotkeyHDMA () { PostMenuCommand(ID_EMULATOR_HDMAEMULATION); }
+void HotkeyBGL1 (bool justPressed) { PostMenuCommand(ID_VIDEO_LAYERS_BG1); }
+void HotkeyBGL2 (bool justPressed) { PostMenuCommand(ID_VIDEO_LAYERS_BG2); }
+void HotkeyBGL3 (bool justPressed) { PostMenuCommand(ID_VIDEO_LAYERS_BG3); }
+void HotkeyBGL4 (bool justPressed) { PostMenuCommand(ID_VIDEO_LAYERS_BG4); }
+void HotkeyBGL5 (bool justPressed) { PostMenuCommand(ID_VIDEO_LAYERS_SPRITES); }
+void HotkeyClippingWindows (bool justPressed) { PostMenuCommand(ID_VIDEO_CLIPPINGWIDOWS); }
+void HotkeyTransparency (bool justPressed) { PostMenuCommand(ID_VIDEO_TRANSPARENCY); }
+void HotkeyHDMA (bool justPressed) { PostMenuCommand(ID_EMULATOR_HDMAEMULATION); }
 
-void HotkeyBGLHack ()
+void HotkeyBGLHack (bool justPressed)
 {
 //	Settings.BGLayering = !Settings.BGLayering;
 //	S9xDisplayStateChange (WINPROC_BGHACK, Settings.BGLayering);
 }
 
-void HotkeyInterpMode7 ()
+void HotkeyInterpMode7 (bool justPressed)
 {
 	PostMenuCommand(ID_VIDEO_BILINEARMODE7);
 }
 
-void HotkeyGLCube ()
+void HotkeyGLCube (bool justPressed)
 {
 	#ifdef USE_OPENGL
 		OpenGL.draw_cube ^= TRUE;
@@ -4236,21 +4235,21 @@ void HotkeyGLCube ()
 	#endif
 }
 
-void HotkeyToggleSound0 () { PostMenuCommand(ID_CHANNELS_CHANNEL1); }
-void HotkeyToggleSound1 () { PostMenuCommand(ID_CHANNELS_CHANNEL2); }
-void HotkeyToggleSound2 () { PostMenuCommand(ID_CHANNELS_CHANNEL3); }
-void HotkeyToggleSound3 () { PostMenuCommand(ID_CHANNELS_CHANNEL4); }
-void HotkeyToggleSound4 () { PostMenuCommand(ID_CHANNELS_CHANNEL5); }
-void HotkeyToggleSound5 () { PostMenuCommand(ID_CHANNELS_CHANNEL6); }
-void HotkeyToggleSound6 () { PostMenuCommand(ID_CHANNELS_CHANNEL7); }
-void HotkeyToggleSound7 () { PostMenuCommand(ID_CHANNELS_CHANNEL8); }
+void HotkeyToggleSound0 (bool justPressed) { PostMenuCommand(ID_CHANNELS_CHANNEL1); }
+void HotkeyToggleSound1 (bool justPressed) { PostMenuCommand(ID_CHANNELS_CHANNEL2); }
+void HotkeyToggleSound2 (bool justPressed) { PostMenuCommand(ID_CHANNELS_CHANNEL3); }
+void HotkeyToggleSound3 (bool justPressed) { PostMenuCommand(ID_CHANNELS_CHANNEL4); }
+void HotkeyToggleSound4 (bool justPressed) { PostMenuCommand(ID_CHANNELS_CHANNEL5); }
+void HotkeyToggleSound5 (bool justPressed) { PostMenuCommand(ID_CHANNELS_CHANNEL6); }
+void HotkeyToggleSound6 (bool justPressed) { PostMenuCommand(ID_CHANNELS_CHANNEL7); }
+void HotkeyToggleSound7 (bool justPressed) { PostMenuCommand(ID_CHANNELS_CHANNEL8); }
 
-void HotkeyMoviePlay () { PostMenuCommand(ID_FILE_MOVIE_PLAY); }
-void HotkeyMovieRecord () { PostMenuCommand(ID_FILE_MOVIE_RECORD); }
-void HotkeyMovieStop () { PostMenuCommand(ID_FILE_MOVIE_STOP); }
-void HotkeyReadOnly () { PostMenuCommand(ID_MOVIE_READONLY); }
+void HotkeyMoviePlay (bool justPressed) { PostMenuCommand(ID_FILE_MOVIE_PLAY); }
+void HotkeyMovieRecord (bool justPressed) { PostMenuCommand(ID_FILE_MOVIE_RECORD); }
+void HotkeyMovieStop (bool justPressed) { PostMenuCommand(ID_FILE_MOVIE_STOP); }
+void HotkeyReadOnly (bool justPressed) { PostMenuCommand(ID_MOVIE_READONLY); }
 
-void HotkeyShowPressed ()
+void HotkeyShowPressed (bool justPressed)
 {
 	Settings.DisplayPressedKeys = Settings.DisplayPressedKeys?0:2;
 
@@ -4260,20 +4259,20 @@ void HotkeyShowPressed ()
 		S9xMessage(S9X_INFO, S9X_MOVIE_INFO, INPUT_INFO_DISPLAY_DISABLED);
 }
 
-void HotkeyFrameCount ()
+void HotkeyFrameCount (bool justPressed)
 {
 	S9xMovieToggleFrameDisplay ();
 }
 
 void S9xReRefresh();
 
-void HotkeyLagCount ()
+void HotkeyLagCount (bool justPressed)
 {
 	Settings.DisplayLagCounter = !Settings.DisplayLagCounter;
 	S9xReRefresh();
 }
 
-void HotkeyFrameAndLagCount ()
+void HotkeyFrameAndLagCount (bool justPressed)
 {
 	Settings.DisplayFrame = !Settings.DisplayFrame;
 	Settings.DisplayLagCounter = Settings.DisplayFrame;
@@ -4281,7 +4280,7 @@ void HotkeyFrameAndLagCount ()
 	S9xReRefresh();
 }
 
-void HotkeyResetLagCounter ()
+void HotkeyResetLagCounter (bool justPressed)
 {
 	IPPU.LagCounter = 0;
 }
@@ -4290,19 +4289,19 @@ void HotkeyToggleMacro (int i)
 {
 	MacroToggleState(i);
 }
-void HotkeyToggleMacro0 () { HotkeyToggleMacro(0); }
-void HotkeyToggleMacro1 () { HotkeyToggleMacro(1); }
-void HotkeyToggleMacro2 () { HotkeyToggleMacro(2); }
-void HotkeyToggleMacro3 () { HotkeyToggleMacro(3); }
-void HotkeyToggleMacro4 () { HotkeyToggleMacro(4); }
-void HotkeyToggleMacro5 () { HotkeyToggleMacro(5); }
-void HotkeyToggleMacro6 () { HotkeyToggleMacro(6); }
-void HotkeyToggleMacro7 () { HotkeyToggleMacro(7); }
-void HotkeyEditMacro () { PostMenuCommand(ID_OPTIONS_INPUT_MACRO); }
-void HotkeyToggleCheats () { PostMenuCommand(ID_CHEAT_DISABLE); }
-void HotkeyLoadLuaScript () { PostMenuCommand(IDD_FILE_LUA_LOAD); }
-void HotkeyReloadLuaScript () { PostMenuCommand(IDD_FILE_LUA_RELOAD); }
-void HotkeyStopLuaScript () { PostMenuCommand(IDD_FILE_LUA_STOP); }
+void HotkeyToggleMacro0 (bool justPressed) { HotkeyToggleMacro(0); }
+void HotkeyToggleMacro1 (bool justPressed) { HotkeyToggleMacro(1); }
+void HotkeyToggleMacro2 (bool justPressed) { HotkeyToggleMacro(2); }
+void HotkeyToggleMacro3 (bool justPressed) { HotkeyToggleMacro(3); }
+void HotkeyToggleMacro4 (bool justPressed) { HotkeyToggleMacro(4); }
+void HotkeyToggleMacro5 (bool justPressed) { HotkeyToggleMacro(5); }
+void HotkeyToggleMacro6 (bool justPressed) { HotkeyToggleMacro(6); }
+void HotkeyToggleMacro7 (bool justPressed) { HotkeyToggleMacro(7); }
+void HotkeyEditMacro (bool justPressed) { PostMenuCommand(ID_OPTIONS_INPUT_MACRO); }
+void HotkeyToggleCheats (bool justPressed) { PostMenuCommand(ID_CHEAT_DISABLE); }
+void HotkeyLoadLuaScript (bool justPressed) { PostMenuCommand(IDD_FILE_LUA_LOAD); }
+void HotkeyReloadLuaScript (bool justPressed) { PostMenuCommand(IDD_FILE_LUA_RELOAD); }
+void HotkeyStopLuaScript (bool justPressed) { PostMenuCommand(IDD_FILE_LUA_STOP); }
 
 /*****************************************************************************/
 /* WinInit                                                                   */
@@ -4441,65 +4440,93 @@ void S9xExtraUsage ()
 {
 }
 
+typedef struct {
+	bool wasPressed;
+	DWORD firstPressedTime;
+	DWORD lastPressedTime;
+	WORD repeatCount;
+} JoyState;
+
 // handles key presses
-VOID CALLBACK KeyInputTimer( UINT idEvent, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, DWORD_PTR dw2)
+VOID CALLBACK KeyInputTimer(UINT idEvent, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, DWORD_PTR dw2)
 {
-//	static int lastTime = timeGetTime();
-//	if(timeGetTime() - lastTime > 5)
+	bool S9xGetState (WORD KeyIdent);
+
+	static DWORD lastTime = timeGetTime();
+	DWORD currentTime = timeGetTime();
+
+	if(GUI.JoystickHotkeys)
 	{
-		bool S9xGetState (WORD KeyIdent);
+		static JoyState joyState [256];
+		static bool joyStateInited = false;
 
-		if(GUI.JoystickHotkeys)
-		{
-			static uint32 joyState [256];
+		if (!joyStateInited) {
+			for(int i = 0; i < 256; i++) {
+				joyState[i].wasPressed = false;
+				joyState[i].repeatCount = 1;
+			}
+			joyStateInited = true;
+		}
 
-			for(int i = 0 ; i < 255 ; i++)
-			{
-				bool active = !S9xGetState(0x8000|i);
+		for (int i = 0; i < 255; i++) {
+			bool active = !S9xGetState(0x8000|i);
 
-				if(active)
-				{
-					if(joyState[i] < ULONG_MAX) // 0xffffffffUL
-						joyState[i]++;
-					if(joyState[i] == 1 || joyState[i] >= (unsigned) KeyInDelayInCount)
-						PostMessage(GUI.hWnd, WM_CUSTKEYDOWN, (WPARAM)(0x8000|i),(LPARAM)(NULL));
-				}
-				else
-				{
-					if(joyState[i])
-					{
-						joyState[i] = 0;
-						PostMessage(GUI.hWnd, WM_CUSTKEYUP, (WPARAM)(0x8000|i),(LPARAM)(NULL));
-					}
+			if (active) {
+				bool keyRepeat = !joyState[i].wasPressed && (currentTime - joyState[i].firstPressedTime) >= (DWORD)KeyInDelayMSec;
+				if (!joyState[i].wasPressed || keyRepeat) {
+					if (!joyState[i].wasPressed)
+						joyState[i].firstPressedTime = currentTime;
+					joyState[i].lastPressedTime = currentTime;
+					if (keyRepeat && joyState[i].repeatCount < 0xffff)
+						joyState[i].repeatCount++;
+					PostMessage(GUI.hWnd, WM_CUSTKEYDOWN, (WPARAM)(0x8000|i),(LPARAM)(joyState[i].repeatCount | (joyState[i].wasPressed ? 0x40000000 : 0)));
 				}
 			}
-		}
-		if((!GUI.InactivePause || !Settings.ForcedPause)
-				|| (GUI.BackgroundInput || !(Settings.ForcedPause & (PAUSE_INACTIVE_WINDOW | PAUSE_WINDOW_ICONISED))))
-		{
-			static uint32 joyState [256];
-			for(int i = 0 ; i < 255 ; i++)
-			{
-				bool active = !S9xGetState(i);
-				if(active)
-				{
-					if(joyState[i] < ULONG_MAX) // 0xffffffffUL
-						joyState[i]++;
-					if(joyState[i] == 1 || joyState[i] >= (unsigned) KeyInDelayInCount)
-						PostMessage(GUI.hWnd, WM_CUSTKEYDOWN, (WPARAM)(i),(LPARAM)(NULL));
-				}
-				else
-				{
-					if(joyState[i])
-					{
-						joyState[i] = 0;
-						PostMessage(GUI.hWnd, WM_CUSTKEYUP, (WPARAM)(i),(LPARAM)(NULL));
-					}
-				}
+			else {
+				joyState[i].repeatCount = 1;
+				if (joyState[i].wasPressed)
+					PostMessage(GUI.hWnd, WM_CUSTKEYUP, (WPARAM)(0x8000|i),(LPARAM)(joyState[i].repeatCount | (joyState[i].wasPressed ? 0x40000000 : 0)));
 			}
+			joyState[i].wasPressed = active;
 		}
-//		lastTime = timeGetTime();
 	}
+	if((!GUI.InactivePause || !Settings.ForcedPause)
+			|| (GUI.BackgroundInput || !(Settings.ForcedPause & (PAUSE_INACTIVE_WINDOW | PAUSE_WINDOW_ICONISED))))
+	{
+		static JoyState joyState [256];
+		static bool joyStateInited = false;
+
+		if (!joyStateInited) {
+			for(int i = 0; i < 256; i++) {
+				joyState[i].wasPressed = false;
+				joyState[i].repeatCount = 1;
+			}
+			joyStateInited = true;
+		}
+
+		for (int i = 0; i < 256; i++) {
+			bool active = !S9xGetState(i);
+
+			if (active) {
+				bool keyRepeat = (currentTime - joyState[i].firstPressedTime) >= (DWORD)KeyInDelayMSec;
+				if (!joyState[i].wasPressed || keyRepeat) {
+					if (!joyState[i].wasPressed)
+						joyState[i].firstPressedTime = currentTime;
+					joyState[i].lastPressedTime = currentTime;
+					if (keyRepeat && joyState[i].repeatCount < 0xffff)
+						joyState[i].repeatCount++;
+					PostMessage(GUI.hWnd, WM_CUSTKEYDOWN, (WPARAM)(i),(LPARAM)(joyState[i].repeatCount | (joyState[i].wasPressed ? 0x40000000 : 0)));
+				}
+			}
+			else {
+				joyState[i].repeatCount = 1;
+				if (joyState[i].wasPressed)
+					PostMessage(GUI.hWnd, WM_CUSTKEYUP, (WPARAM)(i),(LPARAM)(joyState[i].repeatCount | (joyState[i].wasPressed ? 0x40000000 : 0)));
+			}
+			joyState[i].wasPressed = active;
+		}
+	}
+	lastTime = currentTime;
 }
 
 VOID CALLBACK FrameTimer( UINT idEvent, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, DWORD_PTR dw2)
@@ -4761,9 +4788,6 @@ int WINAPI WinMain(
 		KeyInRepeatMSec = (int)wmTimerRes;
 	if (KeyInDelayMSec < KeyInRepeatMSec)
 		KeyInDelayMSec = KeyInRepeatMSec;
-	KeyInDelayInCount = KeyInDelayMSec / KeyInRepeatMSec;
-	if (KeyInDelayInCount <= 1)
-		KeyInDelayInCount = 12;
 
     Settings.StopEmulation = TRUE;
     GUI.hFrameTimer = timeSetEvent (20, 0, FrameTimer, 0, TIME_PERIODIC);
