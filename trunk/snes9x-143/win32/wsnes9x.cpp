@@ -106,6 +106,7 @@
 #include "wsnes9x.h"
 #include "CDirectDraw.h"
 #include "../snes9x.h"
+#include "../version.h"
 #include "../memmap.h"
 #include "../cpuexec.h"
 #include "../display.h"
@@ -1446,7 +1447,7 @@ void S9xMouseOn ()
 void S9xRestoreWindowTitle ()
 {
     TCHAR buf [100];
-    sprintf (buf, TEXT(WINDOW_TITLE), VERSION);
+    sprintf (buf, TEXT(WINDOW_TITLE), SNES9X_NAME_AND_VERSION);
     SetWindowText (GUI.hWnd, buf);
 }
 
@@ -4340,7 +4341,7 @@ BOOL WinInit( HINSTANCE hInstance)
 	}
     
     TCHAR buf [100];
-    sprintf (buf, TEXT(WINDOW_TITLE), VERSION);
+    sprintf (buf, TEXT(WINDOW_TITLE), SNES9X_NAME_AND_VERSION);
 	
     DWORD dwExStyle;
     DWORD dwStyle;
@@ -7417,7 +7418,7 @@ INT_PTR CALLBACK DlgAboutProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 		if(DirectDraw.Clipped) S9xReRefresh();
 		{
 			TCHAR buf[2048];//find better way of dealing.
-			sprintf(buf,TEXT(DISCLAIMER_TEXT),VERSION);
+			sprintf(buf,TEXT(DISCLAIMER_TEXT),SNES9X_NAME_AND_VERSION);
 			hBmp=(HBITMAP)LoadImage(NULL, TEXT("RedChaos1.bmp"), IMAGE_BITMAP, 0,0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
 			SetDlgItemText(hDlg, IDC_DISCLAIMER, buf);
 			SetWindowText(hDlg, TEXT(ABOUT_DIALOG_TITLE) TEXT(APP_NAME));
