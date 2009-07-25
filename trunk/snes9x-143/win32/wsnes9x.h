@@ -370,13 +370,14 @@ enum HotkeyPage {
 	NUM_HOTKEY_PAGE,
 };
 
-typedef void (*HotkeyHandler) (void);
+typedef void (*HotkeyHandlerDown) (bool);
+typedef void (*HotkeyHandlerUp) (void);
 
 typedef struct {
 	WORD key;
 	WORD modifiers;
-	HotkeyHandler handleKeyDown;
-	HotkeyHandler handleKeyUp;
+	HotkeyHandlerDown handleKeyDown;
+	HotkeyHandlerUp handleKeyUp;
 	HotkeyPage page;
 	LPCTSTR name;
 } SCustomKey;
