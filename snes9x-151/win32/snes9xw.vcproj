@@ -26,6 +26,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="defaultconfig\SubWCRev.bat"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -53,7 +54,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories=".;..;zlib;directx;libpng-1.2.1;../lua/src;FMOD/api/inc;FMODEx/api/inc"
+				AdditionalIncludeDirectories=".;..;zlib;directx;libpng-1.2.1;../lua/src;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
 				PreprocessorDefinitions="NDEBUG;SPC700_SHUTDOWN;CPU_SHUTDOWN;CORRECT_VRAM_READS;ZLIB;UNZIP_SUPPORT;JMA_SUPPORT;HAVE_LIBPNG;NEW_COLOUR_BLENDING;NETPLAY_SUPPORT;_WINDOWS;WIN32;__MSC__;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NOUNCRYPT;FMOD_SUPPORT"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -132,6 +133,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="defaultconfig\SubWCRev.bat"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -154,8 +156,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;..;zlib;directx;libpng-1.2.1;../lua/src;FMOD/api/inc;FMODEx/api/inc"
-				PreprocessorDefinitions="_DEBUG;SPC700_SHUTDOWN;CPU_SHUTDOWN;CORRECT_VRAM_READS;ZLIB;UNZIP_SUPPORT;JMA_SUPPORT;HAVE_LIBPNG;NEW_COLOUR_BLENDING;NETPLAY_SUPPORT;_WINDOWS;WIN32;__MSC__;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NOUNCRYPT;FMOD_SUPPORT;LUA_USE_APICHECK"
+				AdditionalIncludeDirectories=".;..;zlib;directx;libpng-1.2.1;../lua/src;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
+				PreprocessorDefinitions="DEBUG;_DEBUG;SPC700_SHUTDOWN;CPU_SHUTDOWN;CORRECT_VRAM_READS;ZLIB;UNZIP_SUPPORT;JMA_SUPPORT;HAVE_LIBPNG;NEW_COLOUR_BLENDING;NETPLAY_SUPPORT;_WINDOWS;WIN32;__MSC__;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NOUNCRYPT;FMOD_SUPPORT;LUA_USE_APICHECK"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile="$(IntDir)\$(TargetName).pch"
@@ -184,7 +186,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/ignore:4199"
 				AdditionalDependencies="comctl32.lib winmm.lib wsock32.lib directx/ddraw.lib directx/dsound.lib directx/dxguid.lib vfw32.lib shlwapi.lib delayimp.lib fmodvc.lib fmodexp_vc.lib"
-				OutputFile="Snes9x-debug.exe"
+				OutputFile="snes9x-debug.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="directx;../lua/lib;FMOD/api/lib;FMODEx/api/lib"
