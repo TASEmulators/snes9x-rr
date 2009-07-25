@@ -162,13 +162,13 @@
 
 /* This is where all the GUI text strings will eventually end up */
 
-#define WINDOW_TITLE "Snes9X v%s for Windows"
+#define WINDOW_TITLE "%s"
 
 // the windows registry is no longer used
 //#define MY_REG_KEY   "Software\\Emulators\\Snes9X"
 //#define REG_KEY_VER  "1.31"
 
-#define DISCLAIMER_TEXT        "Snes9X v%s for Windows.\r\n" \
+#define DISCLAIMER_TEXT        "%s.\r\n" \
         "(c) Copyright 1996 - 2002  Gary Henderson and Jerremy Koot (jkoot@snes9x.com)\r\n" \
         "(c) Copyright 2002 - 2004  Matthew Kendora\r\n" \
         "(c) Copyright 2002 - 2005  Peter Bortas\r\n" \

@@ -451,7 +451,8 @@ enum HotkeyPage {
 	NUM_HOTKEY_PAGE,
 };
 
-typedef void (*HotkeyHandler) (void);
+typedef void (*HotkeyHandlerDown) (bool);
+typedef void (*HotkeyHandlerUp) (void);
 
 // Hack to avoid processing certain events while SavedAtOp.
 enum HotkeyTiming { PROCESS_NOW, PROCESS_AFTER_AUTO_ADVANCE, PROCESS_AFTER_MANUAL_ADVANCE };
@@ -459,8 +460,8 @@ enum HotkeyTiming { PROCESS_NOW, PROCESS_AFTER_AUTO_ADVANCE, PROCESS_AFTER_MANUA
 typedef struct {
 	WORD key;
 	WORD modifiers;
-	HotkeyHandler handleKeyDown;
-	HotkeyHandler handleKeyUp;
+	HotkeyHandlerDown handleKeyDown;
+	HotkeyHandlerUp handleKeyUp;
 	HotkeyPage page;
 	LPCTSTR name;
 	HotkeyTiming timing;

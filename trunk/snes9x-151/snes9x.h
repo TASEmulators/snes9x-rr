@@ -163,8 +163,6 @@
 #ifndef _SNES9X_H_
 #define _SNES9X_H_
 
-#define VERSION "1.51+ v6 (interim)"
-
 #include <stdio.h>
 #include <stdlib.h>
 

@@ -395,17 +395,8 @@ EXTERN_C void MixSound(void);
 #define MSB_FIRST
 #endif
 
-#ifdef __sun
-#define TITLE "Snes9X: Solaris"
-#endif
-
 #ifdef __linux
-#define TITLE "Snes9X: Linux"
 #define SYS_CONFIG_FILE "/etc/snes9x/snes9x.conf"
-#endif
-
-#ifndef TITLE
-#define TITLE "Snes9x"
 #endif
 
 #ifdef STORM

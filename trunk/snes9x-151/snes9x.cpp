@@ -168,6 +168,7 @@
 #endif
 
 #include "snes9x.h"
+#include "version.h"
 #include "memmap.h"
 #include "display.h"
 #include "cheats.h"
@@ -894,7 +895,7 @@ char *S9xParseArgs (char **argv, int argc)
             }
 	    else if (strcasecmp (argv [i], "-version") == 0)
 	    {
-              printf("Snes9X " VERSION "\n");
+              printf(SNES9X_NAME_AND_VERSION "\n");
               exit(0);
 	    }
 	    else if (strcasecmp (argv [i], "-help") == 0)
