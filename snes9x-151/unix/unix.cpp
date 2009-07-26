@@ -230,6 +230,7 @@ pthread_mutex_t mutex;
 #include "controls.h"
 #include "conffile.h"
 #include "logger.h"
+#include "version.h"
 
 #ifdef NETPLAY_SUPPORT
 #include "netplay.h"
@@ -643,7 +644,7 @@ int main (int argc, char **argv)
 
     S9xGraphicsMode ();
 
-    sprintf (String, "\"%s\" %s: %s", Memory.ROMName, TITLE, VERSION);
+    sprintf (String, "\"%s\" %s: %s", Memory.ROMName, SNES9X_NAME, SNES9X_VERSION_STRING);
     S9xSetTitle (String);
 
 #ifdef JOYSTICK_SUPPORT
