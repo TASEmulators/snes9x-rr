@@ -1209,8 +1209,8 @@ void _splitpath(const char *path, char *drive, char *dir, char *fname, char *ext
 {
   *drive = 0;
 
-  char *slash = strrchr(path, SLASH_CHAR);
-  char *dot = strrchr(path, '.');
+  const char *slash = strrchr(path, SLASH_CHAR);
+  const char *dot = strrchr(path, '.');
 
   if (dot && slash && dot < slash)
   {

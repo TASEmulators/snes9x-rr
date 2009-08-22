@@ -1357,45 +1357,47 @@ void _makepath (char *path, const char *, const char *dir,
     }
 }
 
-void _splitpath (const char *path, char *drive, char *dir, char *fname,
-		 char *ext)
+void _splitpath(const char *path, char *drive, char *dir, char *fname, char *ext)
 {
-    *drive = 0;
+  *drive = 0;
 
-    char *slash = strrchr (path, '/');
-    if (!slash)
-	slash = strrchr (path, '\\');
+  const char *slash = strrchr(path, SLASH_CHAR);
+  const char *dot = strrchr(path, '.');
 
-    char *dot = strrchr (path, '.');
+  if (dot && slash && dot < slash)
+  {
+    dot = 0;
+  }
 
-    if (dot && slash && dot < slash)
-	dot = NULL;
-
-    if (!slash)
+  if (!slash)
+  {
+    *dir = 0;
+    strcpy(fname, path);
+    if (dot)
     {
-	strcpy (dir, "");
-	strcpy (fname, path);
-        if (dot)
-        {
-	    *(fname + (dot - path)) = 0;
-	    strcpy (ext, dot + 1);
-        }
-	else
-	    strcpy (ext, "");
+      fname[dot - path] = 0;
+      strcpy(ext, dot + 1);
     }
     else
     {
-	strcpy (dir, path);
-	*(dir + (slash - path)) = 0;
-	strcpy (fname, slash + 1);
-        if (dot)
-	{
-	    *(fname + (dot - slash) - 1) = 0;
-    	    strcpy (ext, dot + 1);
-	}
-	else
-	    strcpy (ext, "");
+      *ext = 0;
     }
+  }
+  else
+  {
+    strcpy(dir, path);
+    dir[slash - path] = 0;
+    strcpy(fname, slash + 1);
+    if (dot)
+    {
+      fname[(dot - slash) - 1] = 0;
+      strcpy(ext, dot + 1);
+    }
+    else
+    {
+      *ext = 0;
+    }
+  }
 }
 
 void S9xToggleSoundChannel (int c)
