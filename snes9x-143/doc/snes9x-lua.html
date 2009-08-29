@@ -96,6 +96,7 @@
   <li><a href="#gui.gdscreenshot">gui.gdscreenshot</a></li>
   <li><a href="#gui.gdoverlay">gui.gdoverlay</a></li>
   <li><a href="#gui.getpixel">gui.getpixel</a></li>
+  <li><a href="#What_is_gd_and_how_can_I_install_it">What is gd and how can I install it?</a></li>
  </ul></li>
  <li><a href="#input">input</a><ul>
   <li><a href="#input.get">input.get</a></li>
@@ -1140,6 +1141,47 @@ Returns the pixel on the indicated coordinate. (0,0) is the top-left corner and 
 though (255,238) is allowed. The return value range is (0,0,0) to (31,63,31). You get the actual screen surface before
 any damage is done by your drawing. Well, unless you call snes9x.wait() in which case your damage is applied and the SNES
 hardware doesn't get a chance to draw a new frame. <span class="smiley">:)</span>
+</p>
+
+</div>
+
+<h4 id="What_is_gd_and_how_can_I_install_it">What is gd and how can I install it?</h4>
+
+<div class="section">
+
+<p>
+GD is a library for image manipulation.
+The library you can use in Snes9x with Lua is more specifically called <a href="http://lua-gd.luaforge.net/">Lua-GD</a>.
+With it you can do things like load an image file (which Snes9x can then draw on the screen),
+convert between image formats, save image files, or perform relatively advanced drawing operations on images.
+You can read more about it at its home page.
+</p>
+
+<p>
+Listed here are the steps I followed to install Lua-GD for Win32.
+They worked for me, but they might not exactly match up with your environment,
+so I'd suggest following the official installation instructions if these don't help:
+</p>
+
+<ol>
+<li>I downloaded a package called <em><a href="http://luaforge.net/frs/download.php/1594/lua-gd-2.0.33r2-win32.zip">lua-gd-2.0.33r2-win32</a></em> at the <a title="LuaForge: Lua-GD: Project Info" href="http://luaforge.net/projects/lua-gd/">one of the Lua-GD download pages</a>, and extracted it.</li>
+<li>I copied <em>gd.dll</em> to where my Snes9x .exe was located.</li>
+<li>I copied <em>freetype6.dll</em>, <em>jpeg62.dll</em>, <em>libgd2.dll</em>, <em>libiconv2.dll</em>, <em>libpng13.dll</em>, <em>xpm4.dll</em>, and <em>zlib1.dll</em> to C:\WINDOWS\system32</li>
+<li>I downloaded a package called <em><a href="http://luaforge.net/frs/download.php/3677/lua5_1_4_Win32_bin.zip">lua5_1_4_Win32_bin</a></em> at the <a href="http://luabinaries.luaforge.net/download.html">Lua Binaries download page</a>, and extracted it.</li>
+<li>I copied both <em>lua51.dll</em> and <em>lua5.1.dll</em> to C:\WINDOWS\system32</li>
+
+<p>
+After that I was able to use gd in any Lua script simply by putting the following code at the top:
+<code>
+require "gd"
+</code>
+</p>
+
+<p>
+It is not necessary to install or use GD. Snes9x Lua does not use it directly for anything,
+not even for <a href="#gui.gdscreenshot">gui.gdscreenshot</a> or <a href="#gui.gdoverlay">gui.gdoverlay</a>.
+And it is possible to do anything that GD does without using GD.
+It is a convenient library, however.
 </p>
 
 </div>
