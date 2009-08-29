@@ -931,7 +931,6 @@ The transparent colour is
 <ins datetime="2008-02-21T14:43:00+09:00">"#00rrggbb"</ins>
 or the string "clear". Remove drawn elements using this colour. This only applies when
 specifying a colour manually and not when drawing an image with gdoverlay().
-</del>
 </p>
 
 <h4 id="gui.register">gui.register</h4>
@@ -962,10 +961,10 @@ returned.
 Write text on the screen at the indicated position.
 </p><p>
 The coordinates determine the top-left corner of the box that the text fits in.
-The font is the same one as the snes9x messages<del datetime="2008-02-21T14:43:00+09:00">, and you can't control colours or anything. <span class="smiley">:(</del></span>
+The font is the same one as the snes9x messages<del datetime="2008-02-21T14:43:00+09:00">, and you can't control colours or anything. <span class="smiley">:(</span></del>
 <ins datetime="2008-02-21T14:43:00+09:00"><em class="version_notice">svn r1+</em>:
 you can control colours as you like <span class="smiley">:)</span></ins></p>
-</p><!--<p>
+<!--<p>
 The minimum y value is 9 for the font's height and each letter will take around 8 pixels of width.
 Text that exceeds the viewing area will be cut short, so ensuring your text will fit would be wise.
 </p>-->
@@ -1169,6 +1168,7 @@ so I'd suggest following the official installation instructions if these don't h
 <li>I copied <em>freetype6.dll</em>, <em>jpeg62.dll</em>, <em>libgd2.dll</em>, <em>libiconv2.dll</em>, <em>libpng13.dll</em>, <em>xpm4.dll</em>, and <em>zlib1.dll</em> to C:\WINDOWS\system32</li>
 <li>I downloaded a package called <em><a href="http://luaforge.net/frs/download.php/3677/lua5_1_4_Win32_bin.zip">lua5_1_4_Win32_bin</a></em> at the <a href="http://luabinaries.luaforge.net/download.html">Lua Binaries download page</a>, and extracted it.</li>
 <li>I copied both <em>lua51.dll</em> and <em>lua5.1.dll</em> to C:\WINDOWS\system32</li>
+</ol>
 
 <p>
 After that I was able to use gd in any Lua script simply by putting the following code at the top:
