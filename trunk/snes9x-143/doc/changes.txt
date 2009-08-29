@@ -1,12 +1,17 @@
 Snes9x 1.43+
 
-Newest changes in 1.43+ v15.4:
+Newest changes in 1.43+ v16:
 
+* A lot of desync fixes. Older versions cannot read the new savestate.
+  Also, a new sync flag is added to SMV. Most SMV editors might not care
+  about the new flag byte. Be careful, or you might experience a desync.
+* Improved Lua engine.
 * Fixed noise generation.
 * Added 4-point gaussian interpolation.
 * Added lag counter and modified frame display around.
 * Win32: Added several settings from snes9x.cfg to GUI.
-* Win32: Redesigned menu overall and added some settings.
+* Win32: Redesigned menu overall and added some new settings.
+* Win32: Merged OV2's new sound code.
 
 Newest changes in 1.43+ v15.3:
 

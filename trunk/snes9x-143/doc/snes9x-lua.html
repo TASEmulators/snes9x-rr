@@ -12,11 +12,14 @@
 
 <div class="section">
 
-<p class="document_version">Document version: lua svn r4</p>
+<p class="document_version">Document version: lua svn r11</p>
 
-<p>See <a href="http://code.google.com/p/snes9x143-rerecording/">Snes9x 1.43 rerecording project on Google Code</a> for the emulator itself.</p>
+<p>See <a href="http://code.google.com/p/snes9x-rr/">Snes9x rerecording project on Google Code</a> for the emulator itself.</p>
 
+<p class="littlenote">See also: Gens Lua Documentation - <a href="http://code.google.com/p/gens-rerecording/">gens-rerecording - Project Hosting on Google Code</a></p>
+<!--
 <p class="littlenote">Note: This document is based on <a href="http://dehacked.2y.net/snes9x-lua.html">DeHackEd's Snes9x Lua Library</a> document, of course.</p>
+-->
 
 <h2 id="Table_Of_Contents">Table Of Contents</h2>
 
@@ -29,13 +32,20 @@
   <li><a href="#AND">AND</a></li>
   <li><a href="#OR">OR</a></li>
   <li><a href="#XOR">XOR</a></li>
+  <li><a href="#SHIFT">SHIFT</a></li>
   <li><a href="#BIT">BIT</a></li>
  </ul></li>
  <li><a href="#snes9x">snes9x</a><ul>
   <li><a href="#snes9x.speedmode">snes9x.speedmode</a></li>
   <li><a href="#snes9x.frameadvance">snes9x.frameadvance</a></li>
-  <li><a href="#snes9x.message">snes9x.message</a></li>
   <li><a href="#snes9x.pause">snes9x.pause</a></li>
+  <li><a href="#snes9x.framecount">snes9x.framecount</a></li>
+  <li><a href="#snes9x.lagcount">snes9x.lagcount</a></li>
+  <li><a href="#snes9x.lagged">snes9x.lagged</a></li>
+  <li><a href="#snes9x.registerbefore">snes9x.registerbefore</a></li>
+  <li><a href="#snes9x.registerafter">snes9x.registerafter</a></li>
+  <li><a href="#snes9x.registerexit">snes9x.registerexit</a></li>
+  <li><a href="#snes9x.message">snes9x.message</a></li>
  </ul></li>
  <li><a href="#memory">memory</a><ul>
   <li><a href="#memory.readbyte">memory.readbyte</a></li>
@@ -46,12 +56,12 @@
   <li><a href="#memory.readdwordsigned">memory.readdwordsigned</a></li>
   <li><a href="#memory.writebyte">memory.writebyte</a></li>
   <li><a href="#memory.writeword">memory.writeword</a></li>
-  <li><a href="#memory.dwriteword">memory.writedword</a></li>
+  <li><a href="#memory.writedword">memory.writedword</a></li>
   <li><a href="#memory.readbyterange">memory.readbyterange</a></li>
-  <li><a href="#memory.register">memory.register</a></li>
+  <li><a href="#memory.registerwrite">memory.registerwrite</a></li>
  </ul></li>
  <li><a href="#joypad">joypad</a><ul>
-  <li><a href="#joypad.read">joypad.read</a></li>
+  <li><a href="#joypad.get">joypad.get</a></li>
   <li><a href="#joypad.set">joypad.set</a></li>
  </ul></li>
  <li><a href="#savestate">savestate</a><ul>
@@ -59,30 +69,37 @@
   <li><a href="#savestate.save">savestate.save</a></li>
   <li><a href="#savestate.load">savestate.load</a></li>
   <li><a href="#savestate.registersave">savestate.registersave</a></li>
+  <li><a href="#savestate.registerload">savestate.registerload</a></li>
+  <li><a href="#savestate.loadscriptdata">savestate.loadscriptdata</a></li>
   <li><a href="#Recommendations_for_registered_savestates">Recommendations for registered savestates</a></li>
  </ul></li>
  <li><a href="#movie">movie</a><ul>
-  <li><a href="#movie.framecount">movie.framecount</a></li>
   <li><a href="#movie.mode">movie.mode</a></li>
   <li><a href="#movie.rerecordcounting">movie.rerecordcounting</a></li>
   <li><a href="#movie.stop">movie.stop</a></li>
+  <!--
   <li><a href="#movie.record">movie.record</a></li>
   <li><a href="#movie.playback">movie.playback</a></li>
+  -->
  </ul></li>
  <li><a href="#gui">gui</a><ul>
-  <li><a href="#gui.getpixel">gui.getpixel</a></li>
-  <li><a href="#gui.drawpixel">gui.drawpixel</a></li>
-  <li><a href="#gui.drawline">gui.drawline</a></li>
-  <li><a href="#gui.drawbox">gui.drawbox</a></li>
-  <li><a href="#gui.fillbox">gui.fillbox</a></li>
-  <li><a href="#gui.drawcircle">gui.drawcircle</a></li>
-  <li><a href="#gui.fillcircle">gui.fillcircle</a></li>
+  <li><a href="#gui.register">gui.register</a></li>
   <li><a href="#gui.text">gui.text</a></li>
+  <li><a href="#gui.box">gui.box</a></li>
+  <li><a href="#gui.line">gui.line</a></li>
+  <li><a href="#gui.pixel">gui.pixel</a></li>
+  <li><a href="#gui.circle">gui.circle</a></li>
+  <li><a href="#gui.fillbox">gui.fillbox</a></li>
+  <li><a href="#gui.fillcircle">gui.fillcircle</a></li>
+  <li><a href="#gui.opacity">gui.opacity</a></li>
+  <li><a href="#gui.popup">gui.popup</a></li>
   <li><a href="#gui.gdscreenshot">gui.gdscreenshot</a></li>
   <li><a href="#gui.gdoverlay">gui.gdoverlay</a></li>
-  <li><a href="#gui.transparency">gui.transparency</a></li>
-  <li><a href="#gui.register">gui.register</a></li>
-  <li><a href="#gui.popup">gui.popup</a></li>
+  <li><a href="#gui.getpixel">gui.getpixel</a></li>
+ </ul></li>
+ <li><a href="#input">input</a><ul>
+  <li><a href="#input.get">input.get</a></li>
+  <li><a href="#input.popup">input.popup</a></li>
  </ul></li>
 </ul></li>
 </ul>
@@ -98,16 +115,25 @@ Your code will be run alongside the emulator's main loop. You code should
 probably look roughly like this:
 </p>
 
-<pre><code>-- initialization goes here
-while condition do
-   -- Code executed once per frame
- 
-   snes9x.frameadvance()
+<pre><code>-- initialization code (if any) goes here
 
+gui.register( function()
+  -- put any drawing code you want to do here
+end)
 
-end
+snes9x.registerbefore( function()
+  -- put any code you want to run before each frame here
+  -- (such as getting/setting the next frame's input or writing to memory)
+end)
 
--- Cleanup goes here</code></pre>
+snes9x.registerafter( function()
+  -- put any code you want to run after each frame here
+  -- (such as getting the last frame's input or reading from memory)
+end)
+
+snes9x.registerexit( function()
+  -- cleanup code (if any) goes here
+end)</code></pre>
 
 <p>
 When Lua execution starts, the emulator will be automatically unpaused if it
@@ -187,6 +213,20 @@ Commonly used to toggle a bit by XORing.
 
 </div>
 
+<h4 id="SHIFT">SHIFT</h4>
+
+<div class="section">
+
+<pre><code>int SHIFT(int num, int shift)</code></pre>
+
+<p>
+Returns a number shifted by the given number of bits.
+Negative shift means "shift left" and positive shift means "shift right".
+Both arguments should be integers, as will be the result, of course.
+</p>
+
+</div>
+
 <h4 id="BIT">BIT</h4>
 
 <div class="section">
@@ -254,26 +294,11 @@ your own purposes, but they must not call this function themselves. Furthermore,
 
 </div>
 
-<h4 id="snes9x.message">snes9x.message</h4>
-
-<div class="section">
-
-<pre><code>snes9x.message(string msg)</code></pre>
-
-<p>
-Displays the indicated string on the user's screen. snes9x.speedmode("normal") is probably the only way this is of any use,
-lest the message not be displayed at all
-</p>
-
-</div>
-
 <h4 id="snes9x.pause">snes9x.pause</h4>
 
 <div class="section">
 
 <pre><code>snes9x.pause()</code></pre>
-
-<p><em class="version_notice">v0.05+ only</em></p>
 
 <p>
 Pauses the emulator. This function blocks until the user unpauses.
@@ -289,13 +314,130 @@ It might be smart to reset the speed mode to "normal" if it is not already so.
 
 </div>
 
+<h4 id="snes9x.framecount">snes9x.framecount</h4>
+
+<div class="section">
+
+<pre>int snes9x.framecount()</pre>
+
+<p>
+Returns the number of elapsed emulation frames.
+</p>
+
+</div>
+
+<h4 id="snes9x.lagcount">snes9x.lagcount</h4>
+
+<div class="section">
+
+<pre>int snes9x.lagcount()</pre>
+
+<p>
+Returns the number of emulation frames on which the system did not poll joypad input.
+<!--
+Note that this number does NOT reset if the user presses the "reset lag count" hotkey.
+-->
+</p>
+
+</div>
+
+<h4 id="snes9x.lagged">snes9x.lagged</h4>
+
+<div class="section">
+
+<pre>bool snes9x.lagged()</pre>
+
+<p>
+Returns <em>true</em> if the system did not poll joypad input during the previous frame, or <em>false</em> otherwise.
+</p>
+
+</div>
+
+<h4 id="snes9x.registerbefore">snes9x.registerbefore</h4>
+
+<div class="section">
+
+<pre><code>snes9x.registerbefore(function)</code></pre>
+
+<p>
+Registers a callback function to run immediately before each frame gets emulated.
+This runs after the next frame's input is known but before it's used, so this is
+your only chance to set the next frame's input using the next frame's would-be input.
+For example, if you want to make a script that filters or modifies ongoing user input,
+such as making the game think "left" is pressed whenever you press "right", you can do it easily with this.
+</p>
+
+<p>
+Note that this is not quite the same as code that's placed before a call to <a href="#snes9x.frameadvance">snes9x.frameadvance</a>.
+This callback runs a little later than that. Also, you cannot safely assume that this will only be called once per frame.
+Depending on the emulator's options, every frame may be simulated multiple times and
+your callback will be called once per simulation.
+If for some reason you need to use this callback to keep track of a stateful linear progression of things
+across frames then you may need to key your calculations to the results of <a href="#snes9x.framecount">snes9x.framecount</a>.
+</p>
+
+<p>
+Like other callback-registering functions provided by Snes9x, there is only one registered callback
+at a time per registering function per script.
+If you register two callbacks, the second one will replace the first, and the call to
+snes9x.registerbefore will return the old callback.
+You may register nil instead of a function to clear a previously-registered callback.
+If a script returns while it still has registered callbacks, Snes9x will keep it alive to call
+those callbacks when appropriate, until either the script is stopped by the user
+or all of the callbacks are de-registered.
+</p>
+
+</div>
+
+<h4 id="snes9x.registerafter">snes9x.registerafter</h4>
+
+<div class="section">
+
+<pre><code>snes9x.registerafter(function)</code></pre>
+
+<p>
+Registers a callback function to run immediately after each frame gets emulated.
+It runs at a similar time as (and slightly before) gui.register callbacks,
+except unlike with gui.register it doesn't also get called again whenever the screen gets redrawn.
+Similar caveats as those mentioned in <a href="#snes9x.registerbefore">snes9x.registerbefore</a> apply.
+</p>
+
+</div>
+
+<h4 id="snes9x.registerexit">snes9x.registerexit</h4>
+
+<div class="section">
+
+<pre><code>snes9x.registerexit(function)</code></pre>
+
+<p>
+Registers a callback function to run immediately after each frame gets emulated.
+It runs at a similar time as (and slightly before) gui.register callbacks,
+except unlike with gui.register it doesn't also get called again whenever the screen gets redrawn.
+Similar caveats as those mentioned in <a href="#snes9x.registerbefore">snes9x.registerbefore</a> apply.
+</p>
+
+</div>
+
+<h4 id="snes9x.message">snes9x.message</h4>
+
+<div class="section">
+
+<pre><code>snes9x.message(string msg)</code></pre>
+
+<p>
+Displays the indicated string on the user's screen. snes9x.speedmode("normal") is probably the only way this is of any use,
+lest the message not be displayed at all
+</p>
+
+</div>
+
+<!--
 <h4 id="snes9x.wait">snes9x.wait</h4>
 
 <div class="section">
 
 <pre><code>snes9x.wait()</code></pre>
-
-<p><em class="version_notice">v0.06+ only (not available on svn version at present)</em></p>
 
 <p>
 Skips emulation of the next frame. If your script needs to wait for something to happen before proceeding (eg.
@@ -306,7 +448,7 @@ OS-dependent right now.
 </p><p>
 If you're not sufficiently confused yet, think of this as pausing for one frame.
 </p><p>
-If you need to do a large amount of calculations -- so much that you risk setting off the rampant script
+If you need to do a large amount of calculations - so much that you risk setting off the rampant script
 warning, just call this function every once in a while.
 </p><p>
 Might want to avoid using this if you don't need to. If the emulator is running at normal speed, paused
@@ -314,6 +456,7 @@ and the user presses frame-advance, they might be confused when nothing happens.
 </p>
 
 </div>
+-->
 
 </div>
 
@@ -346,8 +489,6 @@ the ROM data itself.
 <pre><code>int memory.readbytesigned(int address)
 int memory.readwordsigned(int address)
 int memory.readdwordsigned(int address)</code></pre>
-
-<p><em class="version_notice">v0.04+ only</em></p>
 
 <p>
 Same as its counterparts, except numbers will be treated as signed. Numbers larger than 127 for bytes and
@@ -382,8 +523,6 @@ appreciate the memory mapped IO.
 
 <pre><code>string memory.readbyterange(int startaddress, int length)</code></pre>
 
-<p><em class="version_notice">v0.07+ only (svn r4+)</em></p>
-
 <p>
 Read a chunk of memory and return it as a string. Good for doing memory
 dumps or reading ASCII data. <var>length</var> is semi-arbitrarily limited to
@@ -392,11 +531,11 @@ dumps or reading ASCII data. <var>length</var> is semi-arbitrarily limited to
 
 </div>
 
-<h4 id="memory.register">memory.register</h4>
+<h4><span id="memory.registerwrite">memory.registerwrite</span>, <span id="memory.register">memory.register</span></h4>
 
 <div class="section">
 
-<pre><code>memory.register(int address, function func)</code></pre>
+<pre><code>memory.registerwrite(int address, function func)</code></pre>
 
 <p>
 When the given memory address is written to (range must be 0x7e0000 to 0x7fffff), the given function will be
@@ -406,7 +545,7 @@ Only one function can be registered with a memory address. 16 bit writes will on
 listener. There is no distinction between 8 and 16 bit writes. <var>func</var> may be nil in order to
 delete a function from listening.
 </p><p>
-Code called may not call snes9x.frameadvance() or any savestate save/load functions, and any button
+Code called may not call <a href="#snes9x.frameadvance">snes9x.frameadvance</a>() or any savestate save/load functions, and any button
 manipulation results are undefined. Those actions are only meaningful at frame boundaries.
 </p>
 
@@ -426,8 +565,8 @@ only for that one frame.
 Joypads are numbered 1 to 5.
 </p><p>
 Joypad buttons are selected by use of a table with special keys. The table
-has keys start, select, up, down, left, right, A, B, X, Y, L, R. Note the
-case is sensetive. Buttons that are pressed are set to a non-nil value
+has keys start, select, up, down, left, right, A, B, X, Y, L, R (, b1, b2, b3).
+Note the case is sensetive. Buttons that are pressed are set to a non-nil value
 (use of the integer 1 is just a convention). Note that "false" is valid,
 but discouraged as testing for logical true will fail.
 </p><p>
@@ -437,16 +576,16 @@ a movie will record button presses from Lua.
 </del>
 </p><p>
 <ins datetime="2008-02-28T12:00:00+09:00">
-<em class="version_notice">svn r3+</em>: joypad.read() returns the actual input which will be sent to SNES.
+<em class="version_notice">svn r3+</em>: joypad.get() returns the actual input which will be sent to SNES.
 A movie will record button presses from Lua.
 </ins>
 </p>
 
-<h4 id="joypad.read">joypad.read</h4>
+<h4 id="joypad.get">joypad.get</h4>
 
 <div class="section">
 
-<pre><code>table joypad.read(int which)</code></pre>
+<pre><code>table joypad.get(int which)</code></pre>
 
 <p>
 <del datetime="2008-02-28T12:00:00+09:00">
@@ -553,8 +692,6 @@ Loads the given state. Throws an error for all the same bad things that might ha
 
 <pre><code>function savestate.registersave(function save)</code></pre>
 
-<p><em class="version_notice">v0.06+ only (not available on svn version at present)</em></p>
-
 <p>
 Registers a function to be called on a savestate event. This includes both calls to
 <var>savestate.save()</var> and users pressing buttons. The function will be called without
@@ -583,8 +720,6 @@ the save function returns no parameters at all.
 <div class="section">
 
 <pre><code>function savestate.registerload(function load)</code></pre>
-
-<p><em class="version_notice">v0.06+ only (not available on svn version at present)</em></p>
 
 <p>
 The companion to savestate.registersave, this function registers a function to be called during
@@ -621,6 +756,24 @@ loadState(unpack(saved_variables))
 
 </div>
 
+<h4 id="savestate.loadscriptdata">savestate.loadscriptdata</h4>
+
+<div class="section">
+
+<pre><code>function savestate.loadscriptdata(function load)</code></pre>
+
+<p>
+Returns the data associated with the given savestate (data that was earlier returned by a registered save callback)
+without actually loading the rest of that savestate or calling any callbacks. location should be a save slot number.
+</p>
+
+<p>
+This is <em>not</em> equivalent to calling savestate.load(location, "scriptdataonly"),
+which passes the data into registered load callbacks rather than returning it.
+</p>
+
+</div>
+
 <h4 id="Recommendations_for_registered_savestates">Recommendations for registered savestates</h4>
 
 <div class="section">
@@ -646,18 +799,6 @@ If you need to store a table's worth of data, you'll have to do this.</li>
 <p>
 Access to movie information.
 </p>
-
-<h4 id="movie.framecount">movie.framecount</h4>
-
-<div class="section">
-
-<pre>int movie.framecount()</pre>
-
-<p>
-Returns the current frame count, or nil if no movie is running.
-</p>
-
-</div>
 
 <h4 id="movie.mode">movie.mode</h4>
 
@@ -699,13 +840,12 @@ Stops movie recording/playback. I'm not sure why you'd want to do that, but you 
 
 </div>
 
+<!--
 <h4 id="movie.record">movie.record</h4>
 
 <div class="section">
 
 <pre>movie.record(string filename, string startPoint, int players, table otherOptions)</pre>
-
-<p><em class="version_notice">v0.07+ only (not available on svn version at present)</em></p>
 
 <p>
 Starts recording a movie with the indicated filename. If the file already
@@ -736,7 +876,7 @@ is an error to specify a value which works out to no players.
 <var>otherOptions</var> is a table of options that are emulator or movie
 specific. For snes9x, this is only the metadata. The key is
 <code>"metadata"</code> and the value is a UTF-16 string. 
-<!-- Blame nitsuja. -->
+<! - - Blame nitsuja. - - >
 </p>
 
 </div>
@@ -746,8 +886,6 @@ specific. For snes9x, this is only the metadata. The key is
 <div class="section">
 
 <pre>movie.playback(string filename, boolean readonly = false)</pre>
-
-<p><em class="version_notice">v0.07+ only (not available on svn version at present)</em></p>
 
 <p>
 Starts playback of the given movie file. It is an error if the file does not already exist, is invalid, etc.
@@ -759,7 +897,7 @@ play a file on a read-only medium (such as a CD-ROM) but readonly=false would fa
 </p>
 
 </div>
-
+-->
 </div>
 
 <h3 id="gui">gui</h3>
@@ -793,86 +931,22 @@ The transparent colour is
 or the string "clear". Remove drawn elements using this colour. This only applies when
 specifying a colour manually and not when drawing an image with gdoverlay().
 </del>
+</p>
+
+<h4 id="gui.register">gui.register</h4>
+
+<div class="section">
+
+<pre>function gui.register(function func)</pre>
+
+<p>
+Register a function to be called between a frame being prepared for displaying on your screen and
+it actually happening. Used when that 1 frame delay for rendering is a pain in the butt.
+</p><p>This function is not necessarily complicated to use, but it's not recommended to users
+new to the whole scripting thing.
 </p><p>
-Output is delayed by a frame. The graphics are drawn on a separate buffer and then overlayed on the image 
-during the next refresh, which means allowing for a frame to execute. Also, the buffer is cleared after drawing,
-so if you want to keep something on screen, you must keep drawing it on each frame.
-</p><p>
-It is an error to draw outside the drawing area. gdoverlay is the only exception to this rule - images will
-be clipped to the visible area.
-</p>
-
-<h4 id="gui.getpixel">gui.getpixel</h4>
-
-<div class="section">
-
-<pre>r,g,b = gui.getpixel(int x, int y)</pre>
-
-<p><em class="version_notice">v0.03+ only (is that true?)</em></p>
-
-<p>
-Returns the pixel on the indicated coordinate. (0,0) is the top-left corner and (255, 223) is the typical bottom-right corner,
-though (255,238) is allowed. The return value range is (0,0,0) to (31,63,31). You get the actual screen surface before
-any damage is done by your drawing. Well, unless you call snes9x.wait() in which case your damage is applied and the SNES
-hardware doesn't get a chance to draw a new frame. <span class="smiley">:)</span>
-</p>
-
-</div>
-
-<h4 id="gui.drawpixel">gui.drawpixel</h4>
-
-<div class="section">
-
-<pre>gui.drawpixel(int x, int y, type colour)</pre>
-
-<p><em class="version_notice">v0.03+ only</em></p>
-
-<p>
-Draw a single pixel on the screen.
-</p>
-
-</div>
-
-<h4 id="gui.drawline">gui.drawline</h4>
-
-<div class="section">
-
-<pre>gui.drawline(int x1, int y1, int x2, int y2, type colour)</pre>
-
-<p><em class="version_notice">v0.03+ only</em></p>
-
-<p>
-Draw a line between the two indicated positions.
-</p>
-
-</div>
-
-<h4><span id="gui.drawbox">gui.drawbox</span>, <span id="gui.fillbox">gui.fillbox</span></h4>
-
-<div class="section">
-
-<pre>gui.drawbox(int x1, int y1, int x2, int y2, type colour)
-gui.fillbox(int x1, int y1, int x2, int y2, type colour)</pre>
-
-<p>gui.drawbox: <em class="version_notice">v0.03+ only</em>, gui.fillbox: <em class="version_notice">svn r2+ only</em></p>
-
-<p>
-Draw a box going through the indicated opposite corners.
-</p>
-
-</div>
-
-<h4><span id="gui.drawcircle">gui.drawcircle</span>, <span id="gui.fillcircle">gui.fillcircle</span></h4>
-
-<div class="section">
-
-<pre>gui.drawcircle(int x, int y, int r, type colour)
-gui.fillcircle(int x, int y, int r, type colour)</pre>
-
-<p><em class="version_notice">svn r2+ only</em></p>
-
-<p>
-Draw a circle of radius <var>r</var>.
+You may pass nil as the parameter to kill off a registered function. The old function (if any) will be
+returned.
 </p>
 
 </div>
@@ -883,8 +957,6 @@ Draw a circle of radius <var>r</var>.
 
 <pre>gui.text(int x, int y, string message, [type colour, type colour borderColour])</pre>
 
-<p><em class="version_notice">v0.03+ only</em></p>
-
 <p>
 Write text on the screen at the indicated position.
 </p><p>
@@ -892,9 +964,110 @@ The coordinates determine the top-left corner of the box that the text fits in.
 The font is the same one as the snes9x messages<del datetime="2008-02-21T14:43:00+09:00">, and you can't control colours or anything. <span class="smiley">:(</del></span>
 <ins datetime="2008-02-21T14:43:00+09:00"><em class="version_notice">svn r1+</em>:
 you can control colours as you like <span class="smiley">:)</span></ins></p>
-</p><p>
+</p><!--<p>
 The minimum y value is 9 for the font's height and each letter will take around 8 pixels of width.
 Text that exceeds the viewing area will be cut short, so ensuring your text will fit would be wise.
+</p>-->
+
+</div>
+
+<h4><span id="gui.box">gui.box</span>, <span id="gui.fillbox">gui.fillbox</span></h4>
+
+<div class="section">
+
+<pre>gui.box(int x1, int y1, int x2, int y2, type colour)
+gui.fillbox(int x1, int y1, int x2, int y2, type colour)</pre>
+
+<p>
+Draw a box going through the indicated opposite corners.
+</p>
+
+</div>
+
+<h4 id="gui.line">gui.line</h4>
+
+<div class="section">
+
+<pre>gui.line(int x1, int y1, int x2, int y2, type colour)</pre>
+
+<p>
+Draw a line between the two indicated positions.
+</p>
+
+</div>
+
+<h4 id="gui.pixel">gui.pixel</h4>
+
+<div class="section">
+
+<pre>gui.pixel(int x, int y, type colour)</pre>
+
+<p>
+Draw a single pixel on the screen.
+</p>
+
+</div>
+
+<h4><span id="gui.circle">gui.circle</span>, <span id="gui.fillcircle">gui.fillcircle</span></h4>
+
+<div class="section">
+
+<pre>gui.circle(int x, int y, int r, type colour)
+gui.fillcircle(int x, int y, int r, type colour)</pre>
+
+<p>
+Draw a circle of radius <var>r</var>.
+</p>
+
+</div>
+
+<h4 id="gui.opacity">gui.opacity</h4>
+
+<div class="section">
+
+<pre>gui.opacity(number alpha)</pre>
+
+<p>
+Scales the transparency of subsequent draw calls.
+An alpha of 0.0 means completely transparent, and an alpha of 1.0 means completely unchanged (opaque).
+Non-integer values are supported and meaningful, as are values greater than 1.0.
+It is not necessary to use this function (or the less-recommended gui.transparency) to perform drawing with transparency,
+because you can provide an alpha value in the color argument of each draw call.
+However, it can sometimes be convenient to be able to globally modify the drawing transparency.
+</p>
+
+</div>
+
+<h4><span id="gui.popup">gui.popup</span>, <span id="input.popup">input.popup</span></h4>
+
+<div class="section">
+
+<pre>string function gui.popup(string message [, string type [, string icon]])</pre>
+
+<p>
+Brings up a modal popup dialog box (everything stops until the user dismisses it).
+The box displays the message tostring(msg).
+This function returns the name of the button the user clicked on (as a string).
+</p>
+
+<p>
+type determines which buttons are on the dialog box, and it can be one of the following:
+'ok', 'yesno', 'yesnocancel', 'okcancel', 'abortretryignore'.
+type defaults to 'ok' for gui.popup, or to 'yesno' for input.popup.
+
+icon indicates the purpose of the dialog box (or more specifically it dictates which
+title and icon is displayed in the box), and it can be one of the following:
+'message', 'question', 'warning', 'error'.
+icon defaults to 'message' for gui.popup, or to 'question' for input.popup.
+</p>
+
+<p>
+Try to avoid using this function much if at all, because modal dialog boxes can be irritating.
+</p>
+
+<p>
+Linux users might want to install xmessage to perform the work. Otherwise the dialog will
+appear on the shell and that's less noticable.
 </p>
 
 </div>
@@ -904,8 +1077,6 @@ Text that exceeds the viewing area will be cut short, so ensuring your text will
 <div class="section">
 
 <pre>string gui.gdscreenshot()</pre>
-
-<p><em class="version_notice">v0.04+ only</em></p>
 
 <p>
 Takes a screen shot of the image and returns it in the form of a string which can be imported by
@@ -925,80 +1096,120 @@ One screen shot string eats around 230 KB of RAM.
 
 <div class="section">
 
-<pre>gui.gdoverlay(int x=0, int y=0, string gdimage)</pre>
-
-<p><em class="version_notice">v0.04+ only</em></p>
+<pre>gui.gdoverlay([int dx=0, int dy=0,] string gdImage [, sx=0, sy=0, sw, sh] [, float alphamul=1.0])</pre>
 
 <p>
-Overlays the given image on top of the screen with the top-left corner in the given screen location. 
-Transparency is not fully supported -- a pixel must be 100% transparent to actually leave
-a hole in the overlayed image or else it will be treated as opaque.
-</p><p>
-Naturally, the format for input is the gd file format, version 1. The image MUST be truecolour.
-</p><p>
-The image will be clipped to fit into the screen area.
+Draws an image on the screen. gdimage must be in truecolor gd string format.
+</p>
+
+<p>
+Transparency is fully supported. Also, if alphamul is specified then it will modulate the
+transparency of the image even if it's originally fully opaque.
+(alphamul=1.0 is normal, alphamul=0.5 is doubly transparent, alphamul=3.0 is triply opaque, etc.)
+</p>
+
+<p>
+dx,dy determines the top-left corner of where the image should draw.
+If they are omitted, the image will draw starting at the top-left corner of the screen.
+</p>
+
+<p>
+gui.gdoverlay is an actual drawing function (like gui.box and friends) and thus must be called every frame,
+preferably inside a <a href="#gui.register">gui.register</a>'d function, if you want it to appear as a persistent image onscreen.
+</p>
+
+<p>
+Here is an example that loads a PNG from file, converts it to gd string format, and draws it once on the screen:
+</p>
+
+<pre><code>
+local gdstr = gd.createFromPng("myimage.png"):gdStr()
+gui.gdoverlay(gdstr)
+</code></pre>
+
+</div>
+
+<h4 id="gui.getpixel">gui.getpixel</h4>
+
+<div class="section">
+
+<pre>r,g,b = gui.getpixel(int x, int y)</pre>
+
+<p>
+Returns the pixel on the indicated coordinate. (0,0) is the top-left corner and (255, 223) is the typical bottom-right corner,
+though (255,238) is allowed. The return value range is (0,0,0) to (31,63,31). You get the actual screen surface before
+any damage is done by your drawing. Well, unless you call snes9x.wait() in which case your damage is applied and the SNES
+hardware doesn't get a chance to draw a new frame. <span class="smiley">:)</span>
 </p>
 
 </div>
 
-<h4 id="gui.transparency">gui.transparency</h4>
-
-<div class="section">
-
-<pre>gui.transparency(int strength)</pre>
-
-<p><em class="version_notice">v0.04+ only</em></p>
-<p>
-<ins datetime="2008-02-21T14:43:00+09:00"><em class="version_notice">svn r1+</em>:
-Do not use, this function is left for backward compatibility.</ins>
-</ins>
-</p>
-
-<p>
-Transparency mode. A value of 0 means opaque; a value of 4 means invisible (useful option that one).
-As for 1 through 3, I'll let you figure those out.
-</p><p>
-All image drawing (including gui.gdoverlay) will have the given transparency level applied from that point
-on. Note that drawing on the same point over and over will NOT build up to a higher opacity level.
-</p>
-
 </div>
 
-<h4 id="gui.register">gui.register</h4>
+<h3 id="input">input</h3>
 
 <div class="section">
 
-<pre>function gui.register(function func)</pre>
-
-<p><em class="version_notice">v0.04+ only</em></p>
-
 <p>
-Register a function to be called between a frame being prepared for displaying on your screen and
-it actually happening. Used when that 1 frame delay for rendering is a pain in the butt.
-</p><p>This function is not necessarily complicated to use, but it's not recommended to users
-new to the whole scripting thing.
-</p><p>
-You may pass nil as the parameter to kill off a registered function. The old function (if any) will be
-returned.
+Functions for getting non-game-controller user input are in the input library.
 </p>
 
-</div>
-
-<h4 id="gui.popup">gui.popup</h4>
+<h4><span id="input.get">input.get</span>, <span id="input.read">input.read</span></h4>
 
 <div class="section">
 
-<pre>string function gui.popup(string message, [string type = "ok"])</pre>
-
-<p><em class="version_notice">v0.05+ only</em></p>
+<pre>table input.get()</pre>
 
 <p>
-Pops up a dialog to the user with a message, and returns after the user acknowledges the dialog.
-<var>type</var> may be any of "ok", "yesno", "yesnocancel". The return value will be "yes", "no" or "cancel"
-as the case may be. "ok" is a waste of effort.
-</p><p>
-Linux users might want to install xmessage to perform the work. Otherwise the dialog will
-appear on the shell and that's less noticable.
+Returns a table that represents the state of the mouse and keyboard.
+</p>
+
+<p>
+Entries for the mouse are:
+</p>
+
+<ul>
+<li>xmouse: mouse cursor horizontal position in emulator screen coordinates from 0 to 255</li>
+<li>ymouse: mouse cursor vertical position in emulator screen coordinates from 0 to 223 (238 if height-extended)</li>
+<li>leftclick: true if the left mouse button is held, nil otherwise</li>
+<li>rightclick: true if the right mouse button is held, nil otherwise</li>
+<li>middleclick: true if the middle mouse button is held, nil otherwise</li>
+</ul>
+
+<p>
+xmouse and ymouse will always be numbers in the returned table (never <em>nil</em>).
+If the cursor is not positioned in the emulator screen then these numbers will be outside of the normal range,
+for example they will be negative if the cursor is past the top-left corner of the emulator screen.
+</p>
+
+<p>
+Entries for the keyboard each represent a key and can be <em>true</em>
+if the key is held or <em>nil</em> otherwise. Possible keyboard entries are:
+</p>
+
+<pre><code>
+shift, control, alt, capslock, numlock, scrolllock,
+0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
+F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
+F13, F14, F15, F16, F17, F18, F19, F20, F21, F22, F23, F24,
+backspace, tab, enter, pause, escape, space,
+pageup, pagedown, end, home, insert, delete,
+left, up, right, down,
+numpad0, numpad1, numpad2, numpad3, numpad4, numpad5, numpad6, numpad7, numpad8, numpad9,
+numpad*, numpad+, numpad-, numpad., numpad/,
+tilde, plus, minus, leftbracket, rightbracket,
+semicolon, quote, comma, period, slash, backslash
+</code></pre>
+
+<p>
+It's generally somewhat bad practice to check keyboard keys at all because any user could
+easily have configured those keys to do some other more important emulator functions.
+However, it's still useful: Sometimes you just want to check an extra button quickly,
+for example if you're testing something or if you're writing a little throw-away script and you know it.
+On the other side of the spectrum, although it seems unlikely for anyone to bother doing this,
+it would be possible to write a script that checks specific keys but also provides
+its own key configuration mechanism to prevent it from clashing with the user's other keys.
 </p>
 
 </div>
