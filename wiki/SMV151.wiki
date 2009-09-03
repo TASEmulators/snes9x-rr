@@ -5,6 +5,8 @@ The format is very similar to the [http://code.google.com/p/snes9x-rr/wiki/SMV14
 
 The version byte at 004 must be 4 instead of 1
 
+The byte 016 bit 0 (MOVIE_SYNC2_INIT_FASTROM) has no meaning and should be 0.
+
 The byte 017 bit 1 (MOVIE_SYNC_WIP1TIMING) now has no meaning and should be 0.
 
 The byte 017 bit 7 is now MOVIE_SYNC_NOCPUSHUTDOWN. 0 means the "SpeedHacks" config option is on, 1 means it is off. (This option is off (=1) by default, and turning it on means a different (usually laggier) timing.)
