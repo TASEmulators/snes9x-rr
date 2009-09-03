@@ -2886,7 +2886,7 @@ void S9xSuperFXExec ()
     if (Settings.SuperFX)
     {
 	if ((Memory.FillRAM [0x3000 + GSU_SFR] & FLG_G) &&
-	    (Memory.FillRAM [0x3000 + GSU_SCMR] & 0x18) == 0x18)
+	    (Memory.FillRAM [0x3000 + GSU_SCMR] & 0x18))
 	{
 		FxEmulate ((Memory.FillRAM [0x3000 + GSU_CLSR] & 1) ? SuperFX.speedPerLine * 2 : SuperFX.speedPerLine);
 	    int GSUStatus = Memory.FillRAM [0x3000 + GSU_SFR] |
