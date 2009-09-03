@@ -3033,7 +3033,7 @@ void S9xSuperFXExec ()
     if (Settings.SuperFX)
     {
 	if ((Memory.FillRAM [0x3000 + GSU_SFR] & FLG_G) &&
-	    (Memory.FillRAM [0x3000 + GSU_SCMR] & 0x18) == 0x18)
+	    (Memory.FillRAM [0x3000 + GSU_SCMR] & 0x18))
 	{
 	    if (!Settings.WinterGold||Settings.StarfoxHack)
 		FxEmulate (~0);
