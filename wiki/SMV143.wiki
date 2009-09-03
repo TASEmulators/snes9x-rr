@@ -23,11 +23,13 @@ SMV file consists of a 32-byte header and various blocks that depend on settings
        if "1", a SRAM is included instead of a quicksave; movie begins from reset
     bit 1: if "0", movie is NTSC (60 fps); if "1", movie is PAL (50 fps)
     other: reserved, set to 0
-016 1-byte flags: reserved, set to 0
+016 1-byte flags "sync options":
+    bit 0: MOVIE_SYNC2_INIT_FASTROM
+    other: reserved, set to 0
 017 1-byte flags "sync options":
     bit 0: MOVIE_SYNC_DATA_EXISTS
-       if "1", the following bits are defined.
-       if "0", the following bits have no meaning.
+       if "1", all sync options flags are defined.
+       if "0", all sync options flags have no meaning.
     bit 1: MOVIE_SYNC_WIP1TIMING
     bit 2: MOVIE_SYNC_LEFTRIGHT
     bit 3: MOVIE_SYNC_VOLUMEENVX
@@ -35,6 +37,7 @@ SMV file consists of a 32-byte header and various blocks that depend on settings
     bit 5: MOVIE_SYNC_SYNCSOUND
     bit 6: MOVIE_SYNC_HASROMINFO
        if "1", there is extra ROM info located right in between of the metadata and the savestate.
+    bit 7: set to 0.
 018 4-byte little-endian unsigned int: offset to the savestate inside file
 01C 4-byte little-endian unsigned int: offset to the controller data inside file
 }}}
