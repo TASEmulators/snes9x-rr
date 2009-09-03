@@ -340,6 +340,118 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
+		<Configuration
+			Name="Release FastBuild|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			WholeProgramOptimization="0"
+			BuildLogFile="$(IntDir)\BuildLog.htm"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine="defaultconfig\SubWCRev.bat"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Release/snes9xw.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				InlineFunctionExpansion="2"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
+				EnableFiberSafeOptimizations="true"
+				WholeProgramOptimization="false"
+				AdditionalIncludeDirectories=".;..;zlib;directx;libpng-1.2.1;../lua/src;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
+				PreprocessorDefinitions="ZSNES_C4;ZSNES_FX;NDEBUG;HAVE_LIBPNG;SPC700_C;JMA_SUPPORT;SDD1_DECOMP;CORRECT_VRAM_READS;JP_FIX;SPC700_SHUTDOWN;CPU_SHUTDOWN;ZLIB;VAR_CYCLES;UNZIP_SUPPORT;EXECUTE_SUPERFX_PER_LINE;NEW_COLOUR_BLENDING;WIN32;__MSC__;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NOUNCRYPT;FMOD_SUPPORT"
+				StringPooling="true"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				PrecompiledHeaderFile="$(IntDir)\$(TargetName).pch"
+				AssemblerListingLocation="$(IntDir)\"
+				ObjectFile="$(IntDir)\"
+				ProgramDataBaseFileName="$(IntDir)\vc80.pdb"
+				XMLDocumentationFileName="$(IntDir)\"
+				BrowseInformation="0"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="0"
+				CompileAs="0"
+				DisableSpecificWarnings="4290;4996;4200"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_UNICODE;UNICODE"
+				Culture="2057"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/ignore:4199"
+				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib directx/ddraw.lib directx/dsound.lib directx/dxguid.lib vfw32.lib shlwapi.lib delayimp.lib fmodvc.lib fmodexp_vc.lib"
+				OutputFile="$(ProjectDir)\snes9x-releaseFastBuild.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="directx;../lua/lib;FMOD/api/lib;FMODEx/api/lib"
+				GenerateManifest="true"
+				ManifestFile="$(IntDir)\$(TargetFileName).intermediate.manifest"
+				DelayLoadDLLs="fmod.dll;fmodexp.dll"
+				GenerateDebugInformation="false"
+				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+				AdditionalManifestFiles="$(ProjectDir)\rsrc\rt_manif.bin"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -382,6 +494,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\auxmath.h"
@@ -417,6 +540,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -530,6 +664,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\render.h"
@@ -620,6 +765,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\win32_sound.cpp"
@@ -664,6 +820,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\wsnes9x.h"
@@ -703,6 +870,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -754,6 +932,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\apu.h"
@@ -794,6 +983,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\apumem.h"
@@ -829,6 +1029,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -876,6 +1087,18 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\cheats.cpp"
@@ -909,6 +1132,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -954,6 +1188,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\clip.cpp"
@@ -985,6 +1230,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -1041,6 +1297,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\cpuaddr.h"
@@ -1078,6 +1345,14 @@
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1127,6 +1402,18 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\cpuops.h"
@@ -1169,6 +1456,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\debug.cpp"
@@ -1202,6 +1500,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -1253,6 +1562,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\dma.h"
@@ -1293,6 +1613,14 @@
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\dsp4.h"
@@ -1321,6 +1649,14 @@
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\dsp4emu.cpp"
@@ -1343,6 +1679,14 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -1394,6 +1738,18 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\fxemu.cpp"
@@ -1435,6 +1791,18 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\fxemu.h"
@@ -1457,6 +1825,14 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -1504,6 +1880,18 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\fxinst.h"
@@ -1526,6 +1914,14 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -1573,6 +1969,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\gfx.h"
@@ -1613,6 +2020,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\language.h"
@@ -1648,6 +2066,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -1711,6 +2140,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\memmap.h"
@@ -1759,6 +2199,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\movie.h"
@@ -1799,6 +2250,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\netplay.h"
@@ -1834,6 +2296,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -1881,6 +2354,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -1938,6 +2422,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\sa1cpu.cpp"
@@ -1971,6 +2466,18 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -2012,6 +2519,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\sdd1.cpp"
@@ -2048,6 +2566,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\sdd1emu.cpp"
@@ -2079,6 +2608,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -2124,6 +2664,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\seta.cpp"
@@ -2155,6 +2706,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -2200,6 +2762,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\seta011.cpp"
@@ -2231,6 +2804,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -2272,6 +2856,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\snaporig.cpp"
@@ -2303,6 +2898,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -2350,6 +2956,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\snapshot.h"
@@ -2385,6 +3002,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -2432,6 +3060,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\soundux.h"
@@ -2467,6 +3106,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -2512,6 +3162,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\spc7110.h"
@@ -2547,6 +3208,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -2589,6 +3261,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -2642,6 +3325,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\unzip\unreduce.c"
@@ -2673,6 +3367,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -2714,6 +3419,17 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\unzip\unz.h"
@@ -2749,6 +3465,17 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
 						BrowseInformation="1"
@@ -3185,6 +3912,15 @@
 						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\zlib\deflate.c"
@@ -3267,6 +4003,16 @@
 						Outputs="$(IntDir)/i386_$(InputName).obj"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd .. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o &quot;win32/$(IntDir)/i386_$(InputName).obj&quot; &quot;i386/$(InputFileName)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="../i386/offset.h"
+						Outputs="$(IntDir)/i386_$(InputName).obj"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\i386\bilinear.asm"
@@ -3293,6 +4039,16 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd .. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o &quot;win32/$(IntDir)/i386_$(InputName).obj&quot; &quot;i386/$(InputFileName)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="../i386/offset.h"
+						Outputs="$(IntDir)/i386_$(InputName).obj"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -3336,6 +4092,16 @@
 						Outputs="$(IntDir)/i386_$(InputName).obj"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd .. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o &quot;win32/$(IntDir)/i386_$(InputName).obj&quot; &quot;i386/$(InputFileName)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="../i386/offset.h"
+						Outputs="$(IntDir)/i386_$(InputName).obj"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\i386\cpuexec.S"
@@ -3363,6 +4129,16 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd .. &amp; gcc -c -DEXECUTE_SUPERFX_PER_LINE -DVAR_CYCLES -DMICROSOFT_C -DSPC700_C -DCPU_SHUTDOWN -DSPC700_SHUTDOWN -Ii386 &quot;i386/$(InputFileName)&quot; -o &quot;win32/$(IntDir)/i386_$(InputName).obj&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="../i386/offset.h"
+						Outputs="$(IntDir)/i386_$(InputName).obj"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -3406,6 +4182,16 @@
 						Outputs="$(IntDir)/i386_$(InputName).obj"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd .. &amp; gcc -c -DEXECUTE_SUPERFX_PER_LINE -DVAR_CYCLES -DMICROSOFT_C -DSPC700_C -DCPU_SHUTDOWN -DSPC700_SHUTDOWN -Ii386 &quot;i386/$(InputFileName)&quot; -o &quot;win32/$(IntDir)/i386_$(InputName).obj&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="../i386/offset.h"
+						Outputs="$(IntDir)/i386_$(InputName).obj"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\i386\fxemu2.asm"
@@ -3432,6 +4218,16 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd .. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o &quot;win32/$(IntDir)/i386_$(InputName).obj&quot; &quot;i386/$(InputFileName)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="../i386/offset.h"
+						Outputs="$(IntDir)/i386_$(InputName).obj"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -3474,6 +4270,16 @@
 						Outputs="$(IntDir)/i386_$(InputName).obj"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd .. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o &quot;win32/$(IntDir)/i386_$(InputName).obj&quot; &quot;i386/$(InputFileName)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="../i386/offset.h"
+						Outputs="$(IntDir)/i386_$(InputName).obj"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\i386\fxemu2c.asm"
@@ -3500,6 +4306,16 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd .. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o &quot;win32/$(IntDir)/i386_$(InputName).obj&quot; &quot;i386/$(InputFileName)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="../i386/offset.h"
+						Outputs="$(IntDir)/i386_$(InputName).obj"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -3542,6 +4358,16 @@
 						Outputs="$(IntDir)/i386_$(InputName).obj"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd .. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o &quot;win32/$(IntDir)/i386_$(InputName).obj&quot; &quot;i386/$(InputFileName)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="../i386/offset.h"
+						Outputs="$(IntDir)/i386_$(InputName).obj"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\offsets.cpp"
@@ -3564,6 +4390,14 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -3605,6 +4439,16 @@
 						Outputs="$(IntDir)/i386_$(InputName).obj"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd .. &amp; gcc -c -DEXECUTE_SUPERFX_PER_LINE -DVAR_CYCLES -DMICROSOFT_C -DSPC700_C -DCPU_SHUTDOWN -DSPC700_SHUTDOWN -Ii386 &quot;i386/$(InputFileName)&quot; -o &quot;win32/$(IntDir)/i386_$(InputName).obj&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="../i386/offset.h"
+						Outputs="$(IntDir)/i386_$(InputName).obj"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\i386\sfxproc.asm"
@@ -3631,6 +4475,16 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd .. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o &quot;win32/$(IntDir)/i386_$(InputName).obj&quot; &quot;i386/$(InputFileName)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="../i386/offset.h"
+						Outputs="$(IntDir)/i386_$(InputName).obj"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -3674,6 +4528,16 @@
 						Outputs="$(IntDir)/i386_$(InputName).obj"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd .. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o &quot;win32/$(IntDir)/i386_$(InputName).obj&quot; &quot;i386/$(InputFileName)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="../i386/offset.h"
+						Outputs="$(IntDir)/i386_$(InputName).obj"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\i386\ZSNES.ASM"
@@ -3700,6 +4564,16 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd .. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o &quot;win32/$(IntDir)/i386_$(InputName).obj&quot; &quot;i386/$(InputFileName)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="../i386/offset.h"
+						Outputs="$(IntDir)/i386_$(InputName).obj"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -3743,6 +4617,16 @@
 						Outputs="$(IntDir)/i386_$(InputName).obj"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release FastBuild|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd .. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o &quot;win32/$(IntDir)/i386_$(InputName).obj&quot; &quot;i386/$(InputFileName)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="../i386/offset.h"
+						Outputs="$(IntDir)/i386_$(InputName).obj"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<File
@@ -3770,6 +4654,14 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release FastBuild|Win32"
 				ExcludedFromBuild="true"
 				>
 				<Tool
