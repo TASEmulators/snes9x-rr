@@ -353,7 +353,7 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						WholeProgramOptimization="true"
+						WholeProgramOptimization="false"
 					/>
 				</FileConfiguration>
 			</File>
