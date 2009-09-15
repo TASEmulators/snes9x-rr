@@ -161,7 +161,7 @@ Sets the opacity of drawings depending on alpha. 0.0 is invisible, 1.0 is drawn 
 
 ===gui.text(int x, int y, string msg)===
 
-Draws the given text at (x,y). Not to be confused with _vba.message(string msg)_.
+Draws the given text at (x,y). Not to be confused with _snes9x.message(string msg)_.
 
 ===gui.gdoverlay(int x=0, int y=0, string gdimage, float alpha=1.0)===
 
