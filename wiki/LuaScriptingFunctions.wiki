@@ -1,4 +1,4 @@
-#snes9x v1.43 Lua Scripting Function List
+#summary snes9x v1.43 Lua Scripting Function List
 
 This applies only for v1.43. Snes9x v1.51 has no Lua scripting.
 
