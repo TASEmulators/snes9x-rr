@@ -541,7 +541,15 @@ static void S9xDisplayWatchedAddresses ()
 		watchesCleared = true;
 	}
 
+	int WatchCount = 0;
 	for(unsigned int i = 0 ; i < sizeof(watches)/sizeof(*watches) ; i++)
+	{
+		if(!watches[i].on)
+			break;
+		WatchCount++;
+	}
+
+	for(int i = 0; i < WatchCount; i++)
 	{
 		if(!watches[i].on)
 			break;
@@ -552,7 +560,7 @@ static void S9xDisplayWatchedAddresses ()
 		for(int r=0;r<watches[i].size;r++)
 			displayNumber+=(Cheat.CWatchRAM[(watches[i].address - 0x7E0000)+r])<<(8*r);
 
-		char buf [32];
+		char buf [1024];
 
 		if(watches[i].format==1)
 			sprintf(buf, "%s,%du = %u", watches[i].desc, watches[i].size, (unsigned int)displayNumber);
@@ -572,8 +580,7 @@ static void S9xDisplayWatchedAddresses ()
 			sprintf(buf, "%s,%ds = %d", watches[i].desc, watches[i].size, (int)displayNumber);
 		}
 
-
-		DisplayString(buf, 6+i, true, 1, false);
+		DisplayString(buf, 6+(WatchCount-i-1), true, 1, false);
 	}
 }
 

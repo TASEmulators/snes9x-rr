@@ -101,7 +101,7 @@
 #endif
 
 extern SCheatData Cheat;
-Watch watches [16];
+Watch watches [MAX_WATCH_COUNT_S9X];
 
 // read  a byte without altering CPU
 INLINE uint8 S9xGetByteFree (uint32 Address)
