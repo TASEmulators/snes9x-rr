@@ -128,9 +128,10 @@ struct Watch {
 	int format;
 	uint32 address;
 	char buf[12];
-	char desc[32];
+	char desc[256];
 };
-extern Watch watches [16];
+#define MAX_WATCH_COUNT_S9X 256
+extern Watch watches [MAX_WATCH_COUNT_S9X];
 
 typedef enum
 {
