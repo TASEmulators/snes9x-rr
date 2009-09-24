@@ -70,14 +70,6 @@ static char Str_Tmp [1024];
 int disableRamSearchUpdate = false;
 
 
-
-//static const MemoryRegion s_prgRegion    = {  0x020000, SEGACD_RAM_PRG_SIZE, (unsigned char*)Ram_Prg,     true};
-//static const MemoryRegion s_word1MRegion = {  0x200000, SEGACD_1M_RAM_SIZE,  (unsigned char*)Ram_Word_1M, true};
-//static const MemoryRegion s_word2MRegion = {  0x200000, SEGACD_2M_RAM_SIZE,  (unsigned char*)Ram_Word_2M, true};
-//static const MemoryRegion s_z80Region    = {  0xA00000, Z80_RAM_SIZE,        (unsigned char*)Ram_Z80,     true};
-//static const MemoryRegion s_68kRegion    = {  0xFF0000, _68K_RAM_SIZE,       (unsigned char*)Ram_68k,     true};
-//static const MemoryRegion s_32xRegion    = {0x06000000, _32X_RAM_SIZE,       (unsigned char*)_32X_Ram,    false};
-
 // list of contiguous uneliminated memory regions
 typedef std::list<MemoryRegion> MemoryList;
 static MemoryList s_activeMemoryRegions;
@@ -845,6 +837,20 @@ int ReadControlInt(int controlID, bool forceHex, BOOL& success)
 	return rv;
 }
 
+int ReadControlAddr(int controlID, BOOL& success)
+{
+	int rv = 0;
+	BOOL ok = false;
+	TCHAR str[11];
+
+	GetDlgItemText(RamSearchHWnd,controlID,str,11);
+	rv = DisplayedAddressToSoftwareAddress(str);
+	ok = true; // TODO: validation
+
+	success = ok;
+	return rv;
+}
+
 
 bool Set_RS_Val()
 {
@@ -868,7 +874,7 @@ bool Set_RS_Val()
 			   return false;
 			break;
 		case 'a':
-			rs_val = ReadControlInt(IDC_EDIT_COMPAREADDRESS, true, success);
+			rs_val = ReadControlAddr(IDC_EDIT_COMPAREADDRESS, success);
 			if(!success || rs_val < 0 || rs_val > 0x06040000)
 				return false;
 			break;

@@ -65,6 +65,7 @@ static inline HWAddressType DisplayedAddressToSoftwareAddress(const char* str)
 	case 's':
 		base = strtoul(&str[1], NULL, 16);
 		type = RW_VIRTUAL_ADDR_SRAM;
+		break;
 	default:
 		base = strtoul(str, NULL, 16);
 	}
