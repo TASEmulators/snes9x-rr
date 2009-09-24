@@ -11,19 +11,20 @@
 #include <commctrl.h>
 #include <string>
 
-HWND RamWatchHWnd = NULL;
-
-#define MESSAGEBOXPARENT (RamWatchHWnd ? RamWatchHWnd : GUI.hWnd)
-
-static char Str_Tmp[1024];
-std::string Rom_Name;
+/*
+#include <commctrl.h>
+#pragma comment(lib, "comctl32.lib")
+#include <shellapi.h>
+#pragma comment(lib, "shell32.lib")
+#include <commdlg.h>
+#pragma comment(lib, "comdlg32.lib")
+*/
 
 static HMENU ramwatchmenu;
 static HMENU rwrecentmenu;
-static HACCEL RamWatchAccels = NULL;
+/*static*/ HACCEL RamWatchAccels = NULL;
 char rw_recent_files[MAX_RECENT_WATCHES][1024];
-char Watch_Dir[1024]="";
-const unsigned int RW_MENU_FIRST_RECENT_FILE = 600;
+//char Watch_Dir[1024]="";
 bool RWfileChanged = false; //Keeps track of whether the current watch file has been changed, if so, ramwatch will prompt to save changes
 bool AutoRWLoad = false;    //Keeps track of whether Auto-load is checked
 bool RWSaveWindowPos = false; //Keeps track of whether Save Window position is checked
@@ -31,6 +32,25 @@ char currentWatch[1024];
 int ramw_x, ramw_y;			//Used to store ramwatch dialog window positions
 AddressWatcher rswatches[MAX_WATCH_COUNT];
 int WatchCount=0;
+
+char applicationPath[2048];
+struct InitRamWatch
+{
+	InitRamWatch()
+	{
+		GetModuleFileName(NULL, applicationPath, 2048);
+	}
+} initRamWatch;
+
+HWND RamWatchHWnd;
+#define gamefilename S9xGetFilenameRel("")
+#define hWnd GUI.hWnd
+#define hInst g_hInst
+static char Str_Tmp [1024];
+
+void init_list_box(HWND Box, const char* Strs[], int numColumns, int *columnWidths); //initializes the ram search and/or ram watch listbox
+
+#define MESSAGEBOXPARENT (RamWatchHWnd ? RamWatchHWnd : hWnd)
 
 bool QuickSaveWatches();
 bool ResetWatches();
@@ -90,7 +110,9 @@ LRESULT CALLBACK PromptWatchNameProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 	switch(uMsg)
 	{
 		case WM_INITDIALOG:
-			GetWindowRect(GUI.hWnd, &r);
+			//Clear_Sound_Buffer();
+
+			GetWindowRect(hWnd, &r);
 			dx1 = (r.right - r.left) / 2;
 			dy1 = (r.bottom - r.top) / 2;
 
@@ -98,6 +120,7 @@ LRESULT CALLBACK PromptWatchNameProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 			dx2 = (r2.right - r2.left) / 2;
 			dy2 = (r2.bottom - r2.top) / 2;
 
+			//SetWindowPos(hDlg, NULL, max(0, r.left + (dx1 - dx2)), max(0, r.top + (dy1 - dy2)), NULL, NULL, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
 			SetWindowPos(hDlg, NULL, r.left, r.top, NULL, NULL, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
 			strcpy(Str_Tmp,"Enter a name for this RAM address.");
 			SendDlgItemMessage(hDlg,IDC_PROMPT_TEXT,WM_SETTEXT,0,(LPARAM)Str_Tmp);
@@ -118,7 +141,6 @@ LRESULT CALLBACK PromptWatchNameProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 					break;
 				}
 				case IDCANCEL:
-
 					EndDialog(hDlg, false);
 					return false;
 					break;
@@ -142,31 +164,34 @@ bool InsertWatch(const AddressWatcher& Watch, HWND parent)
 	if(!parent)
 		parent = RamWatchHWnd;
 	if(!parent)
-		parent = GUI.hWnd;
+		parent = hWnd;
 
 	int prevWatchCount = WatchCount;
 
 	rswatches[WatchCount] = Watch;
 	rswatches[WatchCount].CurValue = GetCurrentValue(rswatches[WatchCount]);
-	DialogBox(g_hInst, MAKEINTRESOURCE(IDD_PROMPT), parent, (DLGPROC) PromptWatchNameProc);
+	DialogBox(hInst, MAKEINTRESOURCE(IDD_PROMPT), parent, (DLGPROC) PromptWatchNameProc);
 
 	return WatchCount > prevWatchCount;
 }
 
 void Update_RAM_Watch()
 {
-	if (!RamWatchHWnd) return;
-
-	// update cached values and detect changes to displayed listview items
 	BOOL watchChanged[MAX_WATCH_COUNT] = {0};
-	for(int i = 0; i < WatchCount; i++)
+
+	if(WatchCount)
 	{
-		unsigned int prevCurValue = rswatches[i].CurValue;
-		unsigned int newCurValue = GetCurrentValue(rswatches[i]);
-		if(prevCurValue != newCurValue)
+		// update cached values and detect changes to displayed listview items
+
+		for(int i = 0; i < WatchCount; i++)
 		{
-			rswatches[i].CurValue = newCurValue;
-			watchChanged[i] = TRUE;
+			unsigned int prevCurValue = rswatches[i].CurValue;
+			unsigned int newCurValue = GetCurrentValue(rswatches[i]);
+			if(prevCurValue != newCurValue)
+			{
+				rswatches[i].CurValue = newCurValue;
+				watchChanged[i] = TRUE;
+			}
 		}
 	}
 
@@ -204,8 +229,7 @@ bool AskSave()
 	//returns false only if a save was attempted but failed or was cancelled
 	if (RWfileChanged)
 	{
-		HWND Hwnd = GUI.hWnd;
-		int answer = MessageBox(Hwnd, "Save Changes?", "Ram Watch", MB_YESNOCANCEL);
+		int answer = MessageBox(MESSAGEBOXPARENT, "Save Changes?", "Ram Watch", MB_YESNOCANCEL);
 		if(answer == IDYES)
 			if(!QuickSaveWatches())
 				return false;
@@ -214,6 +238,18 @@ bool AskSave()
 	return true;
 }
 
+void WriteRecentRWFiles()
+{
+	// TODO
+	/*
+	char str[2048];
+	for (int i = 0; i < MAX_RECENT_WATCHES; i++)
+	{
+		sprintf(str, "recentWatch%d", i+1);
+		regSetStringValue(str, &rw_recent_files[i][0]);
+	}
+	*/
+}
 
 void UpdateRW_RMenu(HMENU menu, unsigned int mitem, unsigned int baseid)
 {
@@ -266,34 +302,39 @@ void UpdateRW_RMenu(HMENU menu, unsigned int mitem, unsigned int baseid)
 		moo.dwTypeData = tmp;
 		InsertMenuItem(menu, 0, 1, &moo);
 	}
+
+	// I don't think one function shall do so many things in a row
+//	WriteRecentRWFiles();	// write recent menu to ini
 }
 
 void UpdateRWRecentArray(const char* addString, unsigned int arrayLen, HMENU menu, unsigned int menuItem, unsigned int baseId)
 {
+	const size_t len = 1024; // Avoid magic numbers
+
 	// Try to find out if the filename is already in the recent files list.
 	for(unsigned int x = 0; x < arrayLen; x++)
 	{
 		if(strlen(rw_recent_files[x]))
 		{
-			if(!strcmp(rw_recent_files[x], addString))    // Item is already in list.
+			if(!strncmp(rw_recent_files[x], addString, 1024))    // Item is already in list.
 			{
 				// If the filename is in the file list don't add it again.
 				// Move it up in the list instead.
 
 				int y;
-				char tmp[1024];
+				char tmp[len];
 
 				// Save pointer.
-				strcpy(tmp,rw_recent_files[x]);
+				strncpy(tmp, rw_recent_files[x], len);
 				
 				for(y = x; y; y--)
 				{
 					// Move items down.
-					strcpy(rw_recent_files[y],rw_recent_files[y - 1]);
+					strncpy(rw_recent_files[y],rw_recent_files[y - 1], len);
 				}
 
 				// Put item on top.
-				strcpy(rw_recent_files[0],tmp);
+				strncpy(rw_recent_files[0],tmp, len);
 
 				// Update the recent files menu
 				UpdateRW_RMenu(menu, menuItem, baseId);
@@ -308,16 +349,15 @@ void UpdateRWRecentArray(const char* addString, unsigned int arrayLen, HMENU men
 	// Move the other items down.
 	for(unsigned int x = arrayLen - 1; x; x--)
 	{
-		strcpy(rw_recent_files[x],rw_recent_files[x - 1]);
+		strncpy(rw_recent_files[x],rw_recent_files[x - 1], len);
 	}
 
 	// Add the new item.
-	strcpy(rw_recent_files[0], addString);
+	strncpy(rw_recent_files[0], addString, len);
 
 	// Update the recent files menu
 	UpdateRW_RMenu(menu, menuItem, baseId);
 }
-
 
 void RWAddRecentFile(const char *filename)
 {
@@ -375,18 +415,27 @@ void OpenRWRecentFile(int memwRFileNumber)
 	char mode;
 	fgets(Str_Tmp,1024,WatchFile);
 	sscanf(Str_Tmp,"%c%*s",&mode);
+	//if ((mode == '1' && !(SegaCD_Started)) || (mode == '2' && !(_32X_Started)))
+	//{
+	//	char Device[8];
+	//	strcpy(Device,(mode > '1')?"32X":"SegaCD");
+	//	sprintf(Str_Tmp,"Warning: %s not started. \nWatches for %s addresses will be ignored.",Device,Device);
+	//	MessageBox(MESSAGEBOXPARENT,Str_Tmp,"Possible Device Mismatch",MB_OK);
+	//}
 	int WatchAdd;
 	fgets(Str_Tmp,1024,WatchFile);
 	sscanf(Str_Tmp,"%d%*s",&WatchAdd);
 	WatchAdd+=WatchCount;
 	for (int i = WatchCount; i < WatchAdd; i++)
 	{
+		char TempAddressStr[11];
 		while (i < 0)
 			i++;
 		do {
 			fgets(Str_Tmp,1024,WatchFile);
 		} while (Str_Tmp[0] == '\n');
-		sscanf(Str_Tmp,"%*05X%*c%08X%*c%c%*c%c%*c%d",&(Temp.Address),&(Temp.Size),&(Temp.Type),&(Temp.WrongEndian));
+		sscanf(Str_Tmp,"%*05X%*c%6s%*c%c%*c%c%*c%d",TempAddressStr,&(Temp.Size),&(Temp.Type),&(Temp.WrongEndian));
+		Temp.Address = DisplayedAddressToSoftwareAddress(TempAddressStr);
 		Temp.WrongEndian = 0;
 		char *Comment = strrchr(Str_Tmp,DELIM) + 1;
 		*strrchr(Comment,'\n') = '\0';
@@ -400,13 +449,11 @@ void OpenRWRecentFile(int memwRFileNumber)
 	return;
 }
 
-char Gens_Path[64]= "M:\\"; //TODO
-
-int Change_File_S(char *Dest, char *Dir, char *Titre, char *Filter, char *Ext, HWND hwnd)
+int Change_File_L(char *Dest, char *Dir, char *Titre, char *Filter, char *Ext, HWND hwnd)
 {
 	OPENFILENAME ofn;
 
-	SetCurrentDirectory(Gens_Path);
+	SetCurrentDirectory(applicationPath);
 
 	if (!strcmp(Dest, ""))
 	{
@@ -418,7 +465,7 @@ int Change_File_S(char *Dest, char *Dir, char *Titre, char *Filter, char *Ext, H
 
 	ofn.lStructSize = sizeof(OPENFILENAME);
 	ofn.hwndOwner = hwnd;
-	ofn.hInstance = g_hInst;
+	ofn.hInstance = hInst;
 	ofn.lpstrFile = Dest;
 	ofn.nMaxFile = 2047;
 	ofn.lpstrFilter = Filter;
@@ -426,20 +473,52 @@ int Change_File_S(char *Dest, char *Dir, char *Titre, char *Filter, char *Ext, H
 	ofn.lpstrInitialDir = Dir;
 	ofn.lpstrTitle = Titre;
 	ofn.lpstrDefExt = Ext;
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_NOREADONLYRETURN;
+	ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+
+	if (GetOpenFileName(&ofn)) return 1;
+
+	return 0;
+}
+
+int Change_File_S(char *Dest, char *Dir, char *Titre, char *Filter, char *Ext, HWND hwnd)
+{
+	OPENFILENAME ofn;
+
+	SetCurrentDirectory(applicationPath);
+
+	if (!strcmp(Dest, ""))
+	{
+		strcpy(Dest, "default.");
+		strcat(Dest, Ext);
+	}
+
+	memset(&ofn, 0, sizeof(OPENFILENAME));
+
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = hwnd;
+	ofn.hInstance = hInst;
+	ofn.lpstrFile = Dest;
+	ofn.nMaxFile = 2047;
+	ofn.lpstrFilter = Filter;
+	ofn.nFilterIndex = 1;
+	ofn.lpstrInitialDir = Dir;
+	ofn.lpstrTitle = Titre;
+	ofn.lpstrDefExt = Ext;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;
 
 	if (GetSaveFileName(&ofn)) return 1;
 
 	return 0;
 }
 
-
 bool Save_Watches()
 {
-	Rom_Name = S9xGetFilenameRel("");
-	strncpy(Str_Tmp,Rom_Name.c_str(),512);
+	const char* slash = max(strrchr(gamefilename, '|'), max(strrchr(gamefilename, '\\'), strrchr(gamefilename, '/')));
+	strcpy(Str_Tmp,slash ? slash+1 : gamefilename);
+	char* dot = strrchr(Str_Tmp, '.');
+	if(dot) *dot = 0;
 	strcat(Str_Tmp,".wch");
-	if(Change_File_S(Str_Tmp, Gens_Path, "Save Watches", "Watchlist\0*.wch\0All Files\0*.*\0\0", "wch", RamWatchHWnd))
+	if(Change_File_S(Str_Tmp, applicationPath, "Save Watches", "Watchlist\0*.wch\0All Files\0*.*\0\0", "wch", RamWatchHWnd))
 	{
 		FILE *WatchFile = fopen(Str_Tmp,"r+b");
 		if (!WatchFile) WatchFile = fopen(Str_Tmp,"w+b");
@@ -451,12 +530,13 @@ bool Save_Watches()
 		const char DELIM = '\t';
 		for (int i = 0; i < WatchCount; i++)
 		{
-			sprintf(Str_Tmp,"%05X%c%08X%c%c%c%c%c%d%c%s\n",i,DELIM,rswatches[i].Address,DELIM,rswatches[i].Size,DELIM,rswatches[i].Type,DELIM,rswatches[i].WrongEndian,DELIM,rswatches[i].comment);
+			sprintf(Str_Tmp,"%05X%c%-6s%c%c%c%c%c%d%c%s\n",i,DELIM,SoftwareAddressToDisplayedAddress(rswatches[i].Address),DELIM,rswatches[i].Size,DELIM,rswatches[i].Type,DELIM,rswatches[i].WrongEndian,DELIM,rswatches[i].comment);
 			fputs(Str_Tmp,WatchFile);
 		}
 		
 		fclose(WatchFile);
 		RWfileChanged=false;
+		//TODO: Add to recent list function call here
 		return true;
 	}
 	return false;
@@ -465,7 +545,7 @@ bool Save_Watches()
 bool QuickSaveWatches()
 {
 if (RWfileChanged==false) return true; //If file has not changed, no need to save changes
-if (currentWatch[0] == NULL)			//If there is no currently loaded file, run to Save as and then return
+if (currentWatch[0] == NULL) //If there is no currently loaded file, run to Save as and then return
 	{
 		return Save_Watches();
 	}
@@ -479,7 +559,7 @@ if (currentWatch[0] == NULL)			//If there is no currently loaded file, run to Sa
 		const char DELIM = '\t';
 		for (int i = 0; i < WatchCount; i++)
 		{
-			sprintf(Str_Tmp,"%05X%c%08X%c%c%c%c%c%d%c%s\n",i,DELIM,rswatches[i].Address,DELIM,rswatches[i].Size,DELIM,rswatches[i].Type,DELIM,rswatches[i].WrongEndian,DELIM,rswatches[i].comment);
+			sprintf(Str_Tmp,"%05X%c%-6s%c%c%c%c%c%d%c%s\n",i,DELIM,SoftwareAddressToDisplayedAddress(rswatches[i].Address),DELIM,rswatches[i].Size,DELIM,rswatches[i].Type,DELIM,rswatches[i].WrongEndian,DELIM,rswatches[i].comment);
 			fputs(Str_Tmp,WatchFile);
 		}
 		fclose(WatchFile);
@@ -516,12 +596,14 @@ bool Load_Watches(bool clear, const char* filename)
 	WatchAdd+=WatchCount;
 	for (int i = WatchCount; i < WatchAdd; i++)
 	{
+		char TempAddressStr[11];
 		while (i < 0)
 			i++;
 		do {
 			fgets(Str_Tmp,1024,WatchFile);
 		} while (Str_Tmp[0] == '\n');
-		sscanf(Str_Tmp,"%*05X%*c%08X%*c%c%*c%c%*c%d",&(Temp.Address),&(Temp.Size),&(Temp.Type),&(Temp.WrongEndian));
+		sscanf(Str_Tmp,"%*05X%*c%6s%*c%c%*c%c%*c%d",TempAddressStr,&(Temp.Size),&(Temp.Type),&(Temp.WrongEndian));
+		Temp.Address = DisplayedAddressToSoftwareAddress(TempAddressStr);
 		Temp.WrongEndian = 0;
 		char *Comment = strrchr(Str_Tmp,DELIM) + 1;
 		*strrchr(Comment,'\n') = '\0';
@@ -535,45 +617,14 @@ bool Load_Watches(bool clear, const char* filename)
 	return true;
 }
 
-
-
-static int Change_File_L(char *Dest, char *Dir, char *Titre, char *Filter, char *Ext, HWND hwnd)
-{
-	OPENFILENAME ofn;
-
-	SetCurrentDirectory(Gens_Path);
-
-	if (!strcmp(Dest, ""))
-	{
-		strcpy(Dest, "default.");
-		strcat(Dest, Ext);
-	}
-
-	memset(&ofn, 0, sizeof(OPENFILENAME));
-
-	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = hwnd;
-	ofn.hInstance = g_hInst;
-	ofn.lpstrFile = Dest;
-	ofn.nMaxFile = 2047;
-	ofn.lpstrFilter = Filter;
-	ofn.nFilterIndex = 1;
-	ofn.lpstrInitialDir = Dir;
-	ofn.lpstrTitle = Titre;
-	ofn.lpstrDefExt = Ext;
-	ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-
-	if (GetOpenFileName(&ofn)) return 1;
-
-	return 0;
-}
-
 bool Load_Watches(bool clear)
 {
-	Rom_Name = S9xGetFilenameRel("");
-	strncpy(Str_Tmp,Rom_Name.c_str(),512);
+	const char* slash = max(strrchr(gamefilename, '|'), max(strrchr(gamefilename, '\\'), strrchr(gamefilename, '/')));
+	strcpy(Str_Tmp,slash ? slash+1 : gamefilename);
+	char* dot = strrchr(Str_Tmp, '.');
+	if(dot) *dot = 0;
 	strcat(Str_Tmp,".wch");
-	if(Change_File_L(Str_Tmp, Watch_Dir, "Load Watches", "Watchlist\0*.wch\0All Files\0*.*\0\0", "wch", RamWatchHWnd))
+	if(Change_File_L(Str_Tmp, applicationPath, "Load Watches", "Watchlist\0*.wch\0All Files\0*.*\0\0", "wch", RamWatchHWnd))
 	{
 		return Load_Watches(clear, Str_Tmp);
 	}
@@ -617,7 +668,10 @@ LRESULT CALLBACK EditWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 	switch(uMsg)
 	{
 		case WM_INITDIALOG:
-			GetWindowRect(GUI.hWnd, &r);
+			//Clear_Sound_Buffer();
+			
+
+			GetWindowRect(hWnd, &r);
 			dx1 = (r.right - r.left) / 2;
 			dy1 = (r.bottom - r.top) / 2;
 
@@ -625,9 +679,10 @@ LRESULT CALLBACK EditWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			dx2 = (r2.right - r2.left) / 2;
 			dy2 = (r2.bottom - r2.top) / 2;
 
+			//SetWindowPos(hDlg, NULL, max(0, r.left + (dx1 - dx2)), max(0, r.top + (dy1 - dy2)), NULL, NULL, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
 			SetWindowPos(hDlg, NULL, r.left, r.top, NULL, NULL, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
 			index = (int)lParam;
-			sprintf(Str_Tmp,"%08X",rswatches[index].Address);
+			strcpy(Str_Tmp, SoftwareAddressToDisplayedAddress(rswatches[index].Address));
 			SetDlgItemText(hDlg,IDC_EDIT_COMPAREADDRESS,Str_Tmp);
 			if (rswatches[index].comment != NULL)
 				SetDlgItemText(hDlg,IDC_PROMPT_EDIT,rswatches[index].comment);
@@ -700,12 +755,13 @@ LRESULT CALLBACK EditWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 						char *addrstr = Str_Tmp;
 						if (strlen(Str_Tmp) > 8) addrstr = &(Str_Tmp[strlen(Str_Tmp) - 9]);
 						for(int i = 0; addrstr[i]; i++) {if(toupper(addrstr[i]) == 'O') addrstr[i] = '0';}
-						sscanf(addrstr,"%08X",&(Temp.Address));
+						Temp.Address = DisplayedAddressToSoftwareAddress(addrstr);
 
+						// TODO: FIXME ???
 						if((Temp.Address & ~0xFFFFFF) == ~0xFFFFFF)
 							Temp.Address &= 0xFFFFFF;
 
-						if(IsHardwareRAMAddressValid(Temp.Address))
+						if(IsHardwareAddressValid(Temp.Address))
 						{
 							GetDlgItemText(hDlg,IDC_PROMPT_EDIT,Str_Tmp,80);
 							if (index < WatchCount) RemoveWatch(index);
@@ -750,22 +806,8 @@ LRESULT CALLBACK EditWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 	return false;
 }
 
-void init_list_box(HWND Box, const char* Strs[], int numColumns, int *columnWidths) //initializes the ram search and/or ram watch listbox
-{
-	LVCOLUMN Col;
-	Col.mask = LVCF_FMT | LVCF_ORDER | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
-	Col.fmt = LVCFMT_CENTER;
-	for (int i = 0; i < numColumns; i++)
-	{
-		Col.iOrder = i;
-		Col.iSubItem = i;
-		Col.pszText = (LPSTR)(Strs[i]);
-		Col.cx = columnWidths[i];
-		ListView_InsertColumn(Box,i,&Col);
-	}
 
-	ListView_SetExtendedListViewStyle(Box, LVS_EX_FULLROWSELECT);
-}
+
 
 LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -774,8 +816,6 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 	int dx1, dy1, dx2, dy2;
 	static int watchIndex=0;
 
-	Update_RAM_Watch();
-
 	switch(uMsg)
 	{
 		case WM_MOVE: {
@@ -783,15 +823,17 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 			GetWindowRect(hDlg,&wrect);
 			ramw_x = wrect.left;
 			ramw_y = wrect.top;
-			break;
-			};
-			
+			// TODO
+			//regSetDwordValue(RAMWX, ramw_x);
+			//regSetDwordValue(RAMWY, ramw_y);
+		}	break;
+
 		case WM_INITDIALOG: {
-			GetWindowRect(GUI.hWnd, &r);  //Ramwatch window
+			GetWindowRect(hWnd, &r);  //Ramwatch window
 			dx1 = (r.right - r.left) / 2;
 			dy1 = (r.bottom - r.top) / 2;
 
-			GetWindowRect(hDlg, &r2); // Main window
+			GetWindowRect(hDlg, &r2); // TASer window
 			dx2 = (r2.right - r2.left) / 2;
 			dy2 = (r2.bottom - r2.top) / 2;
 
@@ -832,24 +874,25 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 			const char* names[3] = {"Address","Value","Notes"};
 			int widths[3] = {62,64,64+51+53};
 			init_list_box(GetDlgItem(hDlg,IDC_WATCHLIST),names,3,widths);
-/*			if (!ResultCount)  //TODO what do these do
+			if (!ResultCount)
 				reset_address_info();
 			else
-				signal_new_frame();*/
+				signal_new_frame();
 			ListView_SetItemCount(GetDlgItem(hDlg,IDC_WATCHLIST),WatchCount);
-//			if (!noMisalign) SendDlgItemMessage(hDlg, IDC_MISALIGN, BM_SETCHECK, BST_CHECKED, 0);
-//			if (littleEndian) SendDlgItemMessage(hDlg, IDC_ENDIAN, BM_SETCHECK, BST_CHECKED, 0);
+			if (!noMisalign) SendDlgItemMessage(hDlg, IDC_MISALIGN, BM_SETCHECK, BST_CHECKED, 0);
+			//if (littleEndian) SendDlgItemMessage(hDlg, IDC_ENDIAN, BM_SETCHECK, BST_CHECKED, 0);
 
-			RamWatchAccels = LoadAccelerators(g_hInst, MAKEINTRESOURCE(IDR_RWACCELERATOR));
+			RamWatchAccels = LoadAccelerators(hInst, MAKEINTRESOURCE(IDR_RWACCELERATOR));
 
 			// due to some bug in windows, the arrow button width from the resource gets ignored, so we have to set it here
 			SetWindowPos(GetDlgItem(hDlg,ID_WATCHES_UPDOWN), 0,0,0, 30,60, SWP_NOMOVE);
+
 			Update_RAM_Watch();
+
 			DragAcceptFiles(hDlg, TRUE);
 
-			return true;
-			break;
-		}
+			return false;
+		}	break;
 		
 		case WM_INITMENU:
 			CheckMenuItem(ramwatchmenu, RAMMENU_FILE_AUTOLOAD, AutoRWLoad ? MF_CHECKED : MF_UNCHECKED);
@@ -858,78 +901,61 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 		case WM_MENUSELECT:
  		case WM_ENTERSIZEMOVE:
+			//Clear_Sound_Buffer();
 			break;
 
 		case WM_NOTIFY:
 		{
-			switch(wParam)
+			LPNMHDR lP = (LPNMHDR) lParam;
+			switch (lP->code)
 			{
-				case ID_WATCHES_UPDOWN:
+				case LVN_GETDISPINFO:
 				{
-					switch(((LPNMUPDOWN)lParam)->hdr.code)
+					LV_DISPINFO *Item = (LV_DISPINFO *)lParam;
+					Item->item.mask = LVIF_TEXT;
+					Item->item.state = 0;
+					Item->item.iImage = 0;
+					const unsigned int iNum = Item->item.iItem;
+					static char num[11];
+					switch (Item->item.iSubItem)
 					{
-						case UDN_DELTAPOS:
-							int delta = ((LPNMUPDOWN)lParam)->iDelta;
-							SendMessage(hDlg, WM_COMMAND, delta<0 ? IDC_C_WATCH_UP : IDC_C_WATCH_DOWN,0);
-							break;
+						case 0:
+							strcpy(num, SoftwareAddressToDisplayedAddress(rswatches[iNum].Address));
+							Item->item.pszText = num;
+							return true;
+						case 1: {
+							int i = rswatches[iNum].CurValue;
+							int t = rswatches[iNum].Type;
+							int size = rswatches[iNum].Size;
+							const char* formatString = ((t=='s') ? "%d" : (t=='u') ? "%u" : (size=='d' ? "%08X" : size=='w' ? "%04X" : "%02X"));
+							switch (size)
+							{
+								case 'b':
+								default: sprintf(num, formatString, t=='s' ? (char)(i&0xff) : (unsigned char)(i&0xff)); break;
+								case 'w': sprintf(num, formatString, t=='s' ? (short)(i&0xffff) : (unsigned short)(i&0xffff)); break;
+								case 'd': sprintf(num, formatString, t=='s' ? (long)(i&0xffffffff) : (unsigned long)(i&0xffffffff)); break;
+							}
+
+							Item->item.pszText = num;
+						}	return true;
+						case 2:
+							Item->item.pszText = rswatches[iNum].comment ? rswatches[iNum].comment : "";
+							return true;
+
+						default:
+							return false;
 					}
 				}
-
-				default:
-				{
-					LPNMHDR lP = (LPNMHDR) lParam;
-					switch (lP->code)
-					{
-						case LVN_GETDISPINFO:
-						{
-							LV_DISPINFO *Item = (LV_DISPINFO *)lParam;
-							Item->item.mask = LVIF_TEXT;
-							Item->item.state = 0;
-							Item->item.iImage = 0;
-							const unsigned int iNum = Item->item.iItem;
-							static char num[11];
-							switch (Item->item.iSubItem)
-							{
-								case 0:
-									sprintf(num,"%08X",rswatches[iNum].Address);
-									Item->item.pszText = num;
-									return true;
-								case 1: {
-									int i = rswatches[iNum].CurValue;
-									int t = rswatches[iNum].Type;
-									int size = rswatches[iNum].Size;
-									const char* formatString = ((t=='s') ? "%d" : (t=='u') ? "%u" : (size=='d' ? "%08X" : size=='w' ? "%04X" : "%02X"));
-									switch (size)
-									{
-										case 'b':
-										default: sprintf(num, formatString, t=='s' ? (char)(i&0xff) : (unsigned char)(i&0xff)); break;
-										case 'w': sprintf(num, formatString, t=='s' ? (short)(i&0xffff) : (unsigned short)(i&0xffff)); break;
-										case 'd': sprintf(num, formatString, t=='s' ? (long)(i&0xffffffff) : (unsigned long)(i&0xffffffff)); break;
-									}
-
-									Item->item.pszText = num;
-								}	return true;
-								case 2:
-									Item->item.pszText = rswatches[iNum].comment ? rswatches[iNum].comment : "";
-									return true;
-
-								default:
-									return false;
-							}
-						}
-						case LVN_ODFINDITEM:
-						{	
-							// disable search by keyboard typing,
-							// because it interferes with some of the accelerators
-							// and it isn't very useful here anyway
-							SetWindowLongPtr(hDlg, DWLP_MSGRESULT, ListView_GetSelectionMark(GetDlgItem(hDlg,IDC_WATCHLIST)));
-							return 1;
-						}
-					}
+				case LVN_ODFINDITEM:
+				{	
+					// disable search by keyboard typing,
+					// because it interferes with some of the accelerators
+					// and it isn't very useful here anyway
+					SetWindowLong(hDlg, DWL_MSGRESULT, ListView_GetSelectionMark(GetDlgItem(hDlg,IDC_WATCHLIST)));
+					return 1;
 				}
 			}
-			break;
-		}
+		}	break;
 
 		case WM_COMMAND:
 			switch(LOWORD(wParam))
@@ -939,12 +965,15 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 					break;
 
 				case RAMMENU_FILE_SAVEAS:	
+				//case IDC_C_SAVE:
 					return Save_Watches();
 				case RAMMENU_FILE_OPEN:
 					return Load_Watches(true);
 				case RAMMENU_FILE_APPEND:
+				//case IDC_C_LOAD:
 					return Load_Watches(false);
 				case RAMMENU_FILE_NEW:
+				//case IDC_C_RESET:
 					ResetWatches();
 					return true;
 				case IDC_C_WATCH_REMOVE:
@@ -956,14 +985,17 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 					return true;
 				case IDC_C_WATCH_EDIT:
 					watchIndex = ListView_GetSelectionMark(GetDlgItem(hDlg,IDC_WATCHLIST));
-					DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_EDITWATCH), hDlg, (DLGPROC) EditWatchProc,(LPARAM) watchIndex);
-					SetFocus(GetDlgItem(hDlg,IDC_WATCHLIST));
+					if(watchIndex != -1)
+					{
+						DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_EDITWATCH), hDlg, (DLGPROC) EditWatchProc,(LPARAM) watchIndex);
+						SetFocus(GetDlgItem(hDlg,IDC_WATCHLIST));
+					}
 					return true;
 				case IDC_C_WATCH:
 					rswatches[WatchCount].Address = rswatches[WatchCount].WrongEndian = 0;
 					rswatches[WatchCount].Size = 'b';
 					rswatches[WatchCount].Type = 's';
-					DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_EDITWATCH), hDlg, (DLGPROC) EditWatchProc,(LPARAM) WatchCount);
+					DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_EDITWATCH), hDlg, (DLGPROC) EditWatchProc,(LPARAM) WatchCount);
 					SetFocus(GetDlgItem(hDlg,IDC_WATCHLIST));
 					return true;
 				case IDC_C_WATCH_DUPLICATE:
@@ -972,7 +1004,7 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 					rswatches[WatchCount].WrongEndian = rswatches[watchIndex].WrongEndian;
 					rswatches[WatchCount].Size = rswatches[watchIndex].Size;
 					rswatches[WatchCount].Type = rswatches[watchIndex].Type;
-					DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_EDITWATCH), hDlg, (DLGPROC) EditWatchProc,(LPARAM) WatchCount);
+					DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_EDITWATCH), hDlg, (DLGPROC) EditWatchProc,(LPARAM) WatchCount);
 					SetFocus(GetDlgItem(hDlg,IDC_WATCHLIST));
 					return true;
 				case IDC_C_WATCH_UP:
@@ -1007,35 +1039,83 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 					RWfileChanged=true;
 					return true;
 				}
+				case ID_WATCHES_UPDOWN:
+				{
+					int delta = ((LPNMUPDOWN)lParam)->iDelta;
+					SendMessage(hDlg, WM_COMMAND, delta<0 ? IDC_C_WATCH_UP : IDC_C_WATCH_DOWN,0);
+					break;
+				}
 				case RAMMENU_FILE_AUTOLOAD:
 				{
 					AutoRWLoad ^= 1;
 					CheckMenuItem(ramwatchmenu, RAMMENU_FILE_AUTOLOAD, AutoRWLoad ? MF_CHECKED : MF_UNCHECKED);
+					//regSetDwordValue(AUTORWLOAD, AutoRWLoad); TODO
 					break;
 				}
 				case RAMMENU_FILE_SAVEWINDOW:
 				{
 					RWSaveWindowPos ^=1;
 					CheckMenuItem(ramwatchmenu, RAMMENU_FILE_SAVEWINDOW, RWSaveWindowPos ? MF_CHECKED : MF_UNCHECKED);
+					//regSetDwordValue(RWSAVEPOS, RWSaveWindowPos); TODO
 					break;
 				}
 				case IDC_C_ADDCHEAT:
 				{
-					watchIndex = ListView_GetSelectionMark(GetDlgItem(hDlg,IDC_WATCHLIST)) | (1 << 24);
-//					DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_EDITCHEAT), hDlg, (DLGPROC) EditCheatProc,(LPARAM) searchIndex);	//TODO: made a IDD_EDITCHEAT dialog, and EditCheatProc (are they in GENS?) and integrate into cheats system
-					break;
+					watchIndex = ListView_GetSelectionMark(GetDlgItem(hDlg,IDC_WATCHLIST));
+					if(watchIndex >= 0)
+					{
+						unsigned int address = rswatches[watchIndex].Address;
+
+						int sizeType = -1;
+						if(rswatches[watchIndex].Size == 'b')
+							sizeType = 0;
+						else if(rswatches[watchIndex].Size == 'w')
+							sizeType = 1;
+						else if(rswatches[watchIndex].Size == 'd')
+							sizeType = 2;
+
+						int numberType = -1;
+						if(rswatches[watchIndex].Type == 's')
+							numberType = 0;
+						else if(rswatches[watchIndex].Type == 'u')
+							numberType = 1;
+						else if(rswatches[watchIndex].Type == 'h')
+							numberType = 2;
+
+						// TODO: add cheat dialog
+						#if 0
+						if(theApp.cartridgeType == 0)
+						{
+							AddCheat dlg (address/*, hDlg*/);
+							if(sizeType != -1) dlg.sizeType = sizeType;
+							if(numberType != -1) dlg.numberType = numberType;
+							dlg.DoModal();
+						}
+						else
+						{
+							AddGBCheat dlg (address/*, hDlg*/);
+							if(sizeType != -1) dlg.sizeType = sizeType;
+							if(numberType != -1) dlg.numberType = numberType;
+							dlg.DoModal();
+						}
+						#endif
+					}
 				}
+				break;
+				case IDOK:
 				case IDCANCEL:
 					RamWatchHWnd = NULL;
 					DragAcceptFiles(hDlg, FALSE);
 					EndDialog(hDlg, true);
 					return true;
 				default:
-					if (LOWORD(wParam) >= RW_MENU_FIRST_RECENT_FILE && LOWORD(wParam) < RW_MENU_FIRST_RECENT_FILE+MAX_RECENT_WATCHES)
+					if (LOWORD(wParam) >= RW_MENU_FIRST_RECENT_FILE && LOWORD(wParam) < RW_MENU_FIRST_RECENT_FILE+MAX_RECENT_WATCHES && LOWORD(wParam) <= RW_MENU_LAST_RECENT_FILE)
 					OpenRWRecentFile(LOWORD(wParam) - RW_MENU_FIRST_RECENT_FILE);
 			}
 			break;
-		
+
+#if 0
+		// this message is never received
 		case WM_KEYDOWN: // handle accelerator keys
 		{
 			SetFocus(GetDlgItem(hDlg,IDC_WATCHLIST));
@@ -1047,10 +1127,19 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 			if(RamWatchAccels && TranslateAccelerator(hDlg, RamWatchAccels, &msg))
 				return true;
 		}	break;
+#endif
+
+//		case WM_CLOSE:
+//			RamWatchHWnd = NULL;
+//			DragAcceptFiles(hDlg, FALSE);
+//			DestroyWindow(hDlg);
+//			return false;
 
 		case WM_DESTROY:
+			// this is the correct place
 			RamWatchHWnd = NULL;
 			DragAcceptFiles(hDlg, FALSE);
+			WriteRecentRWFiles();	// write recent menu to ini
 			break;
 
 		case WM_DROPFILES:
@@ -1064,4 +1153,3 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 	return false;
 }
-

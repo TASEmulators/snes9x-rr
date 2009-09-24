@@ -5,30 +5,9 @@
 #define RAM_SEARCH_H
 
 
-//64k in Ram_68k[], 8k in Ram_Z80[]   
-//#define _68K_RAM_SIZE 64*1024
-//#define Z80_RAM_SIZE 8*1024
-/*#define SRAM_SIZE (((SRAM_End - SRAM_Start) > 2) ? SRAM_End - SRAM_Start : 0)
-#define BRAM_SIZE ((8 << BRAM_Ex_Size) * 1024)*/
-//#define GENESIS_RAM_SIZE (_68K_RAM_SIZE + Z80_RAM_SIZE)
-
-//_32X_Ram[]
-//#define _32X_RAM_SIZE 256*1024
-
-//512k in Ram_Prg, 256k in Ram_Word_1M and Ram_Word_2M
-//(docs say 6Mbit of ram, but I'm not sure what's used when)
-//#define SEGACD_RAM_PRG_SIZE 512*1024
-//#define SEGACD_1M_RAM_SIZE 256*1024
-//#define SEGACD_2M_RAM_SIZE 256*1024
-//#define SEGACD_RAM_SIZE (SEGACD_RAM_PRG_SIZE + SEGACD_2M_RAM_SIZE)
-
-
-//#define MAX_RAM_SIZE (0x112000)
-//#define MAX_RAM_SIZE (0xD2000)
-#define MAX_RAM_SIZE (0x400000)
-
 extern char rs_type_size;
 extern int ResultCount;
+typedef unsigned int HWAddressType;
 
 unsigned int sizeConv(unsigned int index,char size, char *prevSize = &rs_type_size, bool usePrev = false);
 unsigned int GetRamValue(unsigned int Addr,char Size);
@@ -38,15 +17,76 @@ void reset_address_info();
 void signal_new_frame();
 void signal_new_size();
 void UpdateRamSearchTitleBar(int percent = 0);
-void Update_RAM_Search();
 void SetRamSearchUndoType(HWND hDlg, int type);
-unsigned int ReadValueAtHardwareAddress(unsigned int address, unsigned int size);
-bool WriteValueAtHardwareRAMAddress(unsigned int address, unsigned int value, unsigned int size, bool hookless=false);
-bool IsHardwareRAMAddressValid(unsigned int address);
+unsigned int ReadValueAtHardwareAddress(HWAddressType address, unsigned int size);
+bool WriteValueAtHardwareAddress(HWAddressType address, unsigned int value, unsigned int size);
+bool IsHardwareAddressValid(HWAddressType address);
 extern int curr_ram_size;
 extern bool noMisalign;
-extern bool littleEndian;
+extern HWND RamSearchHWnd;
+
+
+void ResetResults();
+void CloseRamWindows(); //Close the Ram Search & Watch windows when rom closes
+void ReopenRamWindows(); //Reopen them when a new Rom is loaded
+void Update_RAM_Search(); //keeps RAM values up to date in the search and watch windows
+
+
+#define RW_VIRTUAL_ADDR_SHIFT	24
+#define RW_VIRTUAL_ADDR_MASK	((1<<(RW_VIRTUAL_ADDR_SHIFT))-1)
+#define RW_VIRTUAL_ADDR_SRAM	1
+
+
+static inline uint8* HardwareToSoftwareAddress(HWAddressType address)
+{
+	if(Settings.StopEmulation)
+		return NULL;
+
+	HWAddressType base = address & RW_VIRTUAL_ADDR_MASK;
+	HWAddressType type = address >> RW_VIRTUAL_ADDR_SHIFT;
+
+	switch(type) {
+	case RW_VIRTUAL_ADDR_SRAM:
+		if (Memory.SRAM != NULL && base < 0x20000)
+			return &Memory.SRAM[base];
+		break;
+	default:
+		if (Memory.RAM != NULL && address >= 0x7e0000 && address <= 0x7fffff)
+			return &Memory.RAM[address & 0x1ffff];
+	}
+	return NULL;
+}
+
+static inline HWAddressType DisplayedAddressToSoftwareAddress(const char* str)
+{
+	HWAddressType base, type = 0;
+	switch(str[0]) {
+	case 'S':
+	case 's':
+		base = strtoul(&str[1], NULL, 16);
+		type = RW_VIRTUAL_ADDR_SRAM;
+	default:
+		base = strtoul(str, NULL, 16);
+	}
+	return (type << RW_VIRTUAL_ADDR_SHIFT) | (base & RW_VIRTUAL_ADDR_MASK);
+}
+
+static inline const char* SoftwareAddressToDisplayedAddress(HWAddressType address)
+{
+	static char str[11];
+	HWAddressType base = address & RW_VIRTUAL_ADDR_MASK;
+	HWAddressType type = address >> RW_VIRTUAL_ADDR_SHIFT;
+
+	// must return 6 characters
+	switch(type) {
+	case RW_VIRTUAL_ADDR_SRAM:
+		sprintf(str, "s%05X", base);
+		break;
+	default:
+		sprintf(str, "%06X", base);
+	}
+	return str;
+}
 
 
 #endif
-
