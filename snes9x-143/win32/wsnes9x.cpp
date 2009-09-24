@@ -4864,8 +4864,15 @@ int WINAPI WinMain(
 
 			// do not process non-modal dialog messages
 			if ((oldRamSearchHWND && IsDialogMessage(oldRamSearchHWND, &msg))
-			 || (inputMacroHWND && IsDialogMessage(inputMacroHWND, &msg)))
+			 || (inputMacroHWND && IsDialogMessage(inputMacroHWND, &msg))
+			 || (RamSearchHWnd && IsDialogMessage(RamSearchHWnd, &msg)))
 				continue;
+
+			if (RamWatchHWnd && IsDialogMessage(RamWatchHWnd, &msg)) {
+				if(msg.message == WM_KEYDOWN) // send keydown messages to the dialog (for accelerators, and also needed for the Alt key to work)
+					SendMessage(RamWatchHWnd, msg.message, msg.wParam, msg.lParam);
+				continue;
+			}
 
 			if (!TranslateAccelerator (GUI.hWnd, GUI.Accelerators, &msg))
 			{
