@@ -96,6 +96,7 @@
 #include "../port.h"
 #include "../display.h"
 #include "../cheats.h"
+#include "../memmap.h"
 #include "wsnes9x.h"
 #include "wlanguage.h"
 #include "CDirectDraw.h"
@@ -219,6 +220,8 @@ bool Load_Watches_S9X(const char* filename)
 		char nameStr [256];
 		nameStr[0]='?'; nameStr[1]='\0';
 		fscanf(file, " address = 0x%x, name = \"%31[^\"]\", size = %d, format = %d\n", &watches[i].address, nameStr, &watches[i].size, &watches[i].format);
+		if(watches[i].size == 3)
+			watches[i].size = 4;
 		if(nameStr[0] == '\0' || nameStr[0] == '?')
 		{
 			if(watches[i].address < 0x7E0000 + 0x20000)
@@ -545,6 +548,7 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			}
 
 			DragAcceptFiles(hDlg, TRUE);
+			EnableWindow(GetDlgItem(hDlg, IDC_3_BYTE), FALSE);
 		}
 		return true;
 
@@ -1121,7 +1125,21 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					OPENFILENAME  ofn;
 					char  szFileName[MAX_PATH];
 					char  szPathName[MAX_PATH];
-					strcpy(szFileName, "watches");
+
+					if(Memory.ROMFilename[0]!='\0')
+					{
+						static TCHAR filename [_MAX_PATH + 1];
+						TCHAR drive [_MAX_DRIVE + 1];
+						TCHAR dir [_MAX_DIR + 1];
+						TCHAR fname [_MAX_FNAME + 1];
+						TCHAR ext [_MAX_EXT + 1];	
+						_splitpath (Memory.ROMFilename, drive, dir, fname, ext);
+						_makepath (filename, "", "", fname, "wch");
+						strcpy(szFileName, filename);
+					}
+					else
+						strcpy(szFileName, "");
+
 					_fullpath(szPathName, S9xGetDirectory(CHEAT_DIR), MAX_PATH);
 
 					ZeroMemory( (LPVOID)&ofn, sizeof(OPENFILENAME) );
@@ -1149,7 +1167,21 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					OPENFILENAME  ofn;
 					char  szFileName[MAX_PATH];
 					char  szPathName[MAX_PATH];
-					strcpy(szFileName, "watches");
+
+					if(Memory.ROMFilename[0]!='\0')
+					{
+						static TCHAR filename [_MAX_PATH + 1];
+						TCHAR drive [_MAX_DRIVE + 1];
+						TCHAR dir [_MAX_DIR + 1];
+						TCHAR fname [_MAX_FNAME + 1];
+						TCHAR ext [_MAX_EXT + 1];	
+						_splitpath (Memory.ROMFilename, drive, dir, fname, ext);
+						_makepath (filename, "", "", fname, "wch");
+						strcpy(szFileName, filename);
+					}
+					else
+						strcpy(szFileName, "");
+
 					_fullpath(szPathName, S9xGetDirectory(CHEAT_DIR), MAX_PATH);
 
 					ZeroMemory( (LPVOID)&ofn, sizeof(OPENFILENAME) );
