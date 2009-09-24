@@ -585,4 +585,6 @@ bool S9xWinIsSoundActive();
 
 extern HINSTANCE g_hInst;
 
+const char *S9xGetFilenameRel (const char *ex);
+
 #endif // !defined(SNES9X_H_INCLUDED)

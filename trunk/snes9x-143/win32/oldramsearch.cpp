@@ -1126,19 +1126,7 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					char  szFileName[MAX_PATH];
 					char  szPathName[MAX_PATH];
 
-					if(Memory.ROMFilename[0]!='\0')
-					{
-						static TCHAR filename [_MAX_PATH + 1];
-						TCHAR drive [_MAX_DRIVE + 1];
-						TCHAR dir [_MAX_DIR + 1];
-						TCHAR fname [_MAX_FNAME + 1];
-						TCHAR ext [_MAX_EXT + 1];	
-						_splitpath (Memory.ROMFilename, drive, dir, fname, ext);
-						_makepath (filename, "", "", fname, "wch");
-						strcpy(szFileName, filename);
-					}
-					else
-						strcpy(szFileName, "");
+					strcpy(szFileName, S9xGetFilenameRel("wch"));
 
 					_fullpath(szPathName, S9xGetDirectory(CHEAT_DIR), MAX_PATH);
 
@@ -1168,19 +1156,7 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					char  szFileName[MAX_PATH];
 					char  szPathName[MAX_PATH];
 
-					if(Memory.ROMFilename[0]!='\0')
-					{
-						static TCHAR filename [_MAX_PATH + 1];
-						TCHAR drive [_MAX_DRIVE + 1];
-						TCHAR dir [_MAX_DIR + 1];
-						TCHAR fname [_MAX_FNAME + 1];
-						TCHAR ext [_MAX_EXT + 1];	
-						_splitpath (Memory.ROMFilename, drive, dir, fname, ext);
-						_makepath (filename, "", "", fname, "wch");
-						strcpy(szFileName, filename);
-					}
-					else
-						strcpy(szFileName, "");
+					strcpy(szFileName, S9xGetFilenameRel("wch"));
 
 					_fullpath(szPathName, S9xGetDirectory(CHEAT_DIR), MAX_PATH);
 
