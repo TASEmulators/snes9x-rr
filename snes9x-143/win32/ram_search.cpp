@@ -28,6 +28,7 @@
 #include "rsrc/resource.h"
 
 #include "../memmap.h"
+#include "../cheats.h"
 #include "wsnes9x.h"
 
 #include "ram_search.h"
@@ -42,6 +43,8 @@
 #else
    #include "stdint.h"
 #endif
+
+extern SCheatData Cheat;
 
 struct MemoryRegion
 {
@@ -89,7 +92,7 @@ void ResetMemoryRegions()
 
 	s_activeMemoryRegions.clear();
 
-	// use HardwareToSoftwareAddress to figure out what all the possible memory regions are,
+	// use RWInternalToSoftwareAddress to figure out what all the possible memory regions are,
 	// split up wherever there's a discontinuity in the address in our software RAM.
 	static const int regionSearchGranularity = 0x100; // if this is too small, we'll waste time (in this function only), but if any region in RAM isn't evenly divisible by this, we might crash.
 	HWAddressType hwRegionStart = 0;
@@ -97,7 +100,7 @@ void ResetMemoryRegions()
 	uint8* regionEnd = NULL;
 	for(HWAddressType addr = 0; addr != 0x10000000+regionSearchGranularity; addr += regionSearchGranularity)
 	{
-		uint8* swAddr = HardwareToSoftwareAddress(addr);
+		uint8* swAddr = RWInternalToSoftwareAddress(addr);
 		if(regionEnd && swAddr != regionEnd+regionSearchGranularity)
 		{
 			// hit end of region
@@ -844,7 +847,7 @@ int ReadControlAddr(int controlID, BOOL& success)
 	TCHAR str[11];
 
 	GetDlgItemText(RamSearchHWnd,controlID,str,11);
-	rv = DisplayedAddressToSoftwareAddress(str);
+	rv = DisplayToRWInternalAddress(str);
 	ok = true; // TODO: validation
 
 	success = ok;
@@ -968,16 +971,16 @@ void WriteValueAtSoftwareAddress(unsigned char* address, unsigned int value, uns
 }
 unsigned int ReadValueAtHardwareAddress(HWAddressType address, unsigned int size)
 {
-	return ReadValueAtSoftwareAddress(HardwareToSoftwareAddress(address), size);
+	return ReadValueAtSoftwareAddress(RWInternalToSoftwareAddress(address), size);
 }
 bool WriteValueAtHardwareAddress(HWAddressType address, unsigned int value, unsigned int size)
 {
-	WriteValueAtSoftwareAddress(HardwareToSoftwareAddress(address), value, size);
+	WriteValueAtSoftwareAddress(RWInternalToSoftwareAddress(address), value, size);
 	return true;
 }
 bool IsHardwareAddressValid(HWAddressType address)
 {
-	return HardwareToSoftwareAddress(address) != NULL;
+	return RWInternalToSoftwareAddress(address) != NULL;
 }
 
 
@@ -1548,7 +1551,7 @@ LRESULT CALLBACK RamSearchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 						case 0:
 						{
 							int addr = CALL_WITH_T_SIZE_TYPES_1(GetHardwareAddressFromItemIndex, rs_type_size,rs_t=='s',noMisalign, iNum);
-							strcpy(num, SoftwareAddressToDisplayedAddress(addr));
+							strcpy(num, RWInternalToDisplayAddress(addr));
 							Item->item.pszText = num;
 						}	return true;
 						case 1:
@@ -1752,23 +1755,27 @@ LRESULT CALLBACK RamSearchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 						else if(rs_t == 'h')
 							numberType = 2;
 
-						// TODO: add cheat dialog
-						#if 0
-						if(theApp.cartridgeType == 0)
+						if (sizeType == -1 || numberType == -1)
+							break;
+
+						struct ICheat cht;
+						const int fmtTable[] = { 2, 1, 3 };
+						ZeroMemory(&cht, sizeof(struct SCheat));
+						cht.address = RWInternalToHardwareAddress(address);
+						cht.size = 1 << sizeType;
+						cht.format = fmtTable[numberType];
+						cht.new_val = CALL_WITH_T_SIZE_TYPES_1(GetCurValueFromItemIndex, rs_type_size,rs_t=='s',noMisalign, watchItemIndex);
+						cht.saved_val = CALL_WITH_T_SIZE_TYPES_1(GetPrevValueFromItemIndex, rs_type_size,rs_t=='s',noMisalign, watchItemIndex);
+						if(DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_CHEAT_FROM_SEARCH), hDlg, DlgAddCheat, (LPARAM)&cht))
 						{
-							AddCheat dlg (address/*, hDlg*/);
-							if(sizeType != -1) dlg.sizeType = sizeType;
-							if(numberType != -1) dlg.numberType = numberType;
-							dlg.DoModal();
+							int p;
+							for(p=0; p<cht.size; p++)
+							{
+								S9xAddCheat(TRUE, cht.saved, cht.address +p, ((cht.new_val>>(8*p))&0xFF));
+								//add cheat
+								strcpy(Cheat.c[Cheat.num_cheats-1].name, cht.name);
+							}
 						}
-						else
-						{
-							AddGBCheat dlg (address/*, hDlg*/);
-							if(sizeType != -1) dlg.sizeType = sizeType;
-							if(numberType != -1) dlg.numberType = numberType;
-							dlg.DoModal();
-						}
-						#endif
 					}
 				}	{rv = true; break;}
 				case IDC_C_RESET:

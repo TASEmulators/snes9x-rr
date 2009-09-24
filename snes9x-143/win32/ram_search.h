@@ -37,7 +37,7 @@ void Update_RAM_Search(); //keeps RAM values up to date in the search and watch 
 #define RW_VIRTUAL_ADDR_SRAM	1
 
 
-static inline uint8* HardwareToSoftwareAddress(HWAddressType address)
+static inline uint8* RWInternalToSoftwareAddress(HWAddressType address)
 {
 	if(Settings.StopEmulation)
 		return NULL;
@@ -57,7 +57,7 @@ static inline uint8* HardwareToSoftwareAddress(HWAddressType address)
 	return NULL;
 }
 
-static inline HWAddressType DisplayedAddressToSoftwareAddress(const char* str)
+static inline HWAddressType DisplayToRWInternalAddress(const char* str)
 {
 	HWAddressType base, type = 0;
 	switch(str[0]) {
@@ -72,7 +72,7 @@ static inline HWAddressType DisplayedAddressToSoftwareAddress(const char* str)
 	return (type << RW_VIRTUAL_ADDR_SHIFT) | (base & RW_VIRTUAL_ADDR_MASK);
 }
 
-static inline const char* SoftwareAddressToDisplayedAddress(HWAddressType address)
+static inline const char* RWInternalToDisplayAddress(HWAddressType address)
 {
 	static char str[11];
 	HWAddressType base = address & RW_VIRTUAL_ADDR_MASK;
@@ -87,6 +87,19 @@ static inline const char* SoftwareAddressToDisplayedAddress(HWAddressType addres
 		sprintf(str, "%06X", base);
 	}
 	return str;
+}
+
+static inline HWAddressType RWInternalToHardwareAddress(HWAddressType address)
+{
+	HWAddressType base = address & RW_VIRTUAL_ADDR_MASK;
+	HWAddressType type = address >> RW_VIRTUAL_ADDR_SHIFT;
+
+	switch(type) {
+	case RW_VIRTUAL_ADDR_SRAM:
+		return 0x700000 | (base & 0x1ffff); // FIXME: incorrect, but better than nothing
+	default:
+		return base;
+	}
 }
 
 
