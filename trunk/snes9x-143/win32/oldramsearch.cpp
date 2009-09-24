@@ -106,6 +106,7 @@
 
 extern SCheatData Cheat;
 extern void S9xReRefresh();
+extern bool CheatTestRange(int val_type, S9xCheatDataSize bytes, uint32 value);
 
 HWND oldRamSearchHWND = NULL;
 
@@ -132,56 +133,6 @@ static inline int CheatCount(int byteSub)
 			b++;
 	}
 	return b;
-}
-
-bool TestRange(int val_type, S9xCheatDataSize bytes, uint32 value)
-{
-	if(val_type!=2)
-	{
-		if(bytes==S9X_8_BITS)
-		{
-			if(value<256)
-				return true;
-			else return false;
-		}
-		if(bytes==S9X_16_BITS)
-		{
-			if(value<65536)
-				return true;
-			else return false;
-		}
-		if(bytes==S9X_24_BITS)
-		{
-			if(value<16777216)
-				return true;
-			else return false;
-		}
-		//if it reads in, it's a valid 32-bit unsigned!
-		return true;
-	}
-	else
-	{
-		if(bytes==S9X_8_BITS)
-		{
-			if((int32)value<128 && (int32)value >= -128)
-				return true;
-			else return false;
-		}
-		if(bytes==S9X_16_BITS)
-		{
-			if((int32)value<32768 && (int32)value >= -32768)
-				return true;
-			else return false;
-		}
-		if(bytes==S9X_24_BITS)
-		{
-			if((int32)value<8388608 && (int32)value >= -8388608)
-				return true;
-			else return false;
-		}
-		//should be handled by sscanf
-		return true;
-	}
 }
 
 // must return 6 characters if succeeded
@@ -1263,7 +1214,7 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 						else ret=_stscanf(buf, "%x", &value);
 
 
-						if(ret!=1||!TestRange(val_type, bytes, value))
+						if(ret!=1||!CheatTestRange(val_type, bytes, value))
 						{
 							MessageBox(hDlg, TEXT(SEARCH_ERR_INVALIDSEARCHVALUE), TEXT(SEARCH_TITLE_CHEATERROR), MB_OK);
 							return true;

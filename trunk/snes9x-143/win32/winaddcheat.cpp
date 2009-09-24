@@ -16,12 +16,62 @@
 extern SCheatData Cheat;
 extern void S9xReRefresh();
 
-extern bool TestRange(int val_type, S9xCheatDataSize bytes, uint32 value); // from oldramsearch.cpp
-
 //------------------------------------------------------------------------------
 
 static struct ICheat* m_newCheat;
 static HBITMAP m_hBmp = NULL;
+
+//------------------------------------------------------------------------------
+
+bool CheatTestRange(int val_type, S9xCheatDataSize bytes, uint32 value)
+{
+	if(val_type!=2)
+	{
+		if(bytes==S9X_8_BITS)
+		{
+			if(value<256)
+				return true;
+			else return false;
+		}
+		if(bytes==S9X_16_BITS)
+		{
+			if(value<65536)
+				return true;
+			else return false;
+		}
+		if(bytes==S9X_24_BITS)
+		{
+			if(value<16777216)
+				return true;
+			else return false;
+		}
+		//if it reads in, it's a valid 32-bit unsigned!
+		return true;
+	}
+	else
+	{
+		if(bytes==S9X_8_BITS)
+		{
+			if((int32)value<128 && (int32)value >= -128)
+				return true;
+			else return false;
+		}
+		if(bytes==S9X_16_BITS)
+		{
+			if((int32)value<32768 && (int32)value >= -32768)
+				return true;
+			else return false;
+		}
+		if(bytes==S9X_24_BITS)
+		{
+			if((int32)value<8388608 && (int32)value >= -8388608)
+				return true;
+			else return false;
+		}
+		//should be handled by sscanf
+		return true;
+	}
+}
 
 //------------------------------------------------------------------------------
 
@@ -54,7 +104,7 @@ static void OnOK(HWND hDlg)
 		else if(m_newCheat->format==3)
 			ret = (sscanf(buf, "%x", &m_newCheat->new_val) == 1);
 
-		if(!ret || !TestRange(m_newCheat->format, tmp, m_newCheat->new_val))
+		if(!ret || !CheatTestRange(m_newCheat->format, tmp, m_newCheat->new_val))
 		{
 			MessageBox(hDlg, SEARCH_ERR_INVALIDNEWVALUE, SEARCH_TITLE_RANGEERROR, MB_OK);
 			return;
@@ -72,7 +122,7 @@ static void OnOK(HWND hDlg)
 			else if(m_newCheat->format==3)
 				ret = (sscanf(buf, "%x", &i) == 1);
 
-			if(!ret || !TestRange(m_newCheat->format, tmp, i))
+			if(!ret || !CheatTestRange(m_newCheat->format, tmp, i))
 			{
 				MessageBox(hDlg, SEARCH_ERR_INVALIDCURVALUE, SEARCH_TITLE_RANGEERROR, MB_OK);
 				return;
