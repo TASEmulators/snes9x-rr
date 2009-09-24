@@ -11,12 +11,12 @@
 #include "CDirectDraw.h"
 #include "Direct3D.h"
 #include "rsrc/resource.h"
-#include "win32-ramsearch.h"
+#include "oldramsearch.h"
 
 extern SCheatData Cheat;
 extern void S9xReRefresh();
 
-extern bool TestRange(int val_type, S9xCheatDataSize bytes, uint32 value); // from win32-ramsearch.cpp
+extern bool TestRange(int val_type, S9xCheatDataSize bytes, uint32 value); // from oldramsearch.cpp
 
 //------------------------------------------------------------------------------
 

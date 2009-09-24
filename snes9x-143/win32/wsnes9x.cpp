@@ -121,7 +121,9 @@
 #include "AVIOutput.h"
 #include "InputCustom.h"
 #include "lazymacro.h"
-#include "win32-ramsearch.h"
+#include "ram_search.h"
+#include "ramwatch.h"
+#include "oldramsearch.h"
 #include <vector>
 
 #ifdef UNZIP_SUPPORT
@@ -263,6 +265,10 @@ INT_PTR CALLBACK test(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
 static int KeyInDelayMSec;
 static int KeyInRepeatMSec;
+
+extern HWND RamSearchHWnd;
+extern LRESULT CALLBACK RamSearchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+void InitRamSearch();
 
 #define NUM_HOTKEY_CONTROLS 20
 
@@ -3509,15 +3515,33 @@ LRESULT CALLBACK WinProc(
 							RestoreSNESDisplay ();
 							break;
 						case ID_RAM_SEARCH:
-							RestoreGUIDisplay ();
-							if(!ramSearchHWND) // create and show non-modal RAM search window
+							if(!RamSearchHWnd)
 							{
-								ramSearchHWND = CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_RAM_SEARCH), hWnd, DlgRAMSearch); // non-modal/modeless
-								ShowWindow(ramSearchHWND, SW_SHOW);
+								InitRamSearch();
+								RamSearchHWnd = CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_RAMSEARCH), hWnd, (DLGPROC) RamSearchProc);
+							}
+							else
+								SetForegroundWindow(RamSearchHWnd);
+							break;
+						case ID_RAM_WATCH:
+							if(!RamWatchHWnd)
+							{
+								RamWatchHWnd = CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_RAMWATCH), hWnd, (DLGPROC) RamWatchProc);
+								//				DialogsOpen++;
+							}
+							else
+								SetForegroundWindow(RamWatchHWnd);
+							break;
+						case ID_RAM_SEARCH_OLD:
+							RestoreGUIDisplay ();
+							if(!oldRamSearchHWND) // create and show non-modal RAM search window
+							{
+								oldRamSearchHWND = CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_RAM_SEARCH), hWnd, DlgRAMSearch); // non-modal/modeless
+								ShowWindow(oldRamSearchHWND, SW_SHOW);
 							}
 							else // already open so just reactivate the window
 							{
-								SetActiveWindow(ramSearchHWND);
+								SetActiveWindow(oldRamSearchHWND);
 							}
 							RestoreSNESDisplay ();
 							break;
@@ -4864,7 +4888,7 @@ int WINAPI WinMain(
 				goto loop_exit; // got WM_QUIT
 
 			// do not process non-modal dialog messages
-			if ((ramSearchHWND && IsDialogMessage(ramSearchHWND, &msg))
+			if ((oldRamSearchHWND && IsDialogMessage(oldRamSearchHWND, &msg))
 			 || (inputMacroHWND && IsDialogMessage(inputMacroHWND, &msg)))
 				continue;
 
@@ -4886,16 +4910,16 @@ int WINAPI WinMain(
 				S9xNPStepJoypadHistory ();
 			}
 #endif
-			// FIXME: 1 frame lag in the watch
+			// update delayed in 1 frame
 			UpdateWatchedAddresses();
 
-			if(ramSearchHWND)
+			if(timeGetTime() - lastTime >= 100)
 			{
-				if(timeGetTime() - lastTime >= 100)
-				{
-					SendMessage(ramSearchHWND, WM_COMMAND, (WPARAM)(IDC_REFRESHLIST),(LPARAM)(NULL));
-					lastTime = timeGetTime();
-				}
+				Update_RAM_Watch();
+				Update_RAM_Search();
+				if(oldRamSearchHWND)
+					SendMessage(oldRamSearchHWND, WM_COMMAND, (WPARAM)(IDC_REFRESHLIST),(LPARAM)(NULL));
+				lastTime = timeGetTime();
 			}
 
 			// the following is a hack to allow frametimes greater than 100ms,
@@ -4968,12 +4992,8 @@ int WINAPI WinMain(
 				S9xMainLoop();
 				GUI.FrameCount++;
 
-				// FIXME?: These will fix 1 frame lag of watch, 
-				// though painting twice is not smart, really.
-				// I think separating the watch from game screen 
-				// to new window is the best way to solve the problem.
-				//UpdateWatchedAddresses();
-				//S9xReRefresh();
+				Update_RAM_Watch();
+				Update_RAM_Search();
 			}
 
 #ifdef NETPLAY_SUPPORT
@@ -5334,10 +5354,12 @@ static void CheckMenuStates ()
     SetMenuItemInfo (GUI.hMenu, ID_FILE_RESET, FALSE, &mii);
     SetMenuItemInfo (GUI.hMenu, ID_CHEAT_ENTER, FALSE, &mii);
 
-	mii.fState = ramSearchHWND ? MFS_CHECKED : MFS_UNCHECKED;
+	mii.fState = oldRamSearchHWND ? MFS_CHECKED : MFS_UNCHECKED;
 	if (GUI.FullScreen)
 		mii.fState |= MFS_DISABLED;
+	SetMenuItemInfo (GUI.hMenu, ID_RAM_WATCH, FALSE, &mii);
 	SetMenuItemInfo (GUI.hMenu, ID_RAM_SEARCH, FALSE, &mii);
+	SetMenuItemInfo (GUI.hMenu, ID_RAM_SEARCH_OLD, FALSE, &mii);
 
 	bool luaRunning = S9xLuaRunning()!=0;
 	mii.fState = MFS_UNCHECKED; // | (luaRunning ? MFS_DISABLED : 0);
