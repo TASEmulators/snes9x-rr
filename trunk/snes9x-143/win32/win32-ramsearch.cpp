@@ -1129,7 +1129,7 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					ofn.hwndOwner = GUI.hWnd;
 					ofn.lpstrFilter = "Watchlist (*.wch)" "\0*.wch\0" FILE_INFO_TXT_FILE_TYPE "\0*.txt\0" FILE_INFO_ANY_FILE_TYPE "\0*.*\0\0";
 					ofn.lpstrFile = szFileName;
-					ofn.lpstrDefExt = "txt";
+					ofn.lpstrDefExt = "wch";
 					ofn.nMaxFile = MAX_PATH;
 					ofn.Flags = OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
 					ofn.lpstrInitialDir = szPathName;
@@ -1157,7 +1157,7 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					ofn.hwndOwner = GUI.hWnd;
 					ofn.lpstrFilter = "Watchlist (*.wch)" "\0*.wch\0" FILE_INFO_TXT_FILE_TYPE "\0*.txt\0" FILE_INFO_ANY_FILE_TYPE "\0*.*\0\0";
 					ofn.lpstrFile = szFileName;
-					ofn.lpstrDefExt = "txt";
+					ofn.lpstrDefExt = "wch";
 					ofn.nMaxFile = MAX_PATH;
 					ofn.Flags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
 					ofn.lpstrInitialDir = szPathName;

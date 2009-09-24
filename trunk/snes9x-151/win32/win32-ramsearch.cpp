@@ -179,6 +179,8 @@ extern void S9xReRefresh();
 
 HWND ramSearchHWND = NULL;
 
+static char Str_Tmp[1024];
+
 #define TEST_BIT(a,v) \
 ((a)[(v) >> 5] & (1 << ((v) & 31)))
 
@@ -250,6 +252,231 @@ bool TestRange(int val_type, S9xCheatDataSize bytes, uint32 value)
 		//should be handled by sscanf
 		return true;
 	}
+}
+
+// must return 6 characters if succeeded
+static char* GetAddressStr(char* buf, int address)
+{
+	if (buf == NULL)
+		return NULL;
+
+	if(address < 0x7E0000 + 0x20000)
+		sprintf(buf, "%06X", address);
+	else if(address < 0x7E0000 + 0x30000) {
+		sprintf(buf, "s%05X", address - 0x7E0000 - 0x20000);
+	}
+	else
+		sprintf(buf, "i%05X", address - 0x7E0000 - 0x30000);
+	return buf;
+}
+
+bool ResetWatches(void)
+{
+	for(unsigned int i = 0 ; i < sizeof(watches)/sizeof(*watches) ; i++)
+		watches[i].on = false;
+	return true;
+}
+
+bool Load_Watches_S9X(const char* filename)
+{
+	FILE *file = fopen(filename, "r");
+
+	if (file == NULL)
+		return false;
+
+	ResetWatches();
+	for(unsigned int i = 0 ; i < sizeof(watches)/sizeof(*watches) ; i++)
+	{
+		char nameStr [256];
+		nameStr[0]='?'; nameStr[1]='\0';
+		fscanf(file, " address = 0x%x, name = \"%31[^\"]\", size = %d, format = %d\n", &watches[i].address, nameStr, &watches[i].size, &watches[i].format);
+		if(nameStr[0] == '\0' || nameStr[0] == '?')
+		{
+			if(watches[i].address < 0x7E0000 + 0x20000)
+				sprintf(nameStr, "%06X", watches[i].address);
+			else if(watches[i].address < 0x7E0000 + 0x30000)
+				sprintf(nameStr, "s%05X", watches[i].address - 0x7E0000 - 0x20000);
+			else
+				sprintf(nameStr, "i%05X", watches[i].address - 0x7E0000 - 0x30000);
+		}
+		nameStr[255] = '\0';
+		if(!ferror(file))
+		{
+			watches[i].on = true;
+			watches[i].buf[0] = '\0';
+			strncpy(watches[i].desc, nameStr, sizeof(watches[i].desc)); watches[i].desc[sizeof(watches[i].desc)-1]='\0';
+		}
+		if(ferror(file) || feof(file))
+			break;
+	}
+	fclose(file);
+	return true;
+}
+
+bool Save_Watches_S9X(const char* filename)
+{
+	FILE *file = fopen(filename, "w");
+
+	if (file == NULL)
+		return false;
+
+	for(unsigned int i = 0 ; i < sizeof(watches)/sizeof(*watches) ; i++)
+		if(watches[i].on)
+//			fprintf(file, "address = 0x%x, name = \"%6X\", size = %d, format = %d\n", watches[i].address, watches[i].address, watches[i].size, watches[i].format);
+			fprintf(file, "address = 0x%x, name = \"?\", size = %d, format = %d\n", watches[i].address, watches[i].size, watches[i].format);
+
+	fclose(file);
+	return true;
+}
+
+bool Load_Watches_wch(const char* filename)
+{
+	const char DELIM = '\t';
+	FILE* WatchFile = fopen(filename,"rb");
+	if (!WatchFile)
+	{
+		//MessageBox(MESSAGEBOXPARENT,"Error opening file.","ERROR",MB_OK);
+		return false;
+	}
+	ResetWatches();
+	char mode;
+	fgets(Str_Tmp,1024,WatchFile);
+	sscanf(Str_Tmp,"%c%*s",&mode);
+	int WatchAdd;
+	int WatchCount = 0;
+	fgets(Str_Tmp,1024,WatchFile);
+	sscanf(Str_Tmp,"%d%*s",&WatchAdd);
+	WatchAdd+=WatchCount;
+	for (int i = WatchCount; i < WatchAdd && i < MAX_WATCH_COUNT_S9X; i++)
+	{
+		char addressStr[16];
+		char sizeChar;
+		char typeChar;
+		int wrongEndian;
+
+		while (i < 0)
+			i++;
+		do {
+			fgets(Str_Tmp,1024,WatchFile);
+		} while (Str_Tmp[0] == '\n');
+		sscanf(Str_Tmp,"%*05X%*c%6s%*c%c%*c%c%*c%d",&addressStr,&sizeChar,&typeChar,&wrongEndian);
+		char *Comment = strrchr(Str_Tmp,DELIM) + 1;
+		*strrchr(Comment,'\n') = '\0';
+
+		//InsertWatch(Temp,Comment);
+		watches[i].on = true;
+		switch(sizeChar) {
+		case 'b':
+			watches[i].size = 1;
+			break;
+		case 'w':
+			watches[i].size = 2;
+			break;
+		default:
+			watches[i].size = 4;
+		}
+		switch(typeChar) {
+		case 'h':
+			watches[i].format = 3;
+			break;
+		case 's':
+			watches[i].format = 2;
+			break;
+		default:
+			watches[i].format = 1;
+		}
+		ScanAddress(addressStr, watches[i].address);
+		watches[i].buf[0] = '\0';
+		strncpy(watches[i].desc, Comment, sizeof(watches[i].desc)); watches[i].desc[sizeof(watches[i].desc)-1] = '\0';
+	}
+	
+	fclose(WatchFile);
+	return true;
+}
+
+bool Save_Watches_wch(const char* filename)
+{
+	FILE *WatchFile;// = fopen(filename,"r+b");
+	//if (!WatchFile)
+		WatchFile = fopen(filename,"w+b");
+	fputc('\n',WatchFile);
+
+	int WatchCount = 0;
+	for(unsigned int i = 0 ; i < sizeof(watches)/sizeof(*watches) ; i++)
+	{
+		if(watches[i].on)
+			WatchCount++;
+	}
+	sprintf(Str_Tmp,"%d\n",WatchCount);
+	fputs(Str_Tmp,WatchFile);
+
+	const char DELIM = '\t';
+	int WatchIndex = 0;
+	for(unsigned int i = 0 ; i < sizeof(watches)/sizeof(*watches) ; i++)
+	{
+		if(watches[i].on) {
+			static char addressStr[16];
+			char sizeChar;
+			char typeChar;
+
+			GetAddressStr(addressStr, watches[i].address);
+
+			switch(watches[i].size)
+			{
+			case 1:
+				sizeChar = 'b';
+				break;
+			case 2:
+				sizeChar = 'w';
+				break;
+			default:
+				sizeChar = 'd';
+			}
+
+			switch(watches[i].format)
+			{
+			case 3:
+				typeChar = 'h';
+				break;
+			case 2:
+				typeChar = 's';
+				break;
+			default:
+				typeChar = 'u';
+			}
+
+			sprintf(Str_Tmp,"%05X%c%-6s%c%c%c%c%c%d%c%s\n",WatchIndex,DELIM,addressStr,DELIM,sizeChar,DELIM,typeChar,DELIM,0,DELIM,watches[i].desc);
+			fputs(Str_Tmp,WatchFile);
+			WatchIndex++;
+		}
+	}
+	
+	fclose(WatchFile);
+	return true;
+}
+
+bool Load_Watches(const char* filename)
+{
+	FILE *file = fopen(filename, "r");
+	if(file)
+	{
+		char c;
+
+		fscanf(file, "%c%*s", &c);
+		fclose(file);
+
+		if (c == 'a')
+			return Load_Watches_S9X(filename);
+		else
+			return Load_Watches_wch(filename);
+	}
+	else
+		return false;
+}
+
+bool Save_Watches(const char* filename)
+{
+	return Save_Watches_wch(filename);
 }
 
 INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -347,7 +574,7 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			}
 
 			LVCOLUMN col;
-			char temp[32];
+			char temp[256];
 			strcpy(temp,"Address");
 			ZeroMemory(&col, sizeof(LVCOLUMN));
 			col.mask=LVCF_FMT|LVCF_ORDER|LVCF_TEXT|LVCF_WIDTH;
@@ -388,6 +615,7 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					ListView_SetItemCount (GetDlgItem(hDlg, IDC_ADDYS), l);
 			}
 
+			DragAcceptFiles(hDlg, TRUE);
 		}
 		return true;
 
@@ -395,6 +623,7 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			{
 				ramSearchHWND = NULL;
 				S9xSaveCheatFile (S9xGetFilename (".cht", CHEAT_DIR));
+				DragAcceptFiles(hDlg, FALSE);
 				break;
 			}
 
@@ -421,6 +650,13 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 		EndPaint (hDlg, &ps);
 		}
 		return true;
+	case WM_DROPFILES:
+	{
+		HDROP hDrop = (HDROP)wParam;
+		DragQueryFile(hDrop, 0, Str_Tmp, 1024);
+		DragFinish(hDrop);
+		return Load_Watches(Str_Tmp);
+	}	break;
 	case WM_NOTIFY:
 		{
 			static int selectionMarkOverride = -1;
@@ -802,6 +1038,10 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 
 
 					ScanAddress(buf, cht.address);
+					// cheap hack, but should work better than before
+					if (cht.address >= 0x800000) {
+						cht.address = 0x700000 | (cht.address & 0xfffff);
+					}
 
 					memset(buf, 0, 7);
 					if(val_type==1)
@@ -884,37 +1124,50 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					ITEM_QUERY(lvi, IDC_ADDYS, 0, buf, 7);
 					if(lvi.iItem != -1)
 					{
+						int size;
+						int format = val_type;
+						bool alreadyExist = false;
+
 						ScanAddress(buf, address);
 						memset(buf, 0, 7);
 
+						// account for size
+						if(bytes==S9X_8_BITS)
+							size=1;
+						else if (bytes==S9X_16_BITS)
+							size=2;
+						else if (bytes==S9X_24_BITS)
+							size=3;
+						else if (bytes==S9X_32_BITS)
+							size=4;
+
 						unsigned int i;
 						for(i = 0 ; i < sizeof(watches)/sizeof(*watches) ; i++)
-							if(!watches[i].on || watches[i].address == address)
+						{
+							if(!watches[i].on)
 								break;
+							if(watches[i].address == address && watches[i].size == size && watches[i].format == format) {
+								alreadyExist = true;
+								break;
+							}
+						}
 						if(i >= sizeof(watches)/sizeof(*watches))
 							i = (unsigned int)(sizeof(watches)/sizeof(*watches)-1);
 
-						watches[i].on = true;
-
-						// account for size
-						if(bytes==S9X_8_BITS)
-							watches[i].size=1;
-						else if (bytes==S9X_16_BITS)
-							watches[i].size=2;
-						else if (bytes==S9X_24_BITS)
-							watches[i].size=3;
-						else if (bytes==S9X_32_BITS)
-							watches[i].size=4;
-
-						watches[i].format=val_type;
-						watches[i].address=address;
-						strncpy(watches[i].buf,buf,12);
-						if(address < 0x7E0000 + 0x20000)
-							sprintf(watches[i].desc, "%6X", address);
-						else if(address < 0x7E0000 + 0x30000)
-							sprintf(watches[i].desc, "s%05X", address - 0x7E0000 - 0x20000);
-						else
-							sprintf(watches[i].desc, "i%05X", address - 0x7E0000 - 0x30000);
+						if (!alreadyExist)
+						{
+							watches[i].on = true;
+							watches[i].size=size;
+							watches[i].format=val_type;
+							watches[i].address=address;
+							strncpy(watches[i].buf,buf,12);
+							if(address < 0x7E0000 + 0x20000)
+								sprintf(watches[i].desc, "%6X", address);
+							else if(address < 0x7E0000 + 0x30000)
+								sprintf(watches[i].desc, "s%05X", address - 0x7E0000 - 0x20000);
+							else
+								sprintf(watches[i].desc, "i%05X", address - 0x7E0000 - 0x30000);
+						}
 					}
 					{
 						RECT rect;
@@ -945,46 +1198,15 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					ZeroMemory( (LPVOID)&ofn, sizeof(OPENFILENAME) );
 					ofn.lStructSize = sizeof(OPENFILENAME);
 					ofn.hwndOwner = GUI.hWnd;
-					ofn.lpstrFilter = FILE_INFO_TXT_FILE_TYPE "\0*.txt\0" FILE_INFO_ANY_FILE_TYPE "\0*.*\0\0";
+					ofn.lpstrFilter = "Watchlist (*.wch)" "\0*.wch\0" FILE_INFO_TXT_FILE_TYPE "\0*.txt\0" FILE_INFO_ANY_FILE_TYPE "\0*.*\0\0";
 					ofn.lpstrFile = szFileName;
-					ofn.lpstrDefExt = "txt";
+					ofn.lpstrDefExt = "wch";
 					ofn.nMaxFile = MAX_PATH;
 					ofn.Flags = OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
 					ofn.lpstrInitialDir = szPathName;
 					if(GetOpenFileName( &ofn ))
 					{
-						FILE *file = fopen(szFileName, "r");
-						if(file)
-						{
-							unsigned int i;
-							for(i = 0 ; i < sizeof(watches)/sizeof(*watches) ; i++)
-								watches[i].on = false;
-							for(i = 0 ; i < sizeof(watches)/sizeof(*watches) ; i++)
-							{
-								char nameStr [32];
-								nameStr[0]='?'; nameStr[1]='\0';
-								fscanf(file, " address = 0x%x, name = \"%31[^\"]\", size = %d, format = %d\n", &watches[i].address, nameStr, &watches[i].size, &watches[i].format);
-								if(nameStr[0] == '\0' || nameStr[0] == '?')
-								{
-									if(watches[i].address < 0x7E0000 + 0x20000)
-										sprintf(nameStr, "%06X", watches[i].address);
-									else if(watches[i].address < 0x7E0000 + 0x30000)
-										sprintf(nameStr, "s%05X", watches[i].address - 0x7E0000 - 0x20000);
-									else
-										sprintf(nameStr, "i%05X", watches[i].address - 0x7E0000 - 0x30000);
-								}
-								nameStr[31] = '\0';
-								if(!ferror(file))
-								{
-									watches[i].on = true;
-									watches[i].buf[0] = '\0';
-									strncpy(watches[i].desc, nameStr, sizeof(watches[i].desc)); watches[i].desc[sizeof(watches[i].desc)-1]='\0';
-								}
-								if(ferror(file) || feof(file))
-									break;
-							}
-							fclose(file);
-						}
+						Load_Watches(szFileName);
 					}
 					{
 						RECT rect;
@@ -1004,23 +1226,15 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					ZeroMemory( (LPVOID)&ofn, sizeof(OPENFILENAME) );
 					ofn.lStructSize = sizeof(OPENFILENAME);
 					ofn.hwndOwner = GUI.hWnd;
-					ofn.lpstrFilter = FILE_INFO_TXT_FILE_TYPE "\0*.txt\0" FILE_INFO_ANY_FILE_TYPE "\0*.*\0\0";
+					ofn.lpstrFilter = "Watchlist (*.wch)" "\0*.wch\0" FILE_INFO_TXT_FILE_TYPE "\0*.txt\0" FILE_INFO_ANY_FILE_TYPE "\0*.*\0\0";
 					ofn.lpstrFile = szFileName;
-					ofn.lpstrDefExt = "txt";
+					ofn.lpstrDefExt = "wch";
 					ofn.nMaxFile = MAX_PATH;
 					ofn.Flags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
 					ofn.lpstrInitialDir = szPathName;
 					if(GetSaveFileName( &ofn ))
 					{
-						FILE *file = fopen(szFileName, "w");
-						if(file)
-						{
-							for(unsigned int i = 0 ; i < sizeof(watches)/sizeof(*watches) ; i++)
-								if(watches[i].on)
-//									fprintf(file, "address = 0x%x, name = \"%6X\", size = %d, format = %d\n", watches[i].address, watches[i].address, watches[i].size, watches[i].format);
-									fprintf(file, "address = 0x%x, name = \"?\", size = %d, format = %d\n", watches[i].address, watches[i].size, watches[i].format);
-							fclose(file);
-						}
+						Save_Watches(szFileName);
 					}
 					{
 						RECT rect;
