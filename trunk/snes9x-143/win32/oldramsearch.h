@@ -98,18 +98,5 @@
 extern HWND oldRamSearchHWND;
 
 extern INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
-extern INT_PTR CALLBACK DlgAddCheat(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
-
-struct ICheat
-{
-	uint32  address;
-	uint32  new_val;
-	uint32  saved_val;
-	int     size;
-	bool8   enabled;
-	bool8   saved;
-	char    name [22];
-	int     format;
-};
 
 #endif // !WIN32_RAMSEARCH_H_INCLUDED

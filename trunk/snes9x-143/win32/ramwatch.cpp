@@ -2,6 +2,7 @@
 //Authors: Upthorn, Nitsuja, adelikat
 
 #include "../memmap.h"
+#include "../cheats.h"
 #include "wsnes9x.h"
 #include "rsrc/resource.h"
 #include "ramwatch.h"
@@ -10,6 +11,8 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <string>
+
+extern SCheatData Cheat;
 
 /*
 #include <commctrl.h>
@@ -435,7 +438,7 @@ void OpenRWRecentFile(int memwRFileNumber)
 			fgets(Str_Tmp,1024,WatchFile);
 		} while (Str_Tmp[0] == '\n');
 		sscanf(Str_Tmp,"%*05X%*c%6s%*c%c%*c%c%*c%d",TempAddressStr,&(Temp.Size),&(Temp.Type),&(Temp.WrongEndian));
-		Temp.Address = DisplayedAddressToSoftwareAddress(TempAddressStr);
+		Temp.Address = DisplayToRWInternalAddress(TempAddressStr);
 		Temp.WrongEndian = 0;
 		char *Comment = strrchr(Str_Tmp,DELIM) + 1;
 		*strrchr(Comment,'\n') = '\0';
@@ -530,7 +533,7 @@ bool Save_Watches()
 		const char DELIM = '\t';
 		for (int i = 0; i < WatchCount; i++)
 		{
-			sprintf(Str_Tmp,"%05X%c%-6s%c%c%c%c%c%d%c%s\n",i,DELIM,SoftwareAddressToDisplayedAddress(rswatches[i].Address),DELIM,rswatches[i].Size,DELIM,rswatches[i].Type,DELIM,rswatches[i].WrongEndian,DELIM,rswatches[i].comment);
+			sprintf(Str_Tmp,"%05X%c%-6s%c%c%c%c%c%d%c%s\n",i,DELIM,RWInternalToDisplayAddress(rswatches[i].Address),DELIM,rswatches[i].Size,DELIM,rswatches[i].Type,DELIM,rswatches[i].WrongEndian,DELIM,rswatches[i].comment);
 			fputs(Str_Tmp,WatchFile);
 		}
 		
@@ -559,7 +562,7 @@ if (currentWatch[0] == NULL) //If there is no currently loaded file, run to Save
 		const char DELIM = '\t';
 		for (int i = 0; i < WatchCount; i++)
 		{
-			sprintf(Str_Tmp,"%05X%c%-6s%c%c%c%c%c%d%c%s\n",i,DELIM,SoftwareAddressToDisplayedAddress(rswatches[i].Address),DELIM,rswatches[i].Size,DELIM,rswatches[i].Type,DELIM,rswatches[i].WrongEndian,DELIM,rswatches[i].comment);
+			sprintf(Str_Tmp,"%05X%c%-6s%c%c%c%c%c%d%c%s\n",i,DELIM,RWInternalToDisplayAddress(rswatches[i].Address),DELIM,rswatches[i].Size,DELIM,rswatches[i].Type,DELIM,rswatches[i].WrongEndian,DELIM,rswatches[i].comment);
 			fputs(Str_Tmp,WatchFile);
 		}
 		fclose(WatchFile);
@@ -603,7 +606,7 @@ bool Load_Watches(bool clear, const char* filename)
 			fgets(Str_Tmp,1024,WatchFile);
 		} while (Str_Tmp[0] == '\n');
 		sscanf(Str_Tmp,"%*05X%*c%6s%*c%c%*c%c%*c%d",TempAddressStr,&(Temp.Size),&(Temp.Type),&(Temp.WrongEndian));
-		Temp.Address = DisplayedAddressToSoftwareAddress(TempAddressStr);
+		Temp.Address = DisplayToRWInternalAddress(TempAddressStr);
 		Temp.WrongEndian = 0;
 		char *Comment = strrchr(Str_Tmp,DELIM) + 1;
 		*strrchr(Comment,'\n') = '\0';
@@ -657,6 +660,20 @@ void RemoveWatch(int watchIndex)
 	WatchCount--;
 }
 
+void RefreshWatchListSelectedItemControlStatus(HWND hDlg)
+{
+	static int prevSelIndex=-1;
+	int selIndex = ListView_GetSelectionMark(GetDlgItem(hDlg,IDC_RAMLIST));
+	if(selIndex != prevSelIndex)
+	{
+		if(selIndex == -1 || prevSelIndex == -1)
+		{
+			EnableWindow(GetDlgItem(hDlg, IDC_C_ADDCHEAT), (selIndex != -1) ? TRUE : FALSE);
+		}
+		prevSelIndex = selIndex;
+	}
+}
+
 LRESULT CALLBACK EditWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) //Gets info for a RAM Watch, and then inserts it into the Watch List
 {
 	RECT r;
@@ -682,7 +699,7 @@ LRESULT CALLBACK EditWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			//SetWindowPos(hDlg, NULL, max(0, r.left + (dx1 - dx2)), max(0, r.top + (dy1 - dy2)), NULL, NULL, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
 			SetWindowPos(hDlg, NULL, r.left, r.top, NULL, NULL, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
 			index = (int)lParam;
-			strcpy(Str_Tmp, SoftwareAddressToDisplayedAddress(rswatches[index].Address));
+			strcpy(Str_Tmp, RWInternalToDisplayAddress(rswatches[index].Address));
 			SetDlgItemText(hDlg,IDC_EDIT_COMPAREADDRESS,Str_Tmp);
 			if (rswatches[index].comment != NULL)
 				SetDlgItemText(hDlg,IDC_PROMPT_EDIT,rswatches[index].comment);
@@ -755,7 +772,7 @@ LRESULT CALLBACK EditWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 						char *addrstr = Str_Tmp;
 						if (strlen(Str_Tmp) > 8) addrstr = &(Str_Tmp[strlen(Str_Tmp) - 9]);
 						for(int i = 0; addrstr[i]; i++) {if(toupper(addrstr[i]) == 'O') addrstr[i] = '0';}
-						Temp.Address = DisplayedAddressToSoftwareAddress(addrstr);
+						Temp.Address = DisplayToRWInternalAddress(addrstr);
 
 						if((Temp.Address & ~0xFFFFFF) == ~0xFFFFFF)
 							Temp.Address &= 0xFFFFFF;
@@ -923,6 +940,16 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 					LPNMHDR lP = (LPNMHDR) lParam;
 					switch (lP->code)
 					{
+						case LVN_ITEMCHANGED: // selection changed event
+						{
+							NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)lP;
+							if(pNMListView->uNewState & LVIS_FOCUSED)
+							{
+								// disable buttons that we don't have the right number of selected items for
+								RefreshWatchListSelectedItemControlStatus(hDlg);
+							}
+						}	break;
+
 						case LVN_GETDISPINFO:
 						{
 							LV_DISPINFO *Item = (LV_DISPINFO *)lParam;
@@ -934,7 +961,7 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 							switch (Item->item.iSubItem)
 							{
 								case 0:
-									strcpy(num, SoftwareAddressToDisplayedAddress(rswatches[iNum].Address));
+									strcpy(num, RWInternalToDisplayAddress(rswatches[iNum].Address));
 									Item->item.pszText = num;
 									return true;
 								case 1: {
@@ -1104,23 +1131,27 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 						else if(rswatches[watchIndex].Type == 'h')
 							numberType = 2;
 
-						// TODO: add cheat dialog
-						#if 0
-						if(theApp.cartridgeType == 0)
+						if (sizeType == -1 || numberType == -1)
+							break;
+
+						struct ICheat cht;
+						const int fmtTable[] = { 2, 1, 3 };
+						ZeroMemory(&cht, sizeof(struct SCheat));
+						cht.address = RWInternalToHardwareAddress(address);
+						cht.size = 1 << sizeType;
+						cht.format = fmtTable[numberType];
+						cht.new_val = rswatches[watchIndex].CurValue;
+						cht.saved_val = rswatches[watchIndex].CurValue;
+						if(DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_CHEAT_FROM_SEARCH), hDlg, DlgAddCheat, (LPARAM)&cht))
 						{
-							AddCheat dlg (address/*, hDlg*/);
-							if(sizeType != -1) dlg.sizeType = sizeType;
-							if(numberType != -1) dlg.numberType = numberType;
-							dlg.DoModal();
+							int p;
+							for(p=0; p<cht.size; p++)
+							{
+								S9xAddCheat(TRUE, cht.saved, cht.address +p, ((cht.new_val>>(8*p))&0xFF));
+								//add cheat
+								strcpy(Cheat.c[Cheat.num_cheats-1].name, cht.name);
+							}
 						}
-						else
-						{
-							AddGBCheat dlg (address/*, hDlg*/);
-							if(sizeType != -1) dlg.sizeType = sizeType;
-							if(numberType != -1) dlg.numberType = numberType;
-							dlg.DoModal();
-						}
-						#endif
 					}
 				}
 				break;
