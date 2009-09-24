@@ -315,7 +315,7 @@ static BOOL OnCommand(HWND hDlg, WPARAM wParam, LPARAM lParam)
 
 //------------------------------------------------------------------------------
 
-INT_PTR CALLBACK DlgNewCheat(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK DlgAddCheat(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch(msg)
 	{

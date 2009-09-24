@@ -98,7 +98,7 @@
 extern HWND oldRamSearchHWND;
 
 extern INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
-extern INT_PTR CALLBACK DlgNewCheat(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
+extern INT_PTR CALLBACK DlgAddCheat(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
 struct ICheat
 {
