@@ -2300,19 +2300,7 @@ LRESULT CALLBACK WinProc(
 				_fullpath(szPathName, GUI.SPCDir, MAX_PATH);
 				mkdir(szPathName);
 
-				if(Memory.ROMFilename[0]!='\0')
-				{
-					static TCHAR filename [_MAX_PATH + 1];
-					TCHAR drive [_MAX_DRIVE + 1];
-					TCHAR dir [_MAX_DIR + 1];
-					TCHAR fname [_MAX_FNAME + 1];
-					TCHAR ext [_MAX_EXT + 1];	
-					_splitpath (Memory.ROMFilename, drive, dir, fname, ext);
-					_makepath (filename, "", "", fname, "wav");
-					strcpy(szFileName, filename);
-				}
-				else
-					strcpy(szFileName, "");
+				strcpy(szFileName, S9xGetFilenameRel("wav"));
 
 				ZeroMemory( (LPVOID)&ofn, sizeof(OPENFILENAME) );
 				ofn.lStructSize = sizeof(OPENFILENAME);
@@ -2353,19 +2341,7 @@ LRESULT CALLBACK WinProc(
 				_fullpath(szPathName, GUI.MovieDir, MAX_PATH);
 				mkdir(szPathName);
 
-				if(Memory.ROMFilename[0]!='\0')
-				{
-					static TCHAR filename [_MAX_PATH + 1];
-					TCHAR drive [_MAX_DRIVE + 1];
-					TCHAR dir [_MAX_DIR + 1];
-					TCHAR fname [_MAX_FNAME + 1];
-					TCHAR ext [_MAX_EXT + 1];	
-					_splitpath (Memory.ROMFilename, drive, dir, fname, ext);
-					_makepath (filename, "", "", fname, "avi");
-					strcpy(szFileName, filename);
-				}
-				else
-					strcpy(szFileName, "");
+				strcpy(szFileName, S9xGetFilenameRel("avi"));
 
 				ZeroMemory( (LPVOID)&ofn, sizeof(OPENFILENAME) );
 				ofn.lStructSize = sizeof(OPENFILENAME);
@@ -12292,19 +12268,7 @@ INT_PTR CALLBACK DlgLuaScriptDialog(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 				OPENFILENAME  ofn;
 				char  szFileName[MAX_PATH];
 
-				if(Memory.ROMFilename[0]!='\0')
-				{
-					static TCHAR filename [_MAX_PATH + 1];
-					TCHAR drive [_MAX_DRIVE + 1];
-					TCHAR dir [_MAX_DIR + 1];
-					TCHAR fname [_MAX_FNAME + 1];
-					TCHAR ext [_MAX_EXT + 1];	
-					_splitpath (Memory.ROMFilename, drive, dir, fname, ext);
-					_makepath (filename, "", "", fname, "lua");
-					strcpy(szFileName, filename);
-				}
-				else
-					strcpy(szFileName, "");
+				strcpy(szFileName, S9xGetFilenameRel("lua"));
 
 				ZeroMemory( (LPVOID)&ofn, sizeof(OPENFILENAME) );
 				ofn.lStructSize = sizeof(OPENFILENAME);
@@ -12445,19 +12409,7 @@ INT_PTR CALLBACK DlgOpenMovie(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					OPENFILENAME  ofn;
 					char  szFileName[MAX_PATH];
 
-					if(Memory.ROMFilename[0]!='\0')
-					{
-						static TCHAR filename [_MAX_PATH + 1];
-						TCHAR drive [_MAX_DRIVE + 1];
-						TCHAR dir [_MAX_DIR + 1];
-						TCHAR fname [_MAX_FNAME + 1];
-						TCHAR ext [_MAX_EXT + 1];	
-						_splitpath (Memory.ROMFilename, drive, dir, fname, ext);
-						_makepath (filename, "", "", fname, "smv");
-						strcpy(szFileName, filename);
-					}
-					else
-						strcpy(szFileName, "");
+					strcpy(szFileName, S9xGetFilenameRel("smv"));
 
 					ZeroMemory( (LPVOID)&ofn, sizeof(OPENFILENAME) );
 					ofn.lStructSize = sizeof(OPENFILENAME);
@@ -12685,19 +12637,7 @@ INT_PTR CALLBACK DlgCreateMovie(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 					OPENFILENAME  ofn;
 					char  szFileName[MAX_PATH];
 
-					if(Memory.ROMFilename[0]!='\0')
-					{
-						static TCHAR filename [_MAX_PATH + 1];
-						TCHAR drive [_MAX_DRIVE + 1];
-						TCHAR dir [_MAX_DIR + 1];
-						TCHAR fname [_MAX_FNAME + 1];
-						TCHAR ext [_MAX_EXT + 1];	
-						_splitpath (Memory.ROMFilename, drive, dir, fname, ext);
-						_makepath (filename, "", "", fname, "smv");
-						strcpy(szFileName, filename);
-					}
-					else
-						strcpy(szFileName, "");
+					strcpy(szFileName, S9xGetFilenameRel("smv"));
 
 					ZeroMemory( (LPVOID)&ofn, sizeof(OPENFILENAME) );
 					ofn.lStructSize = sizeof(OPENFILENAME);

@@ -440,8 +440,7 @@ int Change_File_S(char *Dest, char *Dir, char *Titre, char *Filter, char *Ext, H
 
 bool Save_Watches()
 {
-	//Rom_Name = path.GetRomName();
-	Rom_Name = "Memory_ROMFileName";
+	Rom_Name = S9xGetFilenameRel("");
 	strncpy(Str_Tmp,Rom_Name.c_str(),512);
 	strcat(Str_Tmp,".wch");
 	if(Change_File_S(Str_Tmp, Gens_Path, "Save Watches", "Watchlist\0*.wch\0All Files\0*.*\0\0", "wch", RamWatchHWnd))
@@ -575,8 +574,7 @@ static int Change_File_L(char *Dest, char *Dir, char *Titre, char *Filter, char 
 
 bool Load_Watches(bool clear)
 {
-	//Rom_Name = path.GetRomName();
-	Rom_Name = "Memory_ROMFileName";
+	Rom_Name = S9xGetFilenameRel("");
 	strncpy(Str_Tmp,Rom_Name.c_str(),512);
 	strcat(Str_Tmp,".wch");
 	if(Change_File_L(Str_Tmp, Watch_Dir, "Load Watches", "Watchlist\0*.wch\0All Files\0*.*\0\0", "wch", RamWatchHWnd))
