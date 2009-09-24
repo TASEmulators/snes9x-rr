@@ -994,10 +994,13 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 					return true;
 				case IDC_C_WATCH_REMOVE:
 					watchIndex = ListView_GetSelectionMark(GetDlgItem(hDlg,IDC_WATCHLIST));
-					RemoveWatch(watchIndex);
-					ListView_SetItemCount(GetDlgItem(hDlg,IDC_WATCHLIST),WatchCount);	
-					RWfileChanged=true;
-					SetFocus(GetDlgItem(hDlg,IDC_WATCHLIST));
+					if(watchIndex != -1)
+					{
+						RemoveWatch(watchIndex);
+						ListView_SetItemCount(GetDlgItem(hDlg,IDC_WATCHLIST),WatchCount);	
+						RWfileChanged=true;
+						SetFocus(GetDlgItem(hDlg,IDC_WATCHLIST));
+					}
 					return true;
 				case IDC_C_WATCH_EDIT:
 					watchIndex = ListView_GetSelectionMark(GetDlgItem(hDlg,IDC_WATCHLIST));
@@ -1016,12 +1019,15 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 					return true;
 				case IDC_C_WATCH_DUPLICATE:
 					watchIndex = ListView_GetSelectionMark(GetDlgItem(hDlg,IDC_WATCHLIST));
-					rswatches[WatchCount].Address = rswatches[watchIndex].Address;
-					rswatches[WatchCount].WrongEndian = rswatches[watchIndex].WrongEndian;
-					rswatches[WatchCount].Size = rswatches[watchIndex].Size;
-					rswatches[WatchCount].Type = rswatches[watchIndex].Type;
-					DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_EDITWATCH), hDlg, (DLGPROC) EditWatchProc,(LPARAM) WatchCount);
-					SetFocus(GetDlgItem(hDlg,IDC_WATCHLIST));
+					if(watchIndex != -1)
+					{
+						rswatches[WatchCount].Address = rswatches[watchIndex].Address;
+						rswatches[WatchCount].WrongEndian = rswatches[watchIndex].WrongEndian;
+						rswatches[WatchCount].Size = rswatches[watchIndex].Size;
+						rswatches[WatchCount].Type = rswatches[watchIndex].Type;
+						DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_EDITWATCH), hDlg, (DLGPROC) EditWatchProc,(LPARAM) WatchCount);
+						SetFocus(GetDlgItem(hDlg,IDC_WATCHLIST));
+					}
 					return true;
 				case IDC_C_WATCH_UP:
 				{
