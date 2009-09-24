@@ -757,7 +757,6 @@ LRESULT CALLBACK EditWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 						for(int i = 0; addrstr[i]; i++) {if(toupper(addrstr[i]) == 'O') addrstr[i] = '0';}
 						Temp.Address = DisplayedAddressToSoftwareAddress(addrstr);
 
-						// TODO: FIXME ???
 						if((Temp.Address & ~0xFFFFFF) == ~0xFFFFFF)
 							Temp.Address &= 0xFFFFFF;
 
