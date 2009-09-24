@@ -29,8 +29,6 @@
 
 #include "rsrc/resource.h"
 
-//#include "common.h"
-//#include "main.h"
 #include "../memmap.h"
 #include "wsnes9x.h"
 

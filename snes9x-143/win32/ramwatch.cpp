@@ -1,19 +1,15 @@
 //RamWatch dialog was copied and adapted from GENS11: http://code.google.com/p/gens-rerecording/
 //Authors: Upthorn, Nitsuja, adelikat
 
-//#include "main.h"
 #include "../memmap.h"
 #include "wsnes9x.h"
 #include "rsrc/resource.h"
-//#include "common.h"
-//#include "NDSSystem.h"
 #include "ramwatch.h"
 #include "ram_search.h"
 #include <assert.h>
 #include <windows.h>
 #include <commctrl.h>
 #include <string>
-//#include "path.h"
 
 HWND RamWatchHWnd = NULL;
 
