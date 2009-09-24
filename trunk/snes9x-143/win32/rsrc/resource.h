@@ -49,6 +49,11 @@
 #define IDD_FILE_LUA_STOP               144
 #define IDD_FRAMESKIP_SETTINGS          145
 #define IDD_FILE_LUA_RELOAD             146
+#define IDD_RAMSEARCH                   147
+#define IDD_RAMWATCH                    148
+#define IDD_EDITWATCH                   149
+#define IDD_PROMPT                      150
+#define IDR_RWACCELERATOR               151
 #define IDC_DRIVER                      1001
 #define IDC_BUFLEN                      1002
 #define IDC_RATE                        1003
@@ -214,13 +219,13 @@
 #define IDC_PICTURE                     1164
 #define IDC_ADDYS                       1165
 #define IDC_OK                          1166
-#define IDC_C_SEARCH                    1167
+//#define IDC_C_SEARCH                    1167
 #define IDC_RED                         1168
 #define IDC_C_ADD                       1169
 #define IDC_BLUE                        1170
-#define IDC_C_RESET                     1171
+//#define IDC_C_RESET                     1171
 #define IDC_LABEL_BLUE                  1172
-#define IDC_1_BYTE                      1173
+//#define IDC_1_BYTE                      1173
 #define IDC_2_BYTE                      1174
 #define IDC_3_BYTE                      1175
 #define IDC_4_BYTE                      1176
@@ -230,12 +235,12 @@
 #define IDC_GREATER_THAN_EQUAL          1180
 #define IDC_EQUAL                       1181
 #define IDC_NOT_EQUAL                   1182
-#define IDC_UNSIGNED                    1183
-#define IDC_SIGNED                      1184
-#define IDC_HEX                         1185
+//#define IDC_UNSIGNED                    1183
+//#define IDC_SIGNED                      1184
+//#define IDC_HEX                         1185
 #define IDC_ENTER_LABEL                 1186
 #define IDC_DIAGTOGGLE                  1187
-#define IDC_C_WATCH                     1188
+//#define IDC_C_WATCH                     1188
 #define IDC_UNDO                        1189
 #define IDC_C_CLEARWATCH                1190
 #define IDC_COMBO1                      1191
@@ -431,6 +436,49 @@
 #define IDC_HOTKEY18                    1380
 #define IDC_HOTKEY19                    1381
 #define IDC_HOTKEY20                    1382
+#define IDC_RAMLIST                     1383
+#define IDC_C_SEARCH                    1384
+#define IDC_C_ADDCHEAT                  1385
+#define IDC_C_WATCH                     1386
+#define IDC_C_RESET                     1387
+#define IDC_C_ELIMINATE                 1388
+#define IDC_LESSTHAN                    1389
+#define IDC_MORETHAN                    1390
+#define IDC_NOMORETHAN                  1391
+#define IDC_NOLESSTHAN                  1392
+#define IDC_EQUALTO                     1393
+#define IDC_DIFFERENTFROM               1394
+#define IDC_DIFFERENTBY                 1395
+#define IDC_MODULO                      1396
+#define IDC_EDIT_DIFFBY                 1397
+#define IDC_EDIT_MODBY                  1398
+#define IDC_PREVIOUSVALUE               1399
+#define IDC_SPECIFICVALUE               1400
+#define IDC_SPECIFICADDRESS             1401
+#define IDC_NUMBEROFCHANGES             1402
+#define IDC_EDIT_COMPAREVALUE           1403
+#define IDC_EDIT_COMPAREADDRESS         1404
+#define IDC_EDIT_COMPARECHANGES         1405
+#define IDC_SIGNED                      1406
+#define IDC_UNSIGNED                    1407
+#define IDC_HEX                         1408
+#define IDC_C_AUTOSEARCH                1409
+#define IDC_1_BYTE                      1410
+#define IDC_2_BYTES                     1411
+#define IDC_4_BYTES                     1412
+#define IDC_MISALIGN                    1413
+#define IDC_C_RESET_CHANGES             1414
+#define IDC_C_UNDO                      1415
+#define IDC_WATCHLIST                   1416
+#define IDC_C_WATCH_EDIT                1417
+#define IDC_C_WATCH_REMOVE              1418
+#define IDC_C_WATCH_DUPLICATE           1419
+#define ID_WATCHES_UPDOWN               1420
+#define IDC_C_WATCH_UP                  1421
+#define IDC_C_WATCH_DOWN                1422
+#define IDC_PROMPT_TEXT                 1423
+#define IDC_PROMPT_TEXT2                1424
+#define IDC_PROMPT_EDIT                 1425
 #define ID_FILE_EXIT                    40001
 #define ID_LANGUAGE_ENGLISH             40002
 #define ID_LANGUAGE_NEDERLANDS          40003
@@ -494,7 +542,7 @@
 #define ID_FILE_LOAD8                   40061
 #define ID_FILE_LOAD9                   40062
 #define ID_CHEAT_ENTER                  40063
-#define ID_RAM_SEARCH                   40064
+#define ID_RAM_SEARCH_OLD               40064
 #define ID_CHEAT_DISABLE                40065
 #define ID_FILE_SAVE_SPC_DATA           40066
 #define ID_HELP_ABOUT                   40067
@@ -687,14 +735,24 @@
 #define ID_EMULATOR_SAVECOMPRESS9       40255
 #define IDC_INIT_FASTROM_SETTING        40256
 #define ID_VIDEO_LUAGUIINIMAGE          40257
+#define RAMMENU_FILE_AUTOLOAD           40258
+#define RAMMENU_FILE_SAVEWINDOW         40259
+#define RAMMENU_FILE_SAVE               40260
+#define RAMMENU_FILE_SAVEAS             40261
+#define RAMMENU_FILE_OPEN               40262
+#define RAMMENU_FILE_APPEND             40263
+#define RAMMENU_FILE_NEW                40264
+#define RAMMENU_FILE_RECENT             40265
+#define ID_RAM_SEARCH                   40266
+#define ID_RAM_WATCH                    40267
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        147
-#define _APS_NEXT_COMMAND_VALUE         40258
-#define _APS_NEXT_CONTROL_VALUE         1383
+#define _APS_NEXT_RESOURCE_VALUE        152
+#define _APS_NEXT_COMMAND_VALUE         40268
+#define _APS_NEXT_CONTROL_VALUE         1426
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
