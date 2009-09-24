@@ -954,7 +954,7 @@ INT_PTR CALLBACK DlgRAMSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					}
 					cht.format=val_type;
 					//invoke dialog
-					if(DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_CHEAT_FROM_SEARCH), hDlg, DlgNewCheat, (LPARAM)&cht))
+					if(DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_CHEAT_FROM_SEARCH), hDlg, DlgAddCheat, (LPARAM)&cht))
 					{
 						int p;
 						for(p=0; p<cht.size; p++)
