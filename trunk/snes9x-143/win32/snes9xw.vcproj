@@ -798,6 +798,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\wincheat.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\wlanguage.h"
 				>
 			</File>
