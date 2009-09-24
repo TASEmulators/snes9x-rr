@@ -733,10 +733,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\win32-newcheat.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\win32-snapshot.cpp"
 				>
 			</File>
@@ -795,6 +791,10 @@
 			</File>
 			<File
 				RelativePath=".\win32_sound.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\winaddcheat.cpp"
 				>
 			</File>
 			<File
