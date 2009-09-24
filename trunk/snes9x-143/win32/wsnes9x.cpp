@@ -268,7 +268,6 @@ static int KeyInRepeatMSec;
 
 extern HWND RamSearchHWnd;
 extern LRESULT CALLBACK RamSearchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-void InitRamSearch();
 
 #define NUM_HOTKEY_CONTROLS 20
 
@@ -3493,7 +3492,7 @@ LRESULT CALLBACK WinProc(
 						case ID_RAM_SEARCH:
 							if(!RamSearchHWnd)
 							{
-								InitRamSearch();
+								reset_address_info();
 								RamSearchHWnd = CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_RAMSEARCH), hWnd, (DLGPROC) RamSearchProc);
 							}
 							else
@@ -5330,11 +5329,18 @@ static void CheckMenuStates ()
     SetMenuItemInfo (GUI.hMenu, ID_FILE_RESET, FALSE, &mii);
     SetMenuItemInfo (GUI.hMenu, ID_CHEAT_ENTER, FALSE, &mii);
 
-	mii.fState = oldRamSearchHWND ? MFS_CHECKED : MFS_UNCHECKED;
-	if (GUI.FullScreen)
+	mii.fState = RamWatchHWnd ? MFS_CHECKED : MFS_UNCHECKED;
+	if (Settings.StopEmulation || GUI.FullScreen)
 		mii.fState |= MFS_DISABLED;
 	SetMenuItemInfo (GUI.hMenu, ID_RAM_WATCH, FALSE, &mii);
+	mii.fState = RamSearchHWnd ? MFS_CHECKED : MFS_UNCHECKED;
+	if (Settings.StopEmulation || GUI.FullScreen)
+		mii.fState |= MFS_DISABLED;
 	SetMenuItemInfo (GUI.hMenu, ID_RAM_SEARCH, FALSE, &mii);
+
+	mii.fState = oldRamSearchHWND ? MFS_CHECKED : MFS_UNCHECKED;
+	if (Settings.StopEmulation || GUI.FullScreen)
+		mii.fState |= MFS_DISABLED;
 	SetMenuItemInfo (GUI.hMenu, ID_RAM_SEARCH_OLD, FALSE, &mii);
 
 	bool luaRunning = S9xLuaRunning()!=0;

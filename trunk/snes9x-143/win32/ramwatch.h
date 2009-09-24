@@ -3,7 +3,7 @@
 
 #ifndef RAMWATCH_H
 #define RAMWATCH_H
-#include "windows.h"
+#include <windows.h>
 bool ResetWatches();
 void OpenRWRecentFile(int memwRFileNumber);
 extern bool AutoRWLoad;
@@ -14,6 +14,12 @@ extern bool AskSave();
 extern int ramw_x;
 extern int ramw_y;
 extern bool RWfileChanged;
+
+//Constants
+//#define AUTORWLOAD "RamWatchAutoLoad"
+//#define RWSAVEPOS "RamWatchSaveWindowPos"
+//#define RAMWX "RamwX"
+//#define RAMWY "RamwY"
 
 // AddressWatcher is self-contained now
 struct AddressWatcher
@@ -31,10 +37,14 @@ extern int WatchCount; // number of valid items in rswatches
 
 extern char Watch_Dir[1024];
 
+extern HWND RamWatchHWnd;
+extern HACCEL RamWatchAccels;
+
 bool InsertWatch(const AddressWatcher& Watch, char *Comment);
 bool InsertWatch(const AddressWatcher& Watch, HWND parent=NULL); // asks user for comment
 void Update_RAM_Watch();
 bool Load_Watches(bool clear, const char* filename);
+void RWAddRecentFile(const char *filename);
 
 LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 extern HWND RamWatchHWnd;
