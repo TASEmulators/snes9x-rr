@@ -288,6 +288,22 @@ const char *S9xGetFilename (const char *ex, enum s9x_getdirtype dirtype)
     return (filename);
 }
 
+const char *S9xGetFilenameRel (const char *ex)
+{
+	static char filename [PATH_MAX + 1];
+	char dir [_MAX_DIR + 1];
+	char drive [_MAX_DRIVE + 1];
+	char fname [_MAX_FNAME + 1];
+	char ext [_MAX_EXT + 1];
+
+	if (Memory.ROMFilename[0] == '\0')
+		strcpy(filename, "");
+	else {
+		_splitpath (Memory.ROMFilename, drive, dir, fname, ext);
+		_makepath (filename, "", "", fname, ex);
+	}
+	return filename;
+}
 const void S9xGetLastDirectory (char* buffer, int buf_len)
 {
 	if(buf_len <= 0)
