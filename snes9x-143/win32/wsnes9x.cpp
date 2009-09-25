@@ -2246,6 +2246,12 @@ LRESULT CALLBACK WinProc(
 					// MessageBox(hDlg, "Oops", "Script not loaded", MB_OK); // Errors are displayed by the Lua code.
 				}
 			}
+			else if (lstrcmpi(ext, ".wch") == 0) {
+				if (!Settings.StopEmulation) {
+					SendMenuCommand(ID_RAM_WATCH);
+					Load_Watches(true, filename);
+				}
+			}
 			else {
 				bool extIsValid = false;
 
@@ -5348,6 +5354,11 @@ static void CheckMenuStates ()
 	if (Settings.StopEmulation || GUI.FullScreen)
 		mii.fState |= MFS_DISABLED;
 	SetMenuItemInfo (GUI.hMenu, ID_RAM_SEARCH_OLD, FALSE, &mii);
+
+	mii.fState = (inputMacroHWND && IsWindowVisible(inputMacroHWND)) ? MFS_CHECKED : MFS_UNCHECKED;
+	if (GUI.FullScreen)
+		mii.fState |= MFS_DISABLED;
+	SetMenuItemInfo (GUI.hMenu, ID_OPTIONS_INPUT_MACRO, FALSE, &mii);
 
 	bool luaRunning = S9xLuaRunning()!=0;
 	mii.fState = MFS_UNCHECKED; // | (luaRunning ? MFS_DISABLED : 0);

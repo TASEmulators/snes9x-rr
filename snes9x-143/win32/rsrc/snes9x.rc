@@ -1445,9 +1445,6 @@ BEGIN
     POPUP "&Cheat"
     BEGIN
         MENUITEM "&Game Genie, Pro-Action Replay Codes", ID_CHEAT_ENTER
-        MENUITEM "RAM Watch...",                ID_RAM_WATCH, GRAYED
-        MENUITEM "RAM Search...",               ID_RAM_SEARCH, GRAYED
-        MENUITEM "RAM Search (Old)...",         ID_RAM_SEARCH_OLD, GRAYED
         MENUITEM "&Disable Cheats",             ID_CHEAT_DISABLE, GRAYED
         MENUITEM "Set SPC7110 RTC",             IDM_7110_RTC, GRAYED
     END
@@ -1466,7 +1463,10 @@ BEGIN
     END
     POPUP "&Tools"
     BEGIN
-        MENUITEM "&Input Macro Editor...",      ID_OPTIONS_INPUT_MACRO
+        MENUITEM "RAM Watch...",                ID_RAM_WATCH, GRAYED
+        MENUITEM "RAM Search...",               ID_RAM_SEARCH, GRAYED
+        MENUITEM "RAM Search (Old)...",         ID_RAM_SEARCH_OLD, GRAYED
+        MENUITEM "&Input Macro Editor...",      ID_OPTIONS_INPUT_MACRO, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "Fast Forward to Frame",       ID_FILE_MOVIE_SEEK, GRAYED
         MENUITEM SEPARATOR

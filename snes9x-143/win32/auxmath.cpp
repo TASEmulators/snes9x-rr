@@ -88,8 +88,8 @@
 *******************************************************************************/
 /****************************************************************
 *																*	
-*    AuxMath.cpp - Galeria de funciones auxiliares geomÈtricas	*
-*				   ImplementaciÛn.								*	
+*    AuxMath.cpp - Galeria de funciones auxiliares geom√©tricas	*
+*				   Implementaci√≥n.								*	
 *																*
 *	 By Cuervo (1999) 											*
 *	 diego_tartara@ciudad.com.ar								*
@@ -100,11 +100,11 @@
 //headers 
 #include "auxmath.h"
 
-#pragma warning (disable : 4244)	//ConversiÛn de double a float
+#pragma warning (disable : 4244)	//Conversi√≥n de double a float
 
 //----------------------------------------------------------------------/
 //////////////////////////////////////////////////////
-//ImplementaciÛn de los operadores de la clase vect	//
+//Implementaci√≥n de los operadores de la clase vect	//
 //////////////////////////////////////////////////////
 
 //////////////////
@@ -125,7 +125,7 @@ vect::vect(const vect& v)
 }
 
 /////////////////////////////
-//Operadores de asignaciÛn //
+//Operadores de asignaci√≥n //
 /////////////////////////////
 vect& vect::operator =  (const vect v)
 {
@@ -270,7 +270,7 @@ vect operator- (const vect& vect1)
 
 	
 ///////////////////////////////
-// Operadores de comparaciÛn //
+// Operadores de comparaci√≥n //
 ///////////////////////////////
 int operator> (const vect& vect1, const vect& vect2)
 {
@@ -335,7 +335,7 @@ void vect::MakeOrthonormal(vect &base1, vect &base2)
 //----------------------------------------------------------------------/
 
 //////////////////////////////////////////////////////
-//ImplementaciÛn de los operadores de la clase quat	//
+//Implementaci√≥n de los operadores de la clase quat	//
 //////////////////////////////////////////////////////
 
 //////////////////
@@ -370,7 +370,7 @@ quat::quat(const float yaw, const float pitch,
 {
 	//el orden de las rotaciones es:
 	//r' = roll ( pitch ( yaw r)))
-	//yaw:   sobre eje Z (tambiÈn llamado heading)
+	//yaw:   sobre eje Z (tambi√©n llamado heading)
 	//pitch: sobre eje Y
 	//roll:  sobre eje X
 	float SinYaw   = (float)sin(yaw/2);
@@ -388,7 +388,7 @@ quat::quat(const float yaw, const float pitch,
 }
 
 /////////////////////////////
-//Operadores de asignaciÛn //
+//Operadores de asignaci√≥n //
 /////////////////////////////
 quat& quat::operator =  ( const quat q )
 {
@@ -429,7 +429,7 @@ quat& quat::operator *= (const quat q)
 	//Eje = ang1*V2 + ang2*V1 + (RotAx1 x RotAx2)
 	//siendo 'o' prod escalar y 'x' prod vectorial
 
-	//·ngulo
+	//√°ngulo
 	Angle = Angle1 * q.Angle - (VectDotProd(RotAx1, q.RotAx)); 
 
 	//vector
@@ -449,7 +449,7 @@ quat& quat::operator *= ( const float num)
 
 void quat::set(const float yaw, const float pitch, const float roll)
 {
-	//idem al constructor a partir de ·ngulos Euler
+	//idem al constructor a partir de √°ngulos Euler
 	float SinYaw   = (float)sin(yaw/2);
     float SinPitch = (float)sin(pitch/2);
     float SinRoll  = (float)sin(roll/2);
@@ -477,7 +477,7 @@ void quat::set(const float x1, const float y1, const float z1, const float angle
 //----------------------------------------------------------------------/
 
 //////////////////////////////////////////////////////
-//ImplementaciÛn de los operadores de la clase mat4	//
+//Implementaci√≥n de los operadores de la clase mat4	//
 //////////////////////////////////////////////////////
 
 //////////////////
@@ -503,7 +503,7 @@ mat4::mat4(const mat4 &m)
 }
 
 /////////////////////////////
-//Operadores de asignaciÛn //
+//Operadores de asignaci√≥n //
 /////////////////////////////
 mat4& mat4::operator  = ( const mat4& m )
 {
@@ -668,7 +668,7 @@ mat4 operator - (const mat4& a, const mat4& b)
 }
 
 ///////////////////////////////
-// Operadores de comparaciÛn //
+// Operadores de comparaci√≥n //
 ///////////////////////////////
 int operator == (const mat4& a, const mat4& b)
 {
@@ -709,7 +709,7 @@ void mat4::Transpose()
 	/*---------------------------------------------------
 	La transpuesta es la que cambia filas por columnas
 	o sea m[i][j] = m[j][i] (la diagonal no cambia)
-	para una matriz de rotaciÛn u ortogonal, la trans-
+	para una matriz de rotaci√≥n u ortogonal, la trans-
 	puesta es la inversa.
 	----------------------------------------------------*/
 
@@ -731,14 +731,14 @@ void mat4::Transpose()
 /*-------------------------------------------------------------
 Saca la inversa de la matriz. NO ES LA TRANSPUESTA.
 siendo A' la inversa de A => A*A' = A'*A = I (mat identidad).
-La transformaciÛn de la inversa es exactamente contraria a 
+La transformaci√≥n de la inversa es exactamente contraria a 
 la de la matriz. Si tenemos en cuenta que al multiplicar ma-
-trices se acumulan sus efectos es f·cil ver porque la matriz 
+trices se acumulan sus efectos es f√°cil ver porque la matriz 
 por la inversa da la identidad (transformo y destransformo lo 
 que da la identidad que no hace nada).
 En este caso se supone una parte rotacional ortogonal, por lo 
-que la parte de rotaciÛn solo la trasponemos y adem·s que el
-˙ltimo vector columna es (0,0,0,1).
+que la parte de rotaci√≥n solo la trasponemos y adem√°s que el
+√∫ltimo vector columna es (0,0,0,1).
 --------------------------------------------------------------*/
 void mat4::Invert()
 {
@@ -770,9 +770,9 @@ void mat4::MakeGL()
 {
 	mat4 a(*this);
 
-	//transpone la parte de rotaciÛn para hacerla compatible
+	//transpone la parte de rotaci√≥n para hacerla compatible
 	//con OpenGL que acomoda los vectores por columna.
-	//Si tenemos la matriz en formato matem·tico (por filas)
+	//Si tenemos la matriz en formato matem√°tico (por filas)
 	//es necesario antes de usarla para un glMultMatrix().
 
 	m1[0][1] = a.m1[1][0];
@@ -794,7 +794,7 @@ void mat4::SetId(void)
 	m[12] = 0;	m[13] = 0;	m[14] = 0;	m[15] = 1;
 }
 
-//crea la matriz de rotaciÛn a partir de un quat
+//crea la matriz de rotaci√≥n a partir de un quat
 void mat4::FromQuat(const quat &q)
 {
 	float wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
@@ -821,7 +821,7 @@ void mat4::FromQuat(const quat &q)
 }
 
 
-//Calcula la matriz de rotaciÛn a partir de una base (gralmente ortonormal)
+//Calcula la matriz de rotaci√≥n a partir de una base (gralmente ortonormal)
 void mat4::FromAllVectors(const vect &vpn, const vect &vup, const vect &vr)
 {
 	m1[0][0] = vr[0];	//->vr = View Rigth 
@@ -845,7 +845,7 @@ void mat4::FromAllVectors(const vect &vpn, const vect &vup, const vect &vr)
 	m1[3][3] = 1;
 }
 
-//Setea una traslaciÛn dada
+//Setea una traslaci√≥n dada
 void mat4::SetTranslation(const vect &pos)
 {
 	m1[3][0] = pos[0];
@@ -860,7 +860,7 @@ vect mat4::GetTranslation(void)
 }
 
 
-//Suma una traslaciÛn dada
+//Suma una traslaci√≥n dada
 void mat4::AddTranslation(const vect &pos)
 {
 	m1[3][0] += pos[0];
@@ -910,13 +910,13 @@ void mat4::SetViewNormal(const vect &vpn)
 
 ////////////////////////////////////////////////////////////////
 //															   /		
-// ImplementaciÛn de funciones matem·ticas auxiliares          /	
+// Implementaci√≥n de funciones matem√°ticas auxiliares          /	
 //															   /	
 ////////////////////////////////////////////////////////////////
 
 /*****************************************************************
 * Function name	: DegToRad  				     				 *
-* Description	: ConversiÛn Grados a Radianes en sus dos sabores*
+* Description	: Conversi√≥n Grados a Radianes en sus dos sabores*
 * Return type	: void										     *	
 * Argument      : float										     *
 *****************************************************************/  
@@ -933,7 +933,7 @@ void DegToRad(float *deg)
 
 /*****************************************************************
 * Function name	: RadToDeg	 				     				 *
-* Description	: ConversiÛn Radianes a Grados en sus dos sabores*
+* Description	: Conversi√≥n Radianes a Grados en sus dos sabores*
 * Return type	: float										     *	
 * Argument      : float										     *
 *****************************************************************/  
@@ -973,7 +973,7 @@ void ClampR (float x)
 /*****************************************************************
 * Function name	: Sgn	 				     				     *
 * Description	: Devuelve el signo de un float mediante acceso  *
-*				  binario (mas r·pido que comparar con 0.		 *	
+*				  binario (mas r√°pido que comparar con 0.		 *	
 * Return type	: int (-1 para negativo, 1 para positivo o cero) *	
 * Argument      : float										     *
 *****************************************************************/  
@@ -1014,7 +1014,7 @@ float VectDotProd(const vect& vect1, const vect& vect2)
 *				  De acuerdo al orden de los vectores pasados	 *
 *				  el resultado apunta para un lado o para el otro*
 *				  (o sea el orden afecta el sentido del vector   * 
-*				  resultado pero no su direccion ni mÛdulo       *
+*				  resultado pero no su direccion ni m√≥dulo       *
 * Return type	: vect										     *	
 * Argument      : vect, vect								     *
 *****************************************************************/  
@@ -1033,7 +1033,7 @@ vect VectXProd(const vect& vect1, const vect& vect2)
 //Z=(0,0,1), perpendicular a X e Y y direccion eje Z positivo.
 //Pero si multiplicas Y*X (invertis los argumentos) el resultado
 //da Z = (0,0,-1), con sentido contrario al anterior pero misma 
-//direccion (eje Z) y mÛdulo.
+//direccion (eje Z) y m√≥dulo.
 //Para saber el sentido que va a tener el resultado, con tu mano 
 //derecha acomodada como te dije al ppio. pone el indice apuntando 
 //al primer vector, el largo al segundo y el pulgar te va a marcar el 
@@ -1042,9 +1042,9 @@ vect VectXProd(const vect& vect1, const vect& vect2)
 
 /****************************************************************
 * Function name	: Mod		  				     				*
-* Description	: MÛdulo de un vector o magnitud.				*
+* Description	: M√≥dulo de un vector o magnitud.				*
 *				  Es el "largo" del vector y se saca por		*
-*				  Pit·goras										* 
+*				  Pit√°goras										* 
 * Return type	: float										    *	
 * Argument      : vect										    *
 ****************************************************************/
@@ -1058,7 +1058,7 @@ float Mod(const vect& vect1)
 
 /****************************************************************
 * Function name	: ModSquared  				     				*
-* Description	: MÛdulo de un vector al cuadrado.				*
+* Description	: M√≥dulo de un vector al cuadrado.				*
 *				  Sirve para varias funciones					* 
 * Return type	: float										    *	
 * Argument      : vect										    *
@@ -1072,7 +1072,7 @@ float ModSquared(const vect& vect1)
 
 /****************************************************************
 * Function name	: Normalize		  				     			*
-* Description	: Normaliza un vector (hace su mÛdulo = 1)	    *
+* Description	: Normaliza un vector (hace su m√≥dulo = 1)	    *
 * Return type	: void										    *	
 * Argument      : vect*										    *
 ****************************************************************/
@@ -1127,13 +1127,13 @@ float OrigToRect(const vect& point1, const vect& point2)
 	
 	//me aseguro que los argumentos no sean iguales
 	//(definen infinitas rectas) para no provocar una
-	//divisiÛn por cero.
+	//divisi√≥n por cero.
 	if (point1 == point2)
 		return 0;
 		
 	//Saco el vector directriz de la recta
 	vect v = point2 - point1;		
-	//Saco el mÛdulo cuadrado del directriz
+	//Saco el m√≥dulo cuadrado del directriz
 	float modv2 = v.x * v.x + v.y * v.y + v.z * v.z;
 	//Saco el prod escalar entre point1 y v
 	float p1dotv = VectDotProd(point1,v);
@@ -1144,7 +1144,7 @@ float OrigToRect(const vect& point1, const vect& point2)
 			 -p1dotv * v.y + point1.y,
 			 -p1dotv * v.z + point1.z );
 
-	//Devuelvo el mÛdulo de ese vector
+	//Devuelvo el m√≥dulo de ese vector
 	return Mod(n);
 }
 
@@ -1165,13 +1165,13 @@ float OrigToRect2(const vect& dir, const vect& point)
 	//tienen significados diferentes.
 
 	//Me aseguro que dir no sea el vector nulo para evitar
-	//divisiÛn por cero
+	//divisi√≥n por cero
 	if (dir.x < EPS &&
 		dir.y < EPS &&
 		dir.z < EPS)
 		return 0;
 
-	//Saco el mÛdulo cuadrado del directriz
+	//Saco el m√≥dulo cuadrado del directriz
 	float modv2 = dir.x * dir.x + dir.y * dir.y
 				+ dir.z * dir.z;
 	//Saco el prod escalar entre point y dir
@@ -1183,7 +1183,7 @@ float OrigToRect2(const vect& dir, const vect& point)
 		     -p1dotv * dir.y + point.y,
 		     -p1dotv * dir.z + point.z );
 
-	//Devuelvo el mÛdulo de ese vector
+	//Devuelvo el m√≥dulo de ese vector
 	//Se puede aprovechar para devolver de paso n
 	//que es la direccion
 	return Mod(n);
@@ -1195,7 +1195,7 @@ float OrigToRect2(const vect& dir, const vect& point)
 *				  Le pasas el punto y dos puntos mas que definan  *
 *				  (pertenezcan) a la recta, devuelve la distancia * 
 *				  entre el punto y la recta a traves de la normal *			
-*				  O sea la distacia mÌnima entre ambos.           * 
+*				  O sea la distacia m√≠nima entre ambos.           * 
 * Return type	: float										      *	
 * Argument      : vect,vect,vect							      *
 ******************************************************************/
@@ -1209,10 +1209,10 @@ float PointToRect (const vect& point, const vect& rect1, const vect& rect2)
 		
 	//Saco el vector directriz de la recta
 	//que seria rect2 - rect1
-	//Saco la direcciÛn del punto al primer punto que
-	//define la recta que serÌa point - rect1
-	//la distancia es el mÛdulo del prod vectorial
-	//sobre el mÛdulo de la directriz
+	//Saco la direcci√≥n del punto al primer punto que
+	//define la recta que ser√≠a point - rect1
+	//la distancia es el m√≥dulo del prod vectorial
+	//sobre el m√≥dulo de la directriz
 
 	return Mod(VectXProd(rect2 - rect1, point - rect1))/Mod(rect2 - rect1);
 
@@ -1236,11 +1236,11 @@ float OrigToPlane(const vect& point1, const vect& point2, const vect& point3)
 
 	//Haciendo el prod. escalar entre un punto de los tres
 	//(cualquiera) y la normal obtengo la proyeccion de ese 
-	//vector sobre la normal, multip. por el mÛdulo de la normal.
+	//vector sobre la normal, multip. por el m√≥dulo de la normal.
 	float distance = VectDotProd(point1, Norm)/Mod(Norm);
 
 	//la distancia puede dar + o - de acuerdo a la 
-	//orientaciÛn de la normal respecto del plano
+	//orientaci√≥n de la normal respecto del plano
 	if (distance < 0)
 		distance = -distance;
 	
@@ -1280,7 +1280,7 @@ float PointToPlane(const vect& point, const vect& plane1, const vect& plane2, co
 	float distance = distplan - proj;
 
 	//la distancia puede dar + o - de acuerdo a la 
-	//orientaciÛn de la normal respecto del plano
+	//orientaci√≥n de la normal respecto del plano
 	if (distance < 0)
 		distance = -distance;
 	
@@ -1301,8 +1301,8 @@ float Distance (const vect& point1, const vect& point2)
 
 /******************************************************************
 * Function name	: GetAngle		 				     			  *
-* Description	: dados 3 puntos devuelve el ·ngulo formado		  *
-*				  por ellos con vÈrtice en point2.				  *
+* Description	: dados 3 puntos devuelve el √°ngulo formado		  *
+*				  por ellos con v√©rtice en point2.				  *
 *				  Devuelve en radianes, para converitr a grados   *
 *				  usar RadToDeg() con el resultado.               *	
 * Return type	: float										      *	
@@ -1317,10 +1317,10 @@ float GetAngle (const vect& point1, const vect& point2, const vect& point3)
 	vect v23 = Normalize(point3 - point2);
 	
 	//Hallo el prod. escalar de ambos.
-	//El prod escalar es tambiÈn:
+	//El prod escalar es tambi√©n:
 	//norma v21 * norma v23 * cos (angulo buscado)
-	//como norma de v21 = norma v23 = 1 (porque los normalicÈ)
-	//el resultado es directamente el coseno del ·ngulo.
+	//como norma de v21 = norma v23 = 1 (porque los normalic√©)
+	//el resultado es directamente el coseno del √°ngulo.
 	float cos = VectDotProd(v21, v23);
 
 	//Ahora tengo que hacer el coseno inverso (arco coseno)
@@ -1331,7 +1331,7 @@ float GetAngle (const vect& point1, const vect& point2, const vect& point3)
 
 /******************************************************************
 * Function name	: GetAngle		 				     			  *
-* Description	: dados 2 vectores devuelve el ·ngulo formado	  *
+* Description	: dados 2 vectores devuelve el √°ngulo formado	  *
 *				  por ellos.									  *
 *				  Devuelve en radianes, para grados usar RadToDeg *	
 * Return type	: float										      *	
@@ -1351,8 +1351,8 @@ float GetAngle (const vect& vect1, const vect& vect2)
 
 /******************************************************************
 * Function name	: MatfromQuat		 				     		  *
-* Description	: dados un quaternion de rotaciÛn unitario com-   *
-*				  pleta la matriz de rotaciÛn 4x4 equivalente.    *   
+* Description	: dados un quaternion de rotaci√≥n unitario com-   *
+*				  pleta la matriz de rotaci√≥n 4x4 equivalente.    *   
 *				  pasar un pointer a m[0][0] si es m[4][4] o      *
 *				  m[0] si es m[16]								  *
 * Return type	: void										      *	
@@ -1387,7 +1387,7 @@ void  MatrixfromQuat   (const quat& q, float* m)
 
 /******************************************************************
 * Function name	: QuatfromMat		 				     		  *
-* Description	: dada una matriz de rotaciÛn de 4x4 completa el  *
+* Description	: dada una matriz de rotaci√≥n de 4x4 completa el  *
 *				  quaternion equivalente.						  *   
 *				  La inversa de la anterior.					  *
 * Return type	: void										      *	
@@ -1402,7 +1402,7 @@ void  QuatfromMatrix   (const float *m, quat& q)
 	int n;
 
 	// primero calculamos los valores al cuadrado del quat.
-	//por lo menos uno va a ser > 0 porque el quat es de mÛdulo 1.
+	//por lo menos uno va a ser > 0 porque el quat es de m√≥dulo 1.
 	
 	qs2 = 0.25f * (*(m+0) + *(m+5) + *(m+10) + 1);
 	qx2 = qs2 - 0.5f * (*(m+5) + *(m+10));
@@ -1410,7 +1410,7 @@ void  QuatfromMatrix   (const float *m, quat& q)
 	qz2 = qs2 - 0.5f * (*(m+0) + *(m+5));
 
   
-	// encontramos el componente de magnitud m·xima
+	// encontramos el componente de magnitud m√°xima
 	n = (qs2 > qx2 ) ?
 		((qs2 > qy2) ? ((qs2 > qz2) ? 0 : 3) : ((qy2 > qz2) ? 2 : 3)) :
 		((qx2 > qy2) ? ((qx2 > qz2) ? 1 : 3) : ((qy2 > qz2) ? 2 : 3));
@@ -1462,8 +1462,8 @@ void  QuatfromMatrix   (const float *m, quat& q)
 
 /******************************************************************
 * Function name	: QuatfromEuler		 				     		  *
-* Description	: dados ·ngulos de Euler completa el quaternion   *
-*				  equivalente. El orden de operaciÛn es:          *
+* Description	: dados √°ngulos de Euler completa el quaternion   *
+*				  equivalente. El orden de operaci√≥n es:          *
 *						p' = roll( pitch( yaw(p) ) )			  *   
 *																  *
 *				  Yaw:	 Respecto del Z							  *
@@ -1509,7 +1509,7 @@ void QuatfromEuler( const float yaw, const float pitch, const float roll, quat& 
 void QuatSlerp(const quat &from, const quat &to, float t, quat &res)
 {
 	
-	//minlerp define la barrera para interpolar esfÈrico/lineal
+	//minlerp define la barrera para interpolar esf√©rico/lineal
 	//subir el valor para obtener mayor velocidad/menor calidad
 	const float	minlerp = 0.02f;
 	quat           to1;
@@ -1537,15 +1537,15 @@ void QuatSlerp(const quat &from, const quat &to, float t, quat &res)
 
 	// calculate coefficients
 	if ( (1.0 - cosom) > minlerp ) {
-          // interpolaciÛn esfÈrica (SLERP)
+          // interpolaci√≥n esf√©rica (SLERP)
           omega = (float)acos(cosom);
           sinom = (float)sin(omega);
           scale0 = (float)sin((1.0 - t) * omega) / sinom;
           scale1 = (float)sin(t * omega) / sinom;
 
 	} else {        
-		// "from" y "to" quaternions est·n muy cerca 
-		//  uso interpolaciÛn lineal (LERP)
+		// "from" y "to" quaternions est√°n muy cerca 
+		//  uso interpolaci√≥n lineal (LERP)
         scale0 = 1.0f - t;
         scale1 = t;
 	}
