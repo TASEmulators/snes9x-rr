@@ -631,7 +631,7 @@
 #define ID_FILE_MOVIE_SEEK              40143
 #define ID_OPTIONS_INPUT_MACRO          40144
 #define ID_AVI_DOUBLE_SCALE             40145
-#define ID_S9XWATCH_SETTING             40146
+//#define ID_S9XWATCH_SETTING             40146
 #define ID_RENDERMETHOD_DIRECTDRAW      40147
 #define ID_RENDERMETHOD_DIRECT3D        40148
 #define ID_RENDERMETHOD_OPENGL          40149

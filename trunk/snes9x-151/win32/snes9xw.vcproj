@@ -1949,6 +1949,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath="..\version.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="UnZip"

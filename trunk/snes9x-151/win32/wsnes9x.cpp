@@ -286,11 +286,6 @@ INT_PTR CALLBACK DlgSeekProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK DlgStringInputProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK DlgLuaScriptDialog(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
-#define S9XWATCH_HELP
-#ifdef S9XWATCH_HELP
-int CopyS9xWatchSetting(void);
-#endif // S9XWATCH_HELP
-
 INT_PTR CALLBACK test(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
 
@@ -3870,15 +3865,6 @@ LRESULT CALLBACK WinProc(
 							DialogBox(g_hInst, MAKEINTRESOURCE(IDD_ABOUT), hWnd, DlgAboutProc);
 							RestoreSNESDisplay ();
 							break;
-#ifdef S9XWATCH_HELP
-						case ID_S9XWATCH_SETTING:
-							RestoreGUIDisplay ();
-							CopyS9xWatchSetting();
-							//MessageBox (GUI.hWnd, TEXT(COPIED_S9XWATCH_SETTINGS), TEXT(SNES9X_INFO), MB_OK | MB_ICONINFORMATION);
-							RestoreSNESDisplay ();
-							break;
-#endif // S9XWATCH_HELP
-
 #ifdef DEBUGGER
 						case ID_DEBUG_TRACE:
 							{
@@ -6053,7 +6039,7 @@ static void CheckMenuStates ()
 	SetMenuItemInfo (GUI.hMenu, ID_RAM_SEARCH_OLD, FALSE, &mii);
 
 	mii.fState = (inputMacroHWND && IsWindowVisible(inputMacroHWND)) ? MFS_CHECKED : MFS_UNCHECKED;
-	if (GUI.FullScreen)
+	if (Settings.StopEmulation || GUI.FullScreen)
 		mii.fState |= MFS_DISABLED;
 	SetMenuItemInfo (GUI.hMenu, ID_OPTIONS_INPUT_MACRO, FALSE, &mii);
 
@@ -8419,58 +8405,7 @@ INT_PTR CALLBACK DlgAboutProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 	default:return false;
 	}
 }
-#ifdef S9XWATCH_HELP
-static BOOL SetClipboardText(LPCTSTR str)
-{
-	size_t bufSize;
-	LPTSTR buf;
-	HANDLE hMem;
 
-	bufSize = (lstrlen(str) + 1) * sizeof(TCHAR);
-	hMem = GlobalAlloc(GMEM_SHARE | GMEM_MOVEABLE, bufSize);
-	if (!hMem) return FALSE;
-
-	buf = (LPTSTR) GlobalLock(hMem);
-	if (buf)
-	{
-		lstrcpy(buf, str);
-		GlobalUnlock(hMem);
-		if (OpenClipboard(NULL))
-		{
-			EmptyClipboard();
-			SetClipboardData(CF_TEXT, hMem);
-			CloseClipboard();
-			return TRUE;
-		}
-	}
-	return FALSE;
-}
-
-int CopyS9xWatchSetting(void)
-{
-	static TCHAR buf[PATH_MAX + 256];
-	static TCHAR exe_path [PATH_MAX];
-	static TCHAR exe_fname [PATH_MAX];
-	static TCHAR exe_ext [PATH_MAX];
-
-	GetModuleFileName(NULL, exe_path, PATH_MAX);
-	_tsplitpath(exe_path, NULL, NULL, exe_fname, exe_ext);
-
-	// ;target:filename:Memory:offset(RAM):offset(SRAM):offset(FillRAM),offset(ROMName),offset(ROMId),IAPU.RAM
-	// (rev.13)
-	wsprintf(buf, ":target:%s%s:%X:%04X:%04X:%04X:%04X:%04X:%X\n", exe_fname, exe_ext, 
-		&Memory, 
-		offsetof(struct CMemory, RAM), 
-		offsetof(struct CMemory, SRAM), 
-		offsetof(struct CMemory, FillRAM), 
-		offsetof(struct CMemory, RawROMName), 
-		offsetof(struct CMemory, ROMId), 
-		&IAPU.RAM
-	);
-
-	return (int) SetClipboardText(buf);
-}
-#endif // S9XWATCH_HELP
 INT_PTR CALLBACK DlgEmulatorProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	static char paths[8][MAX_PATH];
