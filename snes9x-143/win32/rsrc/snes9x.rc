@@ -1469,8 +1469,6 @@ BEGIN
         MENUITEM "&Input Macro Editor...",      ID_OPTIONS_INPUT_MACRO, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "Fast Forward to Frame",       ID_FILE_MOVIE_SEEK, GRAYED
-        MENUITEM SEPARATOR
-        MENUITEM "&Copy Settings for S9XWATCH", ID_S9XWATCH_SETTING
     END
     POPUP "&Help"
     BEGIN

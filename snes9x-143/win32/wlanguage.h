@@ -96,6 +96,9 @@
 #define REG_KEY_VER  "1.31"
 
 #define DISCLAIMER_TEXT        "%s.\r\n" \
+        "Re-recording additions by snes9x-rr team\r\n" \
+        "http://code.google.com/p/snes9x-rr/\r\n" \
+        "\r\n" \
         "(c) Copyright 1996 - 2002 Gary Henderson and Jerremy Koot.\r\n" \
         "(c) Copyright 2001- 2004 John Weidman.\r\n" \
 	"(c) Copyright 2002 - 2004 blip, Brad Jorsch, funkyass, Joel Yliluoma, Kris Bleakley, Matthew Kendora, Nach, Peter Bortas, zones.\r\n\r\n" \
