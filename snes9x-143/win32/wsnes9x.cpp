@@ -1336,7 +1336,7 @@ void FreezeUnfreeze (int slot, bool8 freeze);
 void CheckDirectoryIsWritable (const char *filename);
 static void CheckMenuStates ();
 static void ResetFrameTimer ();
-void UpdateWatchedAddresses ();
+void Update_Old_RAM_Watch ();
 bool8 LoadROM (const char *filename);
 #ifdef NETPLAY_SUPPORT
 static void EnableServer (bool8 enable);
@@ -4882,16 +4882,16 @@ int WINAPI WinMain(
 				S9xNPStepJoypadHistory ();
 			}
 #endif
-			// update delayed in 1 frame
-			UpdateWatchedAddresses();
+			// OldWatch: update delays in 1 frame
+			Update_Old_RAM_Watch();
 
-			if(timeGetTime() - lastTime >= 100)
+			if(oldRamSearchHWND)
 			{
-				Update_RAM_Watch();
-				Update_RAM_Search();
-				if(oldRamSearchHWND)
+				if(timeGetTime() - lastTime >= 100)
+				{
 					SendMessage(oldRamSearchHWND, WM_COMMAND, (WPARAM)(IDC_REFRESHLIST),(LPARAM)(NULL));
-				lastTime = timeGetTime();
+					lastTime = timeGetTime();
+				}
 			}
 
 			// the following is a hack to allow frametimes greater than 100ms,
@@ -5656,7 +5656,7 @@ static void ResetFrameTimer ()
     GUI.hFrameTimer = timeSetEvent ((Settings.FrameTime+500)/1000, 0, FrameTimer, 0, TIME_PERIODIC);
 
 }
-void UpdateWatchedAddresses ()
+void Update_Old_RAM_Watch ()
 {
 	if(watches[0].on)
 	{
