@@ -290,7 +290,7 @@ void VideoLogger(void *pixels, int width, int height, int depth, int bytes_per_l
 		fflush(audio);
 		drift++;
 
-		if (maxframes > 0 && __builtin_expect(framecounter >= maxframes, 0))
+		if (maxframes > 0 && __builtin_expect((unsigned)framecounter >= maxframes, 0))
 		{
 			printf("-maxframes hit\ndrift:%d\n",drift);
 			S9xExit();

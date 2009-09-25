@@ -2274,6 +2274,30 @@
 				>
 			</File>
 			<File
+				RelativePath=".\oldramsearch.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\oldramsearch.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ram_search.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ram_search.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ramwatch.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ramwatch.h"
+				>
+			</File>
+			<File
 				RelativePath=".\render.cpp"
 				>
 			</File>
@@ -2310,18 +2334,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\win32-newcheat.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\win32-ramsearch.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\win32-ramsearch.h"
-				>
-			</File>
-			<File
 				RelativePath=".\win32-snapshot.cpp"
 				>
 			</File>
@@ -2335,6 +2347,14 @@
 			</File>
 			<File
 				RelativePath=".\win32_sound.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\winaddcheat.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\wincheat.cpp"
 				>
 			</File>
 			<File
