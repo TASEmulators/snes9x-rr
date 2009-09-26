@@ -4042,6 +4042,9 @@ LRESULT CALLBACK WinProc(
 				S9xClearPause (PAUSE_INACTIVE_WINDOW);
 			}
 			IPPU.ColorsChanged = TRUE;
+
+			UpdateWindow(GUI.hWnd);
+			UpdateBackBuffer();
 		}
 
 		// refresh screen

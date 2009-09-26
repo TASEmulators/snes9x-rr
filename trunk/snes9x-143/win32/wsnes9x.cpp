@@ -3726,6 +3726,9 @@ LRESULT CALLBACK WinProc(
 			}
 //#endif
 			IPPU.ColorsChanged = TRUE;
+
+			UpdateWindow(GUI.hWnd);
+			UpdateBackBuffer();
 		}
 
 		// refresh screen
