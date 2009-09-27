@@ -3471,7 +3471,8 @@ int S9xLoadLuaCode(const char *filename) {
 		LUA = lua_open();
 		luaL_openlibs(LUA);
 
-		luaL_register(LUA, "snes9x", snes9xlib);
+		luaL_register(LUA, "emu", snes9xlib); // added for better cross-emulator compatibility
+		luaL_register(LUA, "snes9x", snes9xlib); // kept for backward compatibility
 		luaL_register(LUA, "memory", memorylib);
 		luaL_register(LUA, "joypad", joypadlib);
 		luaL_register(LUA, "savestate", savestatelib);
