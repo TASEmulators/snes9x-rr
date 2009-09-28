@@ -5652,8 +5652,7 @@ int WINAPI WinMain(
 
 				GUI.FrameCount++;
 
-				Update_RAM_Watch();
-				Update_RAM_Search();
+				Update_RAM_Search(); // Update_RAM_Watch() is also called.
 			}
 
 #ifdef NETPLAY_SUPPORT
