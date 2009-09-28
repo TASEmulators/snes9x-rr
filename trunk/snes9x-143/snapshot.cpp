@@ -123,6 +123,10 @@
 #include "dsp1.h"
 #include "language.h"
 #include "luasav.h"
+#ifdef WIN32
+#include "win32/ram_search.h"
+#include "win32/ramwatch.h"
+#endif
 
 //you would think everyone would have these
 //since they're so useful.
@@ -1970,6 +1974,11 @@ int S9xUnfreezeFromStream (STREAM stream)
 		S9xSRTCPostLoadState ();
 		if (Settings.SDD1)
 			S9xSDD1PostLoadState ();
+
+		#ifdef WIN32
+			Update_RAM_Watch();
+			Update_RAM_Search();
+		#endif
 	}
 
 	if (local_cpu)           delete [] local_cpu;
