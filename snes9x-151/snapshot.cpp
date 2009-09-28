@@ -2067,8 +2067,7 @@ int S9xUnfreezeFromStream (STREAM stream)
 		}
 		
 		#ifdef WIN32
-			Update_RAM_Watch();
-			Update_RAM_Search();
+			Update_RAM_Search(); // Update_RAM_Watch() is also called.
 		#endif
 	}
 
