@@ -203,6 +203,8 @@
 
 #ifdef WIN32
 #include "win32/wsnes9x.h"
+#include "win32/ram_search.h"
+#include "win32/ramwatch.h"
 #endif
 
 //you would think everyone would have these
@@ -2063,6 +2065,11 @@ int S9xUnfreezeFromStream (STREAM stream)
 			APU.NextAPUTimerPos = (CPU.Cycles << SNES_APU_ACCURACY);
 			APU.APUTimerCounter = 0;
 		}
+		
+		#ifdef WIN32
+			Update_RAM_Watch();
+			Update_RAM_Search();
+		#endif
 	}
 
 	if (local_cpu)           delete [] local_cpu;
