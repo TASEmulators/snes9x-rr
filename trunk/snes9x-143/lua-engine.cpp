@@ -3170,7 +3170,8 @@ void S9xLuaStop() {
  *
  */
 int S9xLuaRunning() {
-	return LUA && luaRunning;
+	// FIXME: return false when no callback functions are registered.
+	return (int) (LUA != NULL); // should return true if callback functions are active.
 }
 
 
@@ -3210,6 +3211,7 @@ int S9xLuaReadJoypad(int which) {
  * This function will not return true if a script is not running.
  */
 bool8 S9xLuaRerecordCountSkip() {
+	// FIXME: return true if (there are any active callback functions && skipRerecords)
 	return LUA && luaRunning && skipRerecords;
 }
 
@@ -3223,7 +3225,7 @@ bool8 S9xLuaRerecordCountSkip() {
 //static inline int dibPitchOf(int width, int bpp) { return (((width*bpp+31)/8)&~3); }
 void S9xLuaGui(void *s, int width, int height, int bpp, int pitch) {
 
-	if (!LUA || !luaRunning)
+	if (!LUA/* || !luaRunning*/)
 		return;
 
 	// First, check if we're being called by anybody
