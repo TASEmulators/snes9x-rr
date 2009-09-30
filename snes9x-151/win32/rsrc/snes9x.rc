@@ -8,12 +8,8 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-//#include "afxres.h" // disabled because it seems to be missing by default and it's not needed
-#include "windows.h"
-#ifndef IDC_STATIC
-#define IDC_STATIC				-1
-#endif
-#include "../wlanguage.h"
+#include "afxres.h"
+
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
