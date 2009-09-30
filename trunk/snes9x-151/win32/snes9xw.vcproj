@@ -54,7 +54,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories=".;..;zlib;directx;libpng-1.2.1;../lua/src;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
+				AdditionalIncludeDirectories=".;..;zlib;directx;libpng;../lua/src;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
 				PreprocessorDefinitions="NDEBUG;SPC700_SHUTDOWN;CPU_SHUTDOWN;CORRECT_VRAM_READS;ZLIB;UNZIP_SUPPORT;JMA_SUPPORT;HAVE_LIBPNG;NEW_COLOUR_BLENDING;NETPLAY_SUPPORT;_WINDOWS;WIN32;__MSC__;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NOUNCRYPT;FMOD_SUPPORT"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -84,11 +84,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/ignore:4199"
-				AdditionalDependencies="comctl32.lib winmm.lib wsock32.lib directx/ddraw.lib directx/dsound.lib directx/dxguid.lib vfw32.lib shlwapi.lib delayimp.lib fmodvc.lib fmodexp_vc.lib"
+				AdditionalDependencies="comctl32.lib winmm.lib wsock32.lib directx/ddraw.lib directx/dsound.lib directx/dxguid.lib vfw32.lib shlwapi.lib delayimp.lib fmodvc.lib fmodexp_vc.lib  zlib-2008-x32.lib libpng-2008-x32.lib"
 				OutputFile="$(OutDir)\snes9x.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="directx;../lua/lib;FMOD/api/lib;FMODEx/api/lib"
+				AdditionalLibraryDirectories="directx;../lua/lib;FMOD/api/lib;FMODEx/api/lib;zlib;libpng"
 				GenerateManifest="true"
 				DelayLoadDLLs="fmod.dll;fmodexp.dll"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
@@ -156,7 +156,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;..;zlib;directx;libpng-1.2.1;../lua/src;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
+				AdditionalIncludeDirectories=".;..;zlib;directx;libpng;../lua/src;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
 				PreprocessorDefinitions="DEBUG;_DEBUG;SPC700_SHUTDOWN;CPU_SHUTDOWN;CORRECT_VRAM_READS;ZLIB;UNZIP_SUPPORT;JMA_SUPPORT;HAVE_LIBPNG;NEW_COLOUR_BLENDING;NETPLAY_SUPPORT;_WINDOWS;WIN32;__MSC__;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NOUNCRYPT;FMOD_SUPPORT;LUA_USE_APICHECK"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
@@ -185,11 +185,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/ignore:4199"
-				AdditionalDependencies="comctl32.lib winmm.lib wsock32.lib directx/ddraw.lib directx/dsound.lib directx/dxguid.lib vfw32.lib shlwapi.lib delayimp.lib fmodvc.lib fmodexp_vc.lib"
+				AdditionalDependencies="comctl32.lib winmm.lib wsock32.lib directx/ddraw.lib directx/dsound.lib directx/dxguid.lib vfw32.lib shlwapi.lib delayimp.lib fmodvc.lib fmodexp_vc.lib  zlib-2008-x32.lib libpng-2008-x32.lib"
 				OutputFile="$(OutDir)\snes9x-debug.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="directx;../lua/lib;FMOD/api/lib;FMODEx/api/lib"
+				AdditionalLibraryDirectories="directx;../lua/lib;FMOD/api/lib;FMODEx/api/lib;zlib;libpng"
 				GenerateManifest="true"
 				DelayLoadDLLs="fmod.dll;fmodexp.dll"
 				GenerateDebugInformation="true"
@@ -261,7 +261,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories=".;..;zlib;directx;libpng-1.2.1;../lua/src;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
+				AdditionalIncludeDirectories=".;..;zlib;directx;libpng;../lua/src;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
 				PreprocessorDefinitions="NDEBUG;SPC700_SHUTDOWN;CPU_SHUTDOWN;CORRECT_VRAM_READS;ZLIB;UNZIP_SUPPORT;JMA_SUPPORT;HAVE_LIBPNG;NEW_COLOUR_BLENDING;NETPLAY_SUPPORT;_WINDOWS;WIN32;__MSC__;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NOUNCRYPT;FMOD_SUPPORT"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -291,11 +291,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/ignore:4199"
-				AdditionalDependencies="comctl32.lib winmm.lib wsock32.lib directx/ddraw.lib directx/dsound.lib directx/dxguid.lib vfw32.lib shlwapi.lib delayimp.lib fmodvc.lib fmodexp_vc.lib"
+				AdditionalDependencies="comctl32.lib winmm.lib wsock32.lib directx/ddraw.lib directx/dsound.lib directx/dxguid.lib vfw32.lib shlwapi.lib delayimp.lib fmodvc.lib fmodexp_vc.lib  zlib-2008-x32.lib libpng-2008-x32.lib"
 				OutputFile="$(OutDir)\snes9x-releaseFastBuild.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="directx;../lua/lib;FMOD/api/lib;FMODEx/api/lib"
+				AdditionalLibraryDirectories="directx;../lua/lib;FMOD/api/lib;FMODEx/api/lib;zlib;libpng"
 				GenerateManifest="true"
 				DelayLoadDLLs="fmod.dll;fmodexp.dll"
 				GenerateDebugInformation="true"
@@ -341,72 +341,14 @@
 			<File
 				RelativePath="..\2xsai.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						WholeProgramOptimization="true"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						WholeProgramOptimization="false"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\3d.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\65c816.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\apu.cpp"
@@ -415,27 +357,6 @@
 			<File
 				RelativePath="..\apu.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\apudebug.cpp"
@@ -444,27 +365,6 @@
 			<File
 				RelativePath="..\apumem.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\bsx.cpp"
@@ -473,27 +373,6 @@
 			<File
 				RelativePath="..\bsx.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\c4.cpp"
@@ -502,27 +381,6 @@
 			<File
 				RelativePath="..\c4.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\c4emu.cpp"
@@ -535,27 +393,6 @@
 			<File
 				RelativePath="..\cheats.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\cheats2.cpp"
@@ -572,27 +409,6 @@
 			<File
 				RelativePath="..\conffile.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\controls.cpp"
@@ -601,99 +417,18 @@
 			<File
 				RelativePath="..\controls.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\copyright.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\cpu.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						InlineFunctionExpansion="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						InlineFunctionExpansion="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\cpuaddr.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\cpuexec.cpp"
@@ -706,27 +441,6 @@
 			<File
 				RelativePath="..\cpumacro.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\cpuops.cpp"
@@ -735,27 +449,6 @@
 			<File
 				RelativePath="..\cpuops.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\crosshairs.cpp"
@@ -764,27 +457,6 @@
 			<File
 				RelativePath="..\crosshairs.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\data.cpp"
@@ -797,99 +469,18 @@
 			<File
 				RelativePath="..\debug.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\display.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\dma.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						InlineFunctionExpansion="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						InlineFunctionExpansion="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\dma.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\dsp1.cpp"
@@ -898,27 +489,6 @@
 			<File
 				RelativePath="..\dsp1.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\dsp1emu.c"
@@ -1035,27 +605,6 @@
 			<File
 				RelativePath="..\font.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\fxdbg.cpp"
@@ -1092,27 +641,6 @@
 			<File
 				RelativePath="..\fxemu.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\fxinst.cpp"
@@ -1121,52 +649,10 @@
 			<File
 				RelativePath="..\fxinst.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\getset.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\gfx.cpp"
@@ -1175,27 +661,6 @@
 			<File
 				RelativePath="..\gfx.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\globals.cpp"
@@ -1236,77 +701,14 @@
 			<File
 				RelativePath="..\memmap.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\messages.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\missing.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\movie.cpp"
@@ -1315,27 +717,6 @@
 			<File
 				RelativePath="..\movie.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\netplay.cpp"
@@ -1344,27 +725,6 @@
 			<File
 				RelativePath="..\netplay.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\obc1.cpp"
@@ -1373,77 +733,14 @@
 			<File
 				RelativePath="..\obc1.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\pixform.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\port.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\ppu.cpp"
@@ -1452,27 +749,6 @@
 			<File
 				RelativePath="..\ppu.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\reader.cpp"
@@ -1481,27 +757,6 @@
 			<File
 				RelativePath="..\reader.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\s9xlua.h"
@@ -1514,27 +769,6 @@
 			<File
 				RelativePath="..\sa1.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\sa1cpu.cpp"
@@ -1543,27 +777,6 @@
 			<File
 				RelativePath="..\sar.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\screenshot.cpp"
@@ -1572,27 +785,6 @@
 			<File
 				RelativePath="..\screenshot.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\sdd1.cpp"
@@ -1601,27 +793,6 @@
 			<File
 				RelativePath="..\sdd1.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\sdd1emu.cpp"
@@ -1630,27 +801,6 @@
 			<File
 				RelativePath="..\sdd1emu.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\server.cpp"
@@ -1663,27 +813,6 @@
 			<File
 				RelativePath="..\seta.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\seta010.cpp"
@@ -1704,27 +833,6 @@
 			<File
 				RelativePath="..\snaporig.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\snapshot.cpp"
@@ -1733,27 +841,6 @@
 			<File
 				RelativePath="..\snapshot.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\snes9x.cpp"
@@ -1762,27 +849,6 @@
 			<File
 				RelativePath="..\snes9x.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\soundux.cpp"
@@ -1791,27 +857,6 @@
 			<File
 				RelativePath="..\soundux.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\spc700.cpp"
@@ -1820,27 +865,6 @@
 			<File
 				RelativePath="..\spc700.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\spc7110.cpp"
@@ -1849,27 +873,6 @@
 			<File
 				RelativePath="..\spc7110.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\srtc.cpp"
@@ -1878,27 +881,6 @@
 			<File
 				RelativePath="..\srtc.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\tile.cpp"
@@ -1927,27 +909,6 @@
 			<File
 				RelativePath="..\tile.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\version.h"
@@ -1960,113 +921,14 @@
 			<File
 				RelativePath="..\unzip\Explode.c"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\unzip\Unreduce.c"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\unzip\Unshrink.c"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\unzip\Unz.h"
@@ -2075,39 +937,6 @@
 			<File
 				RelativePath="..\unzip\Unzip.c"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\unzip\Unzip.h"
@@ -2115,78 +944,6 @@
 			</File>
 			<File
 				RelativePath="..\unzip\unzipP.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="libPNG"
-			>
-			<File
-				RelativePath=".\libpng-1.2.1\png.c"
-				>
-			</File>
-			<File
-				RelativePath=".\libpng-1.2.1\pngerror.c"
-				>
-			</File>
-			<File
-				RelativePath=".\libpng-1.2.1\pnggccrd.c"
-				>
-			</File>
-			<File
-				RelativePath=".\libpng-1.2.1\pngget.c"
-				>
-			</File>
-			<File
-				RelativePath=".\libpng-1.2.1\pngmem.c"
-				>
-			</File>
-			<File
-				RelativePath=".\libpng-1.2.1\pngpread.c"
-				>
-			</File>
-			<File
-				RelativePath=".\libpng-1.2.1\pngread.c"
-				>
-			</File>
-			<File
-				RelativePath=".\libpng-1.2.1\pngrio.c"
-				>
-			</File>
-			<File
-				RelativePath=".\libpng-1.2.1\pngrtran.c"
-				>
-			</File>
-			<File
-				RelativePath=".\libpng-1.2.1\pngrutil.c"
-				>
-			</File>
-			<File
-				RelativePath=".\libpng-1.2.1\pngset.c"
-				>
-			</File>
-			<File
-				RelativePath=".\libpng-1.2.1\pngtrans.c"
-				>
-			</File>
-			<File
-				RelativePath=".\libpng-1.2.1\pngvcrd.c"
-				>
-			</File>
-			<File
-				RelativePath=".\libpng-1.2.1\pngwio.c"
-				>
-			</File>
-			<File
-				RelativePath=".\libpng-1.2.1\pngwrite.c"
-				>
-			</File>
-			<File
-				RelativePath=".\libpng-1.2.1\pngwtran.c"
-				>
-			</File>
-			<File
-				RelativePath=".\libpng-1.2.1\pngwutil.c"
 				>
 			</File>
 		</Filter>
@@ -3153,93 +1910,6 @@
 					>
 				</File>
 			</Filter>
-		</Filter>
-		<Filter
-			Name="zLib"
-			>
-			<File
-				RelativePath=".\zlib\adler32.c"
-				>
-			</File>
-			<File
-				RelativePath=".\zlib\compress.c"
-				>
-			</File>
-			<File
-				RelativePath=".\zlib\crc32.c"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\zlib\deflate.c"
-				>
-			</File>
-			<File
-				RelativePath=".\zlib\gzio.c"
-				>
-			</File>
-			<File
-				RelativePath=".\zlib\infblock.c"
-				>
-			</File>
-			<File
-				RelativePath=".\zlib\infcodes.c"
-				>
-			</File>
-			<File
-				RelativePath=".\zlib\inffast.c"
-				>
-			</File>
-			<File
-				RelativePath=".\zlib\inflate.c"
-				>
-			</File>
-			<File
-				RelativePath=".\zlib\inftrees.c"
-				>
-			</File>
-			<File
-				RelativePath=".\zlib\infutil.c"
-				>
-			</File>
-			<File
-				RelativePath=".\zlib\trees.c"
-				>
-			</File>
-			<File
-				RelativePath=".\zlib\uncompr.c"
-				>
-			</File>
-			<File
-				RelativePath=".\zlib\zutil.c"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="lua"
