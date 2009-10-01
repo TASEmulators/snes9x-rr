@@ -1257,10 +1257,41 @@ int snes9x_lagged(lua_State *L) {
 	return 1;
 }
 
+int movie_isactive(lua_State *L) {
+	lua_pushboolean(L, S9xMovieActive());
+	return 1;
+}
+
+int movie_isrecording(lua_State *L) {
+	lua_pushboolean(L, S9xMovieRecording());
+	return 1;
+}
+
+int movie_isplaying(lua_State *L) {
+	lua_pushboolean(L, S9xMoviePlaying());
+	return 1;
+}
+
+int movie_getname(lua_State *L) {
+	if(S9xMovieActive())
+		lua_pushstring(L, S9xMovieGetName());
+	else
+		lua_pushstring(L, "");
+	return 1;
+}
+
+int movie_getlength(lua_State *L) {
+	if(S9xMovieActive())
+		lua_pushinteger(L, S9xMovieGetLength());
+	else
+		lua_pushinteger(L, 0);
+	return 1;
+}
+
 // string movie.mode()
 //
 //   "record", "playback" or nil
-int movie_mode(lua_State *L) {
+int movie_getmode(lua_State *L) {
 	if (!S9xMovieActive()) {
 		lua_pushnil(L);
 		return 1;
@@ -1273,6 +1304,19 @@ int movie_mode(lua_State *L) {
 	return 1;
 }
 
+static int movie_rerecordcount(lua_State *L) {
+	if(S9xMovieActive())
+		lua_pushinteger(L, S9xMovieGetRerecordCount());
+	else
+		lua_pushinteger(L, 0);
+	return 1;
+}
+
+static int movie_setrerecordcount(lua_State *L) {
+	if(S9xMovieActive())
+		S9xMovieSetRerecordCount(luaL_checkinteger(L, 1));
+	return 0;
+}
 
 static int movie_rerecordcounting(lua_State *L) {
 	if (lua_gettop(L) == 0)
@@ -3262,13 +3306,24 @@ static const struct luaL_reg savestatelib[] = {
 
 static const struct luaL_reg movielib[] = {
 
-	{"framecount", snes9x_framecount}, // for those familiar with other emulators that have movie.framecount() instead of emulatorname.framecount()
-	{"mode", movie_mode},
+	{"active", movie_isactive},
+	{"recording", movie_isrecording},
+	{"playing", movie_isplaying},
+	{"mode", movie_getmode},
+
+	{"length", movie_getlength},
+	{"name", movie_getname},
+	{"rerecordcount", movie_rerecordcount},
+	{"setrerecordcount", movie_setrerecordcount},
+
 	{"rerecordcounting", movie_rerecordcounting},
+	{"framecount", snes9x_framecount}, // for those familiar with other emulators that have movie.framecount() instead of emulatorname.framecount()
+
 	{"stop", movie_stop},
 
 	// alternative names
 	{"close", movie_stop},
+	{"getname", movie_getname},
 	{NULL,NULL}
 };
 

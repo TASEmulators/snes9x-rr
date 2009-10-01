@@ -242,8 +242,11 @@ bool8 S9xMovieRecording ();
 // the following accessors return 0/false if !S9xMovieActive()
 bool8 S9xMovieReadOnly ();
 uint32 S9xMovieGetId ();
+const char* S9xMovieGetName ();
 uint32 S9xMovieGetLength ();
 uint32 S9xMovieGetFrameCounter ();
+uint32 S9xMovieGetRerecordCount ();
+uint32 S9xMovieSetRerecordCount (uint32 newRerecordCount);
 uint8 S9xMovieControllers ();
 
 bool MovieGetJoypadNext(int which, uint16 &pad);
