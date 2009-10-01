@@ -976,6 +976,7 @@ int S9xMovieOpen (const char* filename, bool8 read_only)
 #ifdef WIN32
 	_fullpath(movie_filename, filename, _MAX_PATH);
 #else
+	// FIXME: convert to fullpath
 	strcpy(movie_filename, filename);
 #endif
 
@@ -1499,6 +1500,13 @@ uint32 S9xMovieGetId ()
 	return Movie.MovieId;
 }
 
+const char* S9xMovieGetName ()
+{
+	if(!S9xMovieActive())
+		return "";
+	return Movie.Filename;
+}
+
 uint32 S9xMovieGetLength ()
 {
 	if(!S9xMovieActive())
@@ -1513,6 +1521,25 @@ uint32 S9xMovieGetFrameCounter ()
 		return 0;
 
 	return Movie.CurrentFrame;
+}
+
+uint32 S9xMovieGetRerecordCount ()
+{
+	if(!S9xMovieActive())
+		return 0;
+
+	return Movie.RerecordCount;
+}
+
+uint32 S9xMovieSetRerecordCount (uint32 newRerecordCount)
+{
+	uint32 oldRerecordCount = 0;
+	if(!S9xMovieActive())
+		return 0;
+
+	oldRerecordCount = Movie.RerecordCount;
+	Movie.RerecordCount = newRerecordCount;
+	return oldRerecordCount;
 }
 
 void S9xMovieToggleRecState()
