@@ -239,6 +239,7 @@ INLINE uint8 S9xGetByte (uint32 Address, bool free)
 
 INLINE uint16 S9xGetWord (uint32 Address, bool free)
 {
+    uint16 ret;
     if ((Address & 0x0fff) == 0x0fff)
     {
 		OpenBus=S9xGetByte (Address,free);
@@ -268,17 +269,20 @@ INLINE uint16 S9xGetWord (uint32 Address, bool free)
     switch ((int) GetAddress)
     {
     case CMemory::MAP_PPU:
-		return (S9xGetPPU (Address & 0xffff) |
-			(S9xGetPPU ((Address + 1) & 0xffff) << 8));
+		ret = S9xGetPPU (Address & 0xffff);
+		ret |= (S9xGetPPU ((Address + 1) & 0xffff) << 8);
+		return ret;
     case CMemory::MAP_CPU:
-		return (S9xGetCPU (Address & 0xffff) |
-			(S9xGetCPU ((Address + 1) & 0xffff) << 8));
+		ret = S9xGetCPU (Address & 0xffff);
+		ret |= (S9xGetCPU ((Address + 1) & 0xffff) << 8);
+		return ret;
     case CMemory::MAP_DSP:
 #ifdef DSP_DUMMY_LOOPS
 		printf("Get DSP Word @ %06X\n", Address);
 #endif
-		return (S9xGetDSP (Address & 0xffff) |
-			(S9xGetDSP ((Address + 1) & 0xffff) << 8));
+		ret = S9xGetDSP (Address & 0xffff);
+		ret |= (S9xGetDSP ((Address + 1) & 0xffff) << 8);
+		return ret;
     case CMemory::MAP_SA1RAM:
     case CMemory::MAP_LOROM_SRAM:
 		//Address &0x7FFF -offset into bank
@@ -314,29 +318,38 @@ INLINE uint16 S9xGetWord (uint32 Address, bool free)
 #endif
 		
     case CMemory::MAP_C4:
-		return (S9xGetC4 (Address & 0xffff) |
-			(S9xGetC4 ((Address + 1) & 0xffff) << 8));
+		ret = S9xGetC4 (Address & 0xffff);
+		ret |= (S9xGetC4 ((Address + 1) & 0xffff) << 8);
+		return ret;
 	
 	case CMemory::MAP_SPC7110_ROM:
 #ifdef SPC7110_DEBUG
 		printf("reading spc7110 ROM (word) at %06X\n", Address);
 #endif
-	return (S9xGetSPC7110Byte(Address)|
-			(S9xGetSPC7110Byte (Address+1))<<8);	
+		ret = S9xGetSPC7110Byte(Address);
+		ret |= (S9xGetSPC7110Byte (Address+1) << 8);
+		return ret;	
 	case CMemory::MAP_SPC7110_DRAM:
 #ifdef SPC7110_DEBUG
 		printf("reading Bank 50 (word)\n");
 #endif
-		return (S9xGetSPC7110(0x4800)|
-			(S9xGetSPC7110 (0x4800) << 8));
+		ret = S9xGetSPC7110(0x4800);
+		ret |= (S9xGetSPC7110 (0x4800) << 8);
+		return ret;
 	case CMemory::MAP_OBC_RAM:
-		return GetOBC1(Address&0xFFFF)| (GetOBC1((Address+1)&0xFFFF)<<8);
+		ret = GetOBC1(Address&0xFFFF);
+		ret |= (GetOBC1((Address+1)&0xFFFF)<<8);
+		return ret;
 
 	case CMemory::MAP_SETA_DSP:
-		return S9xGetSetaDSP(Address)| (S9xGetSetaDSP((Address+1))<<8);
+		ret = S9xGetSetaDSP(Address);
+		ret |= (S9xGetSetaDSP((Address+1))<<8);
+		return ret;
 	
 	case CMemory::MAP_SETA_RISC:
-		return S9xGetST018(Address)| (S9xGetST018((Address+1))<<8);
+		ret = S9xGetST018(Address);
+		ret |= (S9xGetST018((Address+1))<<8);
+		return ret;
 
      case CMemory::MAP_DEBUG:
  #ifdef DEBUGGER
