@@ -416,7 +416,7 @@ int main (int argc, char **argv)
     if (argc < S9xMinCommandLineArgs ())
 	S9xUsage ();
 	
-    ZeroMemory (&Settings, sizeof (Settings));
+    memset (&Settings, 0, sizeof (Settings));
     Settings.HighSpeedSeek = 0;
 #ifdef JOYSTICK_SUPPORT
     Settings.JoystickEnabled = TRUE;

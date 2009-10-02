@@ -532,13 +532,13 @@ bool8 CMemory::Init ()
     SuperFX.pvRom = (uint8 *) ROM;
 #endif
 	
-    ZeroMemory (IPPU.TileCache [TILE_2BIT], MAX_2BIT_TILES * 128);
-    ZeroMemory (IPPU.TileCache [TILE_4BIT], MAX_4BIT_TILES * 128);
-    ZeroMemory (IPPU.TileCache [TILE_8BIT], MAX_8BIT_TILES * 128);
+    memset (IPPU.TileCache [TILE_2BIT], 0, MAX_2BIT_TILES * 128);
+    memset (IPPU.TileCache [TILE_4BIT], 0, MAX_4BIT_TILES * 128);
+    memset (IPPU.TileCache [TILE_8BIT], 0, MAX_8BIT_TILES * 128);
 
-    ZeroMemory (IPPU.TileCached [TILE_2BIT], MAX_2BIT_TILES);
-    ZeroMemory (IPPU.TileCached [TILE_4BIT], MAX_4BIT_TILES);
-    ZeroMemory (IPPU.TileCached [TILE_8BIT], MAX_8BIT_TILES);
+    memset (IPPU.TileCached [TILE_2BIT], 0, MAX_2BIT_TILES);
+    memset (IPPU.TileCached [TILE_4BIT], 0, MAX_4BIT_TILES);
+    memset (IPPU.TileCached [TILE_8BIT], 0, MAX_8BIT_TILES);
     
     SDD1Data = NULL;
     SDD1Index = NULL;
@@ -728,7 +728,7 @@ again:
     }
 	
     CalculatedSize = (TotalFileSize / 0x2000) * 0x2000;
-    ZeroMemory (ROM + CalculatedSize, MAX_ROM_SIZE - CalculatedSize);
+    memset (ROM + CalculatedSize, 0, MAX_ROM_SIZE - CalculatedSize);
 	
 	if(CalculatedSize >0x400000&&
 		!(ROM[0x7FD5]==0x32&&((ROM[0x7FD6]&0xF0)==0x40)) && //exclude S-DD1
@@ -1411,8 +1411,8 @@ void CMemory::InitROM (bool8 Interleaved)
 		}
 	}
 
-    ZeroMemory (BlockIsRAM, MEMMAP_NUM_BLOCKS);
-    ZeroMemory (BlockIsROM, MEMMAP_NUM_BLOCKS);
+    memset (BlockIsRAM, 0, MEMMAP_NUM_BLOCKS);
+    memset (BlockIsROM, 0, MEMMAP_NUM_BLOCKS);
 
     memset (ROMId, 0, 5);
     memset (CompanyId, 0, 3);

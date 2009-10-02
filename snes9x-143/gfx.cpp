@@ -282,7 +282,7 @@ void DrawLargePixel16Sub1_2 (uint32 Tile, uint32 Offset,
 
 bool8 S9xGraphicsInit(){
     S9xInitTileRenderer();
-    ZeroMemory(BlackColourMap, 256*sizeof(uint16));
+    memset(BlackColourMap, 0, 256*sizeof(uint16));
 
     GFX.RealPitch = GFX.Pitch2 = GFX.Pitch;
     GFX.ZPitch = GFX.Pitch >> 1;
@@ -325,7 +325,7 @@ bool8 S9xGraphicsInit(){
 
 #if !defined(NEW_COLOUR_BLENDING)
     /* Lookup table for color subtraction */
-    ZeroMemory(GFX.ZERO_OR_X2, 0x10000*sizeof(uint16));
+    memset(GFX.ZERO_OR_X2, 0, 0x10000*sizeof(uint16));
     for(r=0; r<=MAX_RED; r++){
         uint32 r2=r; if(r2&0x10) r2=(r2<<1)&MAX_RED; else r2=0;
 #if !defined(OLD_COLOUR_BLENDING)
@@ -349,7 +349,7 @@ bool8 S9xGraphicsInit(){
 #endif
 
     /* Lookup table for 1/2 color subtraction */
-    ZeroMemory(GFX.ZERO, 0x10000*sizeof(uint16));
+    memset(GFX.ZERO, 0, 0x10000*sizeof(uint16));
     for(r=0; r<=MAX_RED; r++){
         uint32 r2=r; if(r2&0x10) r2&=~0x10; else r2=0;
         for(g=0; g<=MAX_GREEN; g++){
@@ -3350,10 +3350,10 @@ void S9xUpdateScreen () {
 				// Colour window enabled.
 				for (uint32 y = starty; y <= endy; y++)
 				{
-					ZeroMemory (GFX.SubZBuffer + y * GFX.ZPitch,
-						IPPU.RenderedScreenWidth);
-					ZeroMemory (GFX.ZBuffer + y * GFX.ZPitch,
-						IPPU.RenderedScreenWidth);
+					memset (GFX.SubZBuffer + y * GFX.ZPitch,
+						0, IPPU.RenderedScreenWidth);
+					memset (GFX.ZBuffer + y * GFX.ZPitch,
+						0, IPPU.RenderedScreenWidth);
 					if (IPPU.Clip [0].Count [5])
 					{
 						uint32 *p = (uint32 *) (GFX.SubScreen + y * GFX.Pitch2);
@@ -3389,8 +3389,8 @@ void S9xUpdateScreen () {
 			{
 				for (uint32 y = starty; y <= endy; y++)
 				{
-					ZeroMemory (GFX.ZBuffer + y * GFX.ZPitch,
-						IPPU.RenderedScreenWidth);
+					memset (GFX.ZBuffer + y * GFX.ZPitch,
+						0, IPPU.RenderedScreenWidth);
 					memset (GFX.SubZBuffer + y * GFX.ZPitch, 1,
 						IPPU.RenderedScreenWidth);
 					
@@ -3716,8 +3716,8 @@ void S9xUpdateScreen () {
 		{
 			for (uint32 y = starty; y <= endy; y++)
 			{
-				ZeroMemory (GFX.ZBuffer + y * GFX.ZPitch,
-					IPPU.RenderedScreenWidth);
+				memset (GFX.ZBuffer + y * GFX.ZPitch,
+					0, IPPU.RenderedScreenWidth);
 			}
 			GFX.DB = GFX.ZBuffer;
 			RenderScreen (GFX.Screen, FALSE, TRUE, SUB_SCREEN_DEPTH);
@@ -3743,8 +3743,8 @@ void S9xUpdateScreen () {
 		{
 			for (uint32 y = starty; y <= endy; y++)
 			{
-				ZeroMemory (GFX.ZBuffer + y * GFX.ZPitch,
-					IPPU.RenderedScreenWidth);
+				memset (GFX.ZBuffer + y * GFX.ZPitch,
+					0, IPPU.RenderedScreenWidth);
 			}
 			GFX.DB = GFX.ZBuffer;
 			GFX.pCurrentClip = &IPPU.Clip [0];

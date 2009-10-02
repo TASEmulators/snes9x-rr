@@ -196,7 +196,7 @@ extern struct SLineMatrixData LineMatrixData [240];
 
 bool8 S9xGraphicsInit(){
     S9xInitTileRenderer();
-    ZeroMemory(BlackColourMap, 256*sizeof(uint16));
+    memset(BlackColourMap, 0, 256*sizeof(uint16));
 
 #ifdef GFX_MULTI_FORMAT
     if(GFX.BuildPixel==NULL) S9xSetRenderPixelFormat(RGB565);
@@ -238,7 +238,7 @@ bool8 S9xGraphicsInit(){
 
 #if !defined(NEW_COLOUR_BLENDING)
     /* Lookup table for color subtraction */
-    ZeroMemory(GFX.ZERO_OR_X2, 0x10000*sizeof(uint16));
+    memset(GFX.ZERO_OR_X2, 0, 0x10000*sizeof(uint16));
     for(r=0; r<=MAX_RED; r++){
         uint32 r2=r; if(r2&0x10) r2=(r2<<1)&MAX_RED; else r2=0;
 #if !defined(OLD_COLOUR_BLENDING)
@@ -262,7 +262,7 @@ bool8 S9xGraphicsInit(){
 #endif
 
     /* Lookup table for 1/2 color subtraction */
-    ZeroMemory(GFX.ZERO, 0x10000*sizeof(uint16));
+    memset(GFX.ZERO, 0, 0x10000*sizeof(uint16));
     for(r=0; r<=MAX_RED; r++){
         uint32 r2=r; if(r2&0x10) r2&=~0x10; else r2=0;
         for(g=0; g<=MAX_GREEN; g++){
@@ -369,8 +369,8 @@ void S9xStartScreenRefresh(){
         PPU.MosaicStart=0;
         IPPU.PreviousLine=IPPU.CurrentLine=0;
         PPU.RecomputeClipWindows=TRUE;
-        ZeroMemory(GFX.ZBuffer, GFX.ScreenSize);
-        ZeroMemory(GFX.SubZBuffer, GFX.ScreenSize);
+        memset(GFX.ZBuffer, 0, GFX.ScreenSize);
+        memset(GFX.SubZBuffer, 0, GFX.ScreenSize);
     }
     if(++IPPU.FrameCount % Memory.ROMFramesPerSecond == 0) {
         IPPU.DisplayedRenderedFrameCount = IPPU.RenderedFramesCount;

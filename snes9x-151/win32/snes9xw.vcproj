@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="Windows-1252"?>
+<?xml version="1.0" encoding="shift_jis"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
@@ -885,26 +885,6 @@
 			<File
 				RelativePath="..\tile.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						InlineFunctionExpansion="2"
-						FavorSizeOrSpeed="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release FastBuild|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						InlineFunctionExpansion="2"
-						FavorSizeOrSpeed="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\tile.h"

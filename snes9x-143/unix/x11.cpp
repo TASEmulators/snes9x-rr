@@ -826,13 +826,13 @@ void SetupImage ()
 	GFX.SubZBuffer = (uint8 *) (GUI.to_free [tf++] = malloc ((GFX.Pitch >> 1) * h));
     }
     GFX.Delta = (GFX.SubScreen - GFX.Screen) >> 1;
-    ZeroMemory (GFX.Screen, GFX.Pitch * h);
+    memset (GFX.Screen, 0, GFX.Pitch * h);
     if ((uint8 *) GUI.image->data != GFX.Screen)
-	ZeroMemory (GUI.image->data, GUI.image->bytes_per_line * GUI.image->height);
+	memset (GUI.image->data, 0, GUI.image->bytes_per_line * GUI.image->height);
     if (GUI.delta_screen)
 	memset (GUI.delta_screen, 0xff, GFX.Pitch * h);
     if (GUI.interpolated_screen)
-	ZeroMemory (GUI.interpolated_screen, 512 * 478 * 2);
+	memset (GUI.interpolated_screen, 0, 512 * 478 * 2);
     if ((true) && GUI.interpolate)
     {
 	// Offset the rendering of the SNES image by at least one pixel because
