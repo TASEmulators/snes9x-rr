@@ -298,6 +298,10 @@ INLINE uint8 S9xGetByte (uint32 Address, bool free)
     }
 }
 
+#ifdef _MSC_VER
+#pragma optimize("", off) // VS2008: you will see an obvious graphic glitch in Donkey Kong Country if you enable optimization.
+#endif
+
 INLINE uint16 S9xGetWord (uint32 Address, enum s9xwrap_t w, bool free)
 {
     uint32 mask=MEMMAP_MASK&(w==WRAP_PAGE?0xff:(w==WRAP_BANK?0xffff:0xffffff));
@@ -440,6 +444,10 @@ INLINE uint16 S9xGetWord (uint32 Address, enum s9xwrap_t w, bool free)
         return (OpenBus | (OpenBus<<8));
     }
 }
+
+#ifdef _MSC_VER
+#pragma optimize("", on)
+#endif
 
 INLINE void S9xSetByteWrapped (uint8 Byte, uint32 Address, bool free)
 {
