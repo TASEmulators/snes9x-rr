@@ -3261,7 +3261,7 @@ static void Initialize(void)
 
 	printf("OS: %x  QuickTime: %x  HIToolbox: %x\n\n", (unsigned) systemVersion, (unsigned) qtVersion, (unsigned) hiToolboxVersion);
 
-    ZeroMemory(&Settings, sizeof(Settings));
+    memset(&Settings, 0, sizeof(Settings));
 
     Settings.ShutdownMaster = false;
 	Settings.BlockInvalidVRAMAccess = true;

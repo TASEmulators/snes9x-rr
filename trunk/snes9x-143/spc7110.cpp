@@ -1708,7 +1708,7 @@ void SPC7110Load(char* dirname)
 	getcwd(temp_path,PATH_MAX);
 #endif
 
-	ZeroMemory(decompack, sizeof(Pack7110));
+	memset(decompack, 0, sizeof(Pack7110));
 	
 #ifndef _XBOX
 		if(-1==chdir(dirname))
@@ -1771,7 +1771,7 @@ void SPC7110Open(char* dirname)
 	getcwd(temp_path,PATH_MAX);
 #endif
 
-	ZeroMemory(decompack, sizeof(Pack7110));
+	memset(decompack, 0, sizeof(Pack7110));
 	
 #ifndef _XBOX
 		if(-1==chdir(dirname))
@@ -1820,7 +1820,7 @@ void SPC7110Grab(char* dirname)
 
 	int32 buffer_size=1024*1024*cacheMegs;//*some setting
 
-	ZeroMemory(decompack, sizeof(Pack7110));
+	memset(decompack, 0, sizeof(Pack7110));
 #ifndef _XBOX
   
 		if(-1==chdir(dirname))

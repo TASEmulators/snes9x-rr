@@ -1282,7 +1282,7 @@ bool8 S9xUnfreezeGame (const char *filename)
 	bool prev_disableMessageImmediateRefresh = disableMessageImmediateRefresh;
 	disableMessageImmediateRefresh = true;
 
-    ZeroMemory (&Obsolete, sizeof(Obsolete));
+    memset (&Obsolete, 0, sizeof(Obsolete));
     
     STREAM snapshot = NULL;
 
@@ -2278,7 +2278,7 @@ int UnfreezeBlock (STREAM stream, char *name, uint8 *block, int size)
         rem = len - size;
         len = size;
     }
-    ZeroMemory (block, size);
+    memset (block, 0, size);
     if (READ_STREAM (block, len, stream) != len)
     {
         REVERT_STREAM(stream, rewind, 0);

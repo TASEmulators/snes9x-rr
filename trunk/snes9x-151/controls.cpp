@@ -529,7 +529,7 @@ void S9xUnmapAllControls(void){
     if(!(superscope.crosshair.set&1)) superscope.crosshair.img=2;
     if(!(superscope.crosshair.set&2)) superscope.crosshair.fg=5;
     if(!(superscope.crosshair.set&4)) superscope.crosshair.bg=1;
-    ZeroMemory(pseudobuttons, sizeof(pseudobuttons));
+    memset(pseudobuttons, 0, sizeof(pseudobuttons));
     turbo_time=1;
 }
 
@@ -983,7 +983,7 @@ s9xcommand_t S9xGetCommandT(const char *name){
     s9xcommand_t cmd;
     int i, j;
     const char *s;
-    ZeroMemory(&cmd, sizeof(cmd));
+    memset(&cmd, 0, sizeof(cmd));
     cmd.type=S9xBadMapping;
     cmd.multi_press=0;
     cmd.button_norpt=0;
@@ -2771,7 +2771,7 @@ void MovieSetJustifier(int i, const uint8 in [11]){
 void S9xControlPreSave(struct SControlSnapshot *s){
     int i, j;
 
-    ZeroMemory(s, sizeof(*s));
+    memset(s, 0, sizeof(*s));
     s->ver=3;
     for(i=0; i<2; i++){
         s->port1_read_idx[i]=read_idx[0][i];

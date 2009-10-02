@@ -234,7 +234,7 @@ bool CXAudio2::SetupSound(uint8 **syncSoundBuffer,int *sample_count)
 		this->syncSoundBuffer = new uint8[bufferSize];
 		*syncSoundBuffer = this->syncSoundBuffer;
 		*sample_count = buffer_sampleCount;
-		//ZeroMemory(SoundBuffer,sum_bufferSize);				// unneccesary, we start mixing below
+		//SecureZeroMemory(SoundBuffer,sum_bufferSize);				// unneccesary, we start mixing below
     }
 	else
 		return false;

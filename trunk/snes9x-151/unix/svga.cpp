@@ -410,11 +410,11 @@ void S9xInitDisplay (int /*argc*/, char ** /*argv*/)
 	}
     }
 
-    ZeroMemory (GFX.Screen, GFX.Pitch * IMAGE_HEIGHT);
+    memset (GFX.Screen, 0, GFX.Pitch * IMAGE_HEIGHT);
     if (GFX.SubScreen)
-	ZeroMemory (GFX.SubScreen, GFX.Pitch * IMAGE_HEIGHT);
+	memset (GFX.SubScreen, 0, GFX.Pitch * IMAGE_HEIGHT);
     if (DeltaScreen)
-	ZeroMemory (DeltaScreen, GFX.Pitch * IMAGE_HEIGHT);
+	memset (DeltaScreen, 0, GFX.Pitch * IMAGE_HEIGHT);
 
     sig1handler.sa_handler = Sig1HandlerFunction;
     sigemptyset (&sig1handler.sa_mask);
@@ -486,7 +486,7 @@ void S9xProcessEvents (bool8 block)
     {
 	restore_modex = FALSE;
 
-	ZeroMemory (prev_keystate, 128);
+	memset (prev_keystate, 0, 128);
 	if (!text_mode && modes [mode].mode == G320x200x256 && screen_width == 256)
 	{
 	    iopl(3);

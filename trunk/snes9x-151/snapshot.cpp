@@ -1323,7 +1323,7 @@ bool8 S9xUnfreezeGame (const char *filename)
 	bool prev_disableMessageImmediateRefresh = disableMessageImmediateRefresh;
 	disableMessageImmediateRefresh = true;
 
-    ZeroMemory (&Obsolete, sizeof(Obsolete));
+    memset (&Obsolete, 0, sizeof(Obsolete));
     
     STREAM snapshot = NULL; // snapshot won't be known if one of the two following if statements are true, thus moving it up a bit
 
@@ -1852,7 +1852,7 @@ int S9xUnfreezeFromStream (STREAM stream)
 			UnfreezeStructFromCopy (&ctl_snap, SnapControls, COUNT (SnapControls), local_control_data, version);
 		} else {
 			// Must be an old snes9x savestate
-			ZeroMemory(&ctl_snap, sizeof(ctl_snap));
+			memset(&ctl_snap, 0, sizeof(ctl_snap));
 			ctl_snap.ver=0;
 			ctl_snap.port1_read_idx[0]=Obsolete.SPPU_Joypad1ButtonReadPos;
 			ctl_snap.port2_read_idx[0]=Obsolete.SPPU_Joypad2ButtonReadPos;
@@ -2366,7 +2366,7 @@ int UnfreezeBlock (STREAM stream, char *name, uint8 *block, int size)
         rem = len - size;
         len = size;
     }
-    ZeroMemory (block, size);
+    memset (block, 0, size);
     if (READ_STREAM (block, len, stream) != len)
     {
         REVERT_STREAM(stream, rewind, 0);

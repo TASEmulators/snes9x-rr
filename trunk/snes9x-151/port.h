@@ -334,8 +334,6 @@ typedef unsigned __int64 uint64;
 #define _MAX_EXT PATH_MAX
 #define _MAX_PATH PATH_MAX
 
-#define ZeroMemory(a,b) memset((a),0,(b))
-
 void _makepath (char *path, const char *drive, const char *dir,
 		const char *fname, const char *ext);
 void _splitpath (const char *path, char *drive, char *dir, char *fname,

@@ -289,7 +289,7 @@ void S9xReset (void)
 
 	ResetGlobalJunk();
 
-    ZeroMemory (Memory.FillRAM, 0x8000);
+    memset (Memory.FillRAM, 0, 0x8000);
     memset (Memory.VRAM, 0x00, 0x10000);
     memset (Memory.RAM, 0x55, 0x20000);
 
@@ -331,7 +331,7 @@ void S9xSoftReset (void)
 #ifdef ZSNES_FX
     WinterGold = Settings.WinterGold;
 #endif
-    ZeroMemory (Memory.FillRAM, 0x8000);
+    memset (Memory.FillRAM, 0, 0x8000);
     memset (Memory.VRAM, 0x00, 0x10000);
  //   memset (Memory.RAM, 0x55, 0x20000);
 
