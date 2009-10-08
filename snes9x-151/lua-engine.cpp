@@ -3534,13 +3534,16 @@ int S9xLoadLuaCode(const char *filename) {
 		luaL_register(LUA, "movie", movielib);
 		luaL_register(LUA, "gui", guilib);
 		luaL_register(LUA, "input", inputlib);
+		luaL_register(LUA, "bit", bit_funcs); // LuaBitOp library
 		lua_settop(LUA, 0); // clean the stack, because each call to luaL_register leaves a table on top
 
+		// old bit operation functions
 		lua_register(LUA, "AND", bit_band);
 		lua_register(LUA, "OR", bit_bor);
 		lua_register(LUA, "XOR", bit_bxor);
 		lua_register(LUA, "SHIFT", bit_bshift_emulua);
 		lua_register(LUA, "BIT", bitbit);
+
 		luabitop_validate(LUA);
 
 		lua_pushstring(LUA, "math");
