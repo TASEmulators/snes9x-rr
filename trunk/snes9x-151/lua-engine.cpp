@@ -3750,23 +3750,18 @@ void S9xLuaGui(void *s, int width, int height, int bpp, int pitch) {
 		for (y=0; y < height && y < LUA_SCREEN_HEIGHT; y++) {
 			for (x=0; x < LUA_SCREEN_WIDTH; x++) {
 				const uint8 gui_alpha = gui_data[(y*LUA_SCREEN_WIDTH+x)*4+3];
+				if (gui_alpha == 0) {
+					// do nothing
+					continue;
+				}
+
 				const uint8 gui_red   = gui_data[(y*LUA_SCREEN_WIDTH+x)*4+2];
 				const uint8 gui_green = gui_data[(y*LUA_SCREEN_WIDTH+x)*4+1];
 				const uint8 gui_blue  = gui_data[(y*LUA_SCREEN_WIDTH+x)*4];
 				int red, green, blue;
 
 				for (x2 = 0; x2 < xscale; x2++) {
-					const uint8 scr_red   = ((screen[y*ppl + (x*xscale+x2)] >> 11) & 31) << 3;
-					const uint8 scr_green = ((screen[y*ppl + (x*xscale+x2)] >> 5)  & 63) << 2;
-					const uint8 scr_blue  = ( screen[y*ppl + (x*xscale+x2)]        & 31) << 3;
-
-					if (gui_alpha == 0) {
-						// do nothing
-						red = scr_red;
-						green = scr_green;
-						blue = scr_blue;
-					}
-					else if (gui_alpha == 255) {
+					if (gui_alpha == 255) {
 						// direct copy
 						red = gui_red;
 						green = gui_green;
@@ -3774,6 +3769,9 @@ void S9xLuaGui(void *s, int width, int height, int bpp, int pitch) {
 					}
 					else {
 						// alpha-blending
+						const uint8 scr_red   = ((screen[y*ppl + (x*xscale+x2)] >> 11) & 31) << 3;
+						const uint8 scr_green = ((screen[y*ppl + (x*xscale+x2)] >> 5)  & 63) << 2;
+						const uint8 scr_blue  = ( screen[y*ppl + (x*xscale+x2)]        & 31) << 3;
 						red   = (((int) gui_red   - scr_red)   * gui_alpha / 255 + scr_red)   & 255;
 						green = (((int) gui_green - scr_green) * gui_alpha / 255 + scr_green) & 255;
 						blue  = (((int) gui_blue  - scr_blue)  * gui_alpha / 255 + scr_blue)  & 255;
@@ -3791,23 +3789,18 @@ void S9xLuaGui(void *s, int width, int height, int bpp, int pitch) {
 		for (y=0; y < height && y < LUA_SCREEN_HEIGHT; y++) {
 			for (x=0; x < LUA_SCREEN_WIDTH; x++) {
 				const uint8 gui_alpha = gui_data[(y*LUA_SCREEN_WIDTH+x)*4+3];
+				if (gui_alpha == 0) {
+					// do nothing
+					continue;
+				}
+
 				const uint8 gui_red   = gui_data[(y*LUA_SCREEN_WIDTH+x)*4+2];
 				const uint8 gui_green = gui_data[(y*LUA_SCREEN_WIDTH+x)*4+1];
 				const uint8 gui_blue  = gui_data[(y*LUA_SCREEN_WIDTH+x)*4];
 				int red, green, blue;
 
 				for (x2 = 0; x2 < xscale; x2++) {
-					const uint8 scr_red   = screen[y*pitch + (x*xscale+x2)*bytesPerPixel + 2];
-					const uint8 scr_green = screen[y*pitch + (x*xscale+x2)*bytesPerPixel + 1];
-					const uint8 scr_blue  = screen[y*pitch + (x*xscale+x2)*bytesPerPixel];
-
-					if (gui_alpha == 0) {
-						// do nothing
-						red = scr_red;
-						green = scr_green;
-						blue = scr_blue;
-					}
-					else if (gui_alpha == 255) {
+					if (gui_alpha == 255) {
 						// direct copy
 						red = gui_red;
 						green = gui_green;
@@ -3815,6 +3808,9 @@ void S9xLuaGui(void *s, int width, int height, int bpp, int pitch) {
 					}
 					else {
 						// alpha-blending
+						const uint8 scr_red   = screen[y*pitch + (x*xscale+x2)*bytesPerPixel + 2];
+						const uint8 scr_green = screen[y*pitch + (x*xscale+x2)*bytesPerPixel + 1];
+						const uint8 scr_blue  = screen[y*pitch + (x*xscale+x2)*bytesPerPixel];
 						red   = (((int) gui_red   - scr_red)   * gui_alpha / 255 + scr_red)   & 255;
 						green = (((int) gui_green - scr_green) * gui_alpha / 255 + scr_green) & 255;
 						blue  = (((int) gui_blue  - scr_blue)  * gui_alpha / 255 + scr_blue)  & 255;
@@ -3835,23 +3831,18 @@ void S9xLuaGui(void *s, int width, int height, int bpp, int pitch) {
 		for (y=0; y < height && y < LUA_SCREEN_HEIGHT; y++) {
 			for (x=0; x < LUA_SCREEN_WIDTH; x++) {
 				const uint8 gui_alpha = gui_data[(y*LUA_SCREEN_WIDTH+x)*4+3];
+				if (gui_alpha == 0) {
+					// do nothing
+					continue;
+				}
+
 				const uint8 gui_red   = gui_data[(y*LUA_SCREEN_WIDTH+x)*4+2];
 				const uint8 gui_green = gui_data[(y*LUA_SCREEN_WIDTH+x)*4+1];
 				const uint8 gui_blue  = gui_data[(y*LUA_SCREEN_WIDTH+x)*4];
 				int red, green, blue;
 
 				for (x2 = 0; x2 < xscale; x2++) {
-					const uint8 scr_red   = screen[y*pitch + (x*xscale+x2)*bytesPerPixel + 2];
-					const uint8 scr_green = screen[y*pitch + (x*xscale+x2)*bytesPerPixel + 1];
-					const uint8 scr_blue  = screen[y*pitch + (x*xscale+x2)*bytesPerPixel];
-
-					if (gui_alpha == 0) {
-						// do nothing
-						red = scr_red;
-						green = scr_green;
-						blue = scr_blue;
-					}
-					else if (gui_alpha == 255) {
+					if (gui_alpha == 255) {
 						// direct copy
 						red = gui_red;
 						green = gui_green;
@@ -3859,6 +3850,9 @@ void S9xLuaGui(void *s, int width, int height, int bpp, int pitch) {
 					}
 					else {
 						// alpha-blending
+						const uint8 scr_red   = screen[y*pitch + (x*xscale+x2)*bytesPerPixel + 2];
+						const uint8 scr_green = screen[y*pitch + (x*xscale+x2)*bytesPerPixel + 1];
+						const uint8 scr_blue  = screen[y*pitch + (x*xscale+x2)*bytesPerPixel];
 						red   = (((int) gui_red   - scr_red)   * gui_alpha / 255 + scr_red)   & 255;
 						green = (((int) gui_green - scr_green) * gui_alpha / 255 + scr_green) & 255;
 						blue  = (((int) gui_blue  - scr_blue)  * gui_alpha / 255 + scr_blue)  & 255;
