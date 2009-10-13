@@ -219,7 +219,7 @@
 #define IDC_PICTURE                     1164
 #define IDC_ADDYS                       1165
 #define IDC_OK                          1166
-//#define IDC_C_SEARCH                    1167
+#define IDC_WATCHES_GROUP               1167
 #define IDC_RED                         1168
 #define IDC_C_ADD                       1169
 #define IDC_BLUE                        1170

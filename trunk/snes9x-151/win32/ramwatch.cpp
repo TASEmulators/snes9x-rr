@@ -1179,6 +1179,31 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 				return true;
 		}	break;
 
+		case WM_GETMINMAXINFO:
+		{
+			LPMINMAXINFO lpmm = (LPMINMAXINFO)lParam;
+			lpmm->ptMinTrackSize.x = 240;
+			lpmm->ptMinTrackSize.y = 320;
+		}	break;
+
+		case WM_SIZE:
+		{
+			UINT nType = (UINT) wParam;
+			int cx = (int) LOWORD(lParam);
+			int cy = (int) HIWORD(lParam);
+
+			// more flexible resize routine is welcome
+			SetWindowPos(GetDlgItem(hDlg, IDC_WATCHES_GROUP), (HWND)NULL, cx-71, 18, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+			SetWindowPos(GetDlgItem(hDlg, IDC_WATCHLIST), (HWND)NULL, 0, 0, cx-89, cy-31, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+			SetWindowPos(GetDlgItem(hDlg, IDC_C_WATCH_EDIT), (HWND)NULL, cx-65, 107, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+			SetWindowPos(GetDlgItem(hDlg, IDC_C_WATCH_REMOVE), (HWND)NULL, cx-65, 135, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+			SetWindowPos(GetDlgItem(hDlg, IDC_C_WATCH), (HWND)NULL, cx-65, 163, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+			SetWindowPos(GetDlgItem(hDlg, IDC_C_WATCH_DUPLICATE), (HWND)NULL, cx-65, 190, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+			SetWindowPos(GetDlgItem(hDlg, IDC_C_ADDCHEAT), (HWND)NULL, cx-71, 228, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+			SetWindowPos(GetDlgItem(hDlg, ID_WATCHES_UPDOWN), (HWND)NULL, cx-56, 37, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+			RedrawWindow(hDlg, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN); // workaround for groupbox repainting
+		}	break;
+
 //		case WM_CLOSE:
 //			RamWatchHWnd = NULL;
 //			DragAcceptFiles(hDlg, FALSE);
