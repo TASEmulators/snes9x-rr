@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="Windows-1252"?>
+<?xml version="1.0" encoding="shift_jis"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
@@ -179,7 +179,7 @@
 				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="0"
+				DebugInformationFormat="3"
 				CompileAs="0"
 				DisableSpecificWarnings="4290;4996;4200"
 			/>
@@ -284,7 +284,7 @@
 				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="3"
+				DebugInformationFormat="4"
 				CompileAs="0"
 				DisableSpecificWarnings="4290;4996;4200"
 			/>
@@ -393,7 +393,7 @@
 				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="0"
+				DebugInformationFormat="3"
 				CompileAs="0"
 				DisableSpecificWarnings="4290;4996;4200"
 			/>

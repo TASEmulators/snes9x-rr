@@ -365,5 +365,9 @@ EXTERN_C void MixSound(void);
                           *((uint8 *) (s) + 3) = (uint8) ((d) >> 24)
 #endif
 
+#ifndef CTASSERT
+#define CTASSERT(x)  typedef char __assert ## y[(x) ? 1 : -1];
+#endif
+
 #endif
 
