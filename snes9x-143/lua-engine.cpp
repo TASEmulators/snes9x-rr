@@ -14,6 +14,12 @@
 #include <map>
 #include <string>
 #include <algorithm>
+#ifdef _WIN32
+   #include "BaseTsd.h"
+   typedef INT_PTR intptr_t;
+#else
+   #include "stdint.h"
+#endif
 
 #ifdef __linux
 #include <sys/types.h>
@@ -38,6 +44,7 @@
 #include "snapshot.h"
 #include "gfx.h"
 #include "ppu.h"
+#include "65c816.h"
 
 extern "C" {
 	#include "lua.h"
@@ -329,6 +336,117 @@ static int snes9x_message(lua_State *L) {
 	
 	return 0;
 
+}
+
+struct registerPointerMap
+{
+	const char* registerName;
+	unsigned int* pointer;
+	int dataSize;
+};
+
+#define RPM_ENTRY(name,var) {name, (unsigned int*)&var, sizeof(var)},
+
+registerPointerMap a65c816PointerMap [] = {
+	RPM_ENTRY("db", Registers.DB)
+	RPM_ENTRY("p", Registers.P.W)
+	RPM_ENTRY("a", Registers.A.W)
+	RPM_ENTRY("d", Registers.D.W)
+	RPM_ENTRY("s", Registers.S.W)
+	RPM_ENTRY("x", Registers.X.W)
+	RPM_ENTRY("y", Registers.Y.W)
+	RPM_ENTRY("pb", Registers.PB) // FIXME: so buggy!
+	RPM_ENTRY("pc", Registers.PC) // FIXME: so buggy!
+	{}
+};
+
+struct cpuToRegisterMap
+{
+	const char* cpuName;
+	registerPointerMap* rpmap;
+}
+cpuToRegisterMaps [] =
+{
+	{"65c816.", a65c816PointerMap},
+	{"main.", a65c816PointerMap},
+	{"", a65c816PointerMap},
+};
+
+
+//DEFINE_LUA_FUNCTION(memory_getregister, "cpu_dot_registername_string")
+static int memory_getregister(lua_State *L)
+{
+	const char* qualifiedRegisterName = luaL_checkstring(L,1);
+	lua_settop(L,0);
+	for(int cpu = 0; cpu < sizeof(cpuToRegisterMaps)/sizeof(*cpuToRegisterMaps); cpu++)
+	{
+		cpuToRegisterMap ctrm = cpuToRegisterMaps[cpu];
+		int cpuNameLen = strlen(ctrm.cpuName);
+		if(!strnicmp(qualifiedRegisterName, ctrm.cpuName, cpuNameLen))
+		{
+			qualifiedRegisterName += cpuNameLen;
+			for(int reg = 0; ctrm.rpmap[reg].dataSize; reg++)
+			{
+				registerPointerMap rpm = ctrm.rpmap[reg];
+				if(!stricmp(qualifiedRegisterName, rpm.registerName))
+				{
+					if ((INT_PTR) rpm.pointer == (INT_PTR) (&Registers.PC)) {
+						lua_pushinteger(L, CPU.PC - CPU.PCBase); // FIXME: still returns unstable value
+					}
+					else {
+						switch(rpm.dataSize)
+						{ default:
+						case 1: lua_pushinteger(L, *(unsigned char*)rpm.pointer); break;
+						case 2: lua_pushinteger(L, *(unsigned short*)rpm.pointer); break;
+						case 4: lua_pushinteger(L, *(unsigned long*)rpm.pointer); break;
+						}
+					}
+					return 1;
+				}
+			}
+			lua_pushnil(L);
+			return 1;
+		}
+	}
+	lua_pushnil(L);
+	return 1;
+}
+//DEFINE_LUA_FUNCTION(memory_setregister, "cpu_dot_registername_string,value")
+static int memory_setregister(lua_State *L)
+{
+	const char* qualifiedRegisterName = luaL_checkstring(L,1);
+	unsigned long value = (unsigned long)(luaL_checkinteger(L,2));
+	lua_settop(L,0);
+	for(int cpu = 0; cpu < sizeof(cpuToRegisterMaps)/sizeof(*cpuToRegisterMaps); cpu++)
+	{
+		cpuToRegisterMap ctrm = cpuToRegisterMaps[cpu];
+		int cpuNameLen = strlen(ctrm.cpuName);
+		if(!strnicmp(qualifiedRegisterName, ctrm.cpuName, cpuNameLen))
+		{
+			qualifiedRegisterName += cpuNameLen;
+			for(int reg = 0; ctrm.rpmap[reg].dataSize; reg++)
+			{
+				registerPointerMap rpm = ctrm.rpmap[reg];
+				if(!stricmp(qualifiedRegisterName, rpm.registerName))
+				{
+					if ((INT_PTR) rpm.pointer == (INT_PTR) (&Registers.PC)) {
+						luaL_error(L, "unsupported target \"%s\"", qualifiedRegisterName);
+					}
+					else {
+						switch(rpm.dataSize)
+						{ default:
+						case 1: *(unsigned char*)rpm.pointer = (unsigned char)(value & 0xFF); break;
+						case 2: *(unsigned short*)rpm.pointer = (unsigned short)(value & 0xFFFF); break;
+						case 4: *(unsigned long*)rpm.pointer = value; break;
+						}
+					}
+					return 0;
+				}
+			}
+			return 0;
+		}
+	}
+	return 0;
 }
 
 void HandleCallbackError(lua_State* L)
@@ -3090,6 +3208,8 @@ static const struct luaL_reg memorylib [] = {
 	{"writebyte", memory_writebyte},
 	{"writeword", memory_writeword},
 	{"writedword", memory_writedword},
+	{"getregister", memory_getregister},
+	{"setregister", memory_setregister},
 	// alternate naming scheme for word and double-word and unsigned
 	{"readbyteunsigned", memory_readbyte},
 	{"readwordunsigned", memory_readword},
