@@ -138,8 +138,11 @@ INLINE uint32 S9xGetDWord (uint32 Address);
 INLINE uint32 S9xGetDWord (uint32 Address)
 {
 	bool free = true;
+	uint32 ret;
 
-	return S9xGetWord(Address, free) | (S9xGetWord(Address+2, free) << 16);
+	ret = S9xGetWord(Address, free);
+	ret |= (S9xGetWord(Address+2, free) << 16);
+	return ret;
 }
 
 INLINE void S9xSetDWord (uint32 DWord, uint32 Address)
@@ -3102,7 +3105,7 @@ static const struct luaL_reg memorylib [] = {
 
 	// memory hooks
 	{"registerwrite", memory_registerwrite},
-	//{"registerread", memory_registerread}, TODO
+	//{"registerread", memory_registerread},
 	//{"registerexec", memory_registerexec},
 	// alternate names
 	{"register", memory_registerwrite},
