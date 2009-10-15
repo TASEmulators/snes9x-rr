@@ -67,6 +67,7 @@
 				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
 				CompileAs="0"
 				DisableSpecificWarnings="4290;4996"
 			/>
@@ -167,7 +168,7 @@
 				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="3"
+				DebugInformationFormat="4"
 				CompileAs="0"
 				DisableSpecificWarnings="4290;4996"
 			/>
@@ -274,6 +275,7 @@
 				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
 				CompileAs="0"
 				DisableSpecificWarnings="4290;4996"
 			/>

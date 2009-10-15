@@ -189,33 +189,6 @@ INLINE uint8 S9xGetByte (uint32 Address, bool free=false);
 INLINE uint16 S9xGetWord (uint32 Address, enum s9xwrap_t w=WRAP_NONE, bool free=false);
 #endif
 
-INLINE void S9xLuaWriteInform(uint32 address) {
-
-	if (address & 0x400000)
-	{
-		address &= 0x7fffff;
-		if (address < 0x7e0000)
-			return;
-	}
-	else
-	{
-		address = 0x7e0000 | (address & 0xffff);
-	}
-
-	int addr2 = address - 0x7e0000;
-
-	// These might be better using binary arithmatic -- a shift and an AND
-	int slot = addr2 / 8;
-	int bits = addr2 % 8;
-
-	extern unsigned char lua_watch_bitfield[16384];
-	
-	// Check the slot
-	if (lua_watch_bitfield[slot] & (1 << bits))
-		S9xLuaWrite(address);
-
-}
-
 INLINE uint8 S9xGetByte (uint32 Address, bool free)
 {
     int block;
@@ -911,13 +884,13 @@ INLINE uint8 *S9xGetMemPointer (uint32 Address)
 INLINE void S9xSetWord (uint16 Word, uint32 Address, enum s9xwrap_t w, enum s9xwriteorder_t o, bool free)
 {
 	S9xSetWordWrapped(Word, Address, w, o, free);
-	S9xLuaWriteInform(Address);
+	CallRegisteredLuaMemHook(Address, 2, Word, LUAMEMHOOK_WRITE);
 }
 
 INLINE void S9xSetByte (uint8 Byte, uint32 Address, bool free)
 {
 	S9xSetByteWrapped(Byte, Address, free);
-	S9xLuaWriteInform(Address);
+	CallRegisteredLuaMemHook(Address, 1, Byte, LUAMEMHOOK_WRITE);
 }
 
 INLINE void S9xSetPCBase (uint32 Address)

@@ -11,9 +11,21 @@ enum LuaCallID
 };
 void CallRegisteredLuaFunctions(LuaCallID calltype);
 
+enum LuaMemHookType
+{
+	LUAMEMHOOK_WRITE,
+	LUAMEMHOOK_READ,
+	LUAMEMHOOK_EXEC,
+	LUAMEMHOOK_WRITE_SUB,
+	LUAMEMHOOK_READ_SUB,
+	LUAMEMHOOK_EXEC_SUB,
+
+	LUAMEMHOOK_COUNT
+};
+void CallRegisteredLuaMemHook(unsigned int address, int size, unsigned int value, LuaMemHookType hookType);
+
 // Just forward function declarations 
 
-void S9xLuaWrite(uint32 addr);
 void S9xLuaFrameBoundary();
 int S9xLoadLuaCode(const char *filename);
 int S9xReloadLuaCode();
@@ -34,9 +46,6 @@ char* S9xGetLuaScriptName(); // note: returns a pointer to a writable static buf
 
 // And some interesting REVERSE declarations!
 char *S9xGetFreezeFilename(int slot);
-
-// See getset.h!
-//inline void S9xLuaWriteInform(uint32 address);
 
 extern char luascript[128];
 
