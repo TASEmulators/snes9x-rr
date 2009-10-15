@@ -510,13 +510,10 @@ S9xGetWord:
 
 .data
 	.align 4
-LuaStorage:
-	.byte 0,0,0,0
 
 .text
-.globl S9xSetByte
-S9xSetByte:
-	movl %edx, LuaStorage
+.globl S9xSetByteWrapped
+S9xSetByteWrapped:
 	pushl %eax
 #ifdef CPU_SHUTDOWN
 	movl $0, WaitAddress
@@ -556,15 +553,6 @@ S9xSetByte:
 	popl %ecx
 	movb %cl, (%eax, %edx)
 #endif
-
-	pushl LuaStorage
-#if defined(__DJGCC) || defined(MICROSOFT_C) || defined(_WINDOWS) || defined(WIN32)
-	call _S9xLuaWriteCheck
-#else
-	call S9xLuaWriteCheck
-#endif
-	addl $4, %esp
-
 	ret
 
 .SBSpecial:
@@ -713,12 +701,9 @@ S9xSetByte:
 	ret
 
 
-.globl S9xSetWord
-
-S9xSetWord:
-	movl %edx, LuaStorage
+.globl S9xSetWordWrapped
+S9xSetWordWrapped:
 	pushl %eax
-
 	movl %edx, %eax
 	andl $0x0fff, %eax
 	cmpl $0x0fff, %eax
@@ -733,6 +718,56 @@ S9xSetWord:
 	movb 1(%esp), %al
 	call S9xSetByte
 	popl %ecx
+	ret
+
+.globl S9xSetByte
+S9xSetByte:
+	subl $12, %esp
+	movl %eax, 0(%esp)
+	andl $0xff, %eax
+	movl %eax, 8(%esp)
+	movl %edx, 4(%esp)
+	popl %eax
+
+	call S9xSetByteWrapped
+	popl %edx
+	popl %eax
+
+	pushl $LUAMEMHOOK_WRITE
+	pushl %eax
+	pushl $1
+	pushl %edx
+#if defined(__DJGCC) || defined(MICROSOFT_C) || defined(_WINDOWS) || defined(WIN32)
+	call _CallRegisteredLuaMemHook
+#else
+	call CallRegisteredLuaMemHook
+#endif
+	addl $16, %esp
+	ret
+
+.globl S9xSetWord
+S9xSetWord:
+	subl $12, %esp
+	movl %eax, 0(%esp)
+	andl $0xffff, %eax
+	movl %eax, 8(%esp)
+	movl %edx, 4(%esp)
+	popl %eax
+
+	call S9xSetWordWrapped
+	popl %edx
+	popl %eax
+
+	pushl $LUAMEMHOOK_WRITE
+	pushl %eax
+	pushl $2
+	pushl %edx
+#if defined(__DJGCC) || defined(MICROSOFT_C) || defined(_WINDOWS) || defined(WIN32)
+	call _CallRegisteredLuaMemHook
+#else
+	call CallRegisteredLuaMemHook
+#endif
+	addl $16, %esp
 	ret
 
 .SWNotAtBlockBoundary:
@@ -776,14 +811,6 @@ S9xSetWord:
 	movw %cx, (%eax, %edx)
 #endif
 
-	// Lua addition:
-	pushl LuaStorage
-#if defined(__DJGCC) || defined(MICROSOFT_C) || defined(_WINDOWS)  || defined(WIN32)
-	call _S9xLuaWriteCheck
-#else
-	call S9xLuaWriteCheck
-#endif
-	addl $4, %esp
 	ret
 
 .SWSpecial:
