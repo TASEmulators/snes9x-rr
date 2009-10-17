@@ -154,8 +154,18 @@ typedef union
     uint16 W;
 } pair;
 
+typedef union {
+#ifdef LSB_FIRST
+    struct { uint8 xPCl, xPCh, xPB, z; } B;
+    struct { uint16 xPC, d; } W;
+#else
+    struct { uint8 z, xPB, xPCh, xPCl; } B;
+    struct { uint16 d, xPC; } W;
+#endif
+    uint32 xPBPC;
+} PC_t;
+
 struct SRegisters{
-    uint8  PB;
     uint8  DB;
     pair   P;
     pair   A;
@@ -163,8 +173,14 @@ struct SRegisters{
     pair   S;
     pair   X;
     pair   Y;
-    uint16 PC;
+    PC_t   PC;
 };
+
+#define PBPC PC.xPBPC
+#define PCw PC.W.xPC
+#define PCh PC.B.xPCh
+#define PCl PC.B.xPCl
+#define PB PC.B.xPB
 
 EXTERN_C struct SRegisters Registers;
 

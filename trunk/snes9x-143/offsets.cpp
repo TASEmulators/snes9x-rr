@@ -173,7 +173,7 @@ int main (int /*argc*/, char ** /*argv*/)
     OFFSET2(YY,Y.W)
     OFFSET2(YL,Y.W)
     fprintf (S9xSTREAM, "#define YH YL + 1\n");
-    OFFSET2(PCR, PC)
+    OFFSET2(PCR, PCw)
 
     OFFSET3(RAM)
     OFFSET3(ROM)
@@ -416,7 +416,7 @@ int main (int /*argc*/, char ** /*argv*/)
     OFFSET12(SA1YY,Y.W)
     OFFSET12(SA1YL,Y.W)
     fprintf (S9xSTREAM, "#define SA1YH SA1YL + 1\n");
-    OFFSET12(SA1PCR, PC)
+    OFFSET12(SA1PCR, PCw)
 
     return (0);
 }

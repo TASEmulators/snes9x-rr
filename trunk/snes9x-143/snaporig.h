@@ -363,8 +363,8 @@ typedef union
     uint16 W;
 } OrigPair;
 
+// FIXME: broken? but who cares...
 struct SOrigRegisters{
-    uint8       PB;
     uint8       DB;
     OrigPair   P;
     OrigPair   A;
@@ -372,7 +372,8 @@ struct SOrigRegisters{
     OrigPair   S;
     OrigPair   X;
     OrigPair   Y;
-    uint16       PC;
+    uint16       PC_;
+    uint8       PB_;
 };
 
 #endif

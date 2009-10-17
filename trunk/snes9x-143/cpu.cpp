@@ -120,7 +120,7 @@ void S9xResetSuperFX ()
 void S9xSoftResetCPU ()
 {
     Registers.PB = 0;
-    Registers.PC = S9xGetWord (0xFFFC);
+    Registers.PCw = S9xGetWord (0xFFFC);
     Registers.D.W = 0;
     Registers.DB = 0;
     Registers.SH = 1;
@@ -159,7 +159,7 @@ void S9xSoftResetCPU ()
     //CPU.TriedInterleavedMode2 = FALSE; // Reset when ROM image loaded
     CPU.NMICycleCount = 0;
     CPU.IRQCycleCount = 0;
-    S9xSetPCBase (Registers.PC);
+    S9xSetPCBase (Registers.PCw);
 
     ICPU.S9xOpcodes = S9xOpcodesE1;
     ICPU.CPUExecuting = TRUE;

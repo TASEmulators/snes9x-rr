@@ -93,7 +93,6 @@
 #include "memmap.h"
 
 struct SSA1Registers {
-    uint8   PB;
     uint8   DB;
     pair    P;
     pair    A;
@@ -101,7 +100,7 @@ struct SSA1Registers {
     pair    S;
     pair    X;
     pair    Y;
-    uint16  PC;
+    PC_t    PC;
 };
 
 struct SSA1 {
