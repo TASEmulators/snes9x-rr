@@ -1194,7 +1194,9 @@ void ProcessDebugCommand (char *Line)
     }
     if (Line[0] == 's')
     {
-	CPU.PC += S9xOPrint (String, Bank, Address);
+	uint16 step = S9xOPrint (String, Bank, Address);
+	CPU.PC += step;
+	Registers.PCw += step;
 	Bank = Registers.PB;
 	Address = CPU.PC - CPU.PCBase;
 	Line[0] = 'r';

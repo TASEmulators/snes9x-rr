@@ -307,6 +307,7 @@ static void Op73M0 (void)
 static void Op29M1 (void)
 {
     Registers.AL &= *CPU.PC++;
+    Registers.PCw++;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
 #endif
@@ -321,6 +322,7 @@ static void Op29M0 (void)
     Registers.A.W &= *CPU.PC + (*(CPU.PC + 1) << 8);
 #endif
     CPU.PC += 2;
+    Registers.PCw += 2;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeedx2;
 #endif
@@ -560,6 +562,7 @@ static void Op1EM0 (void)
 static void Op89M1 (void)
 {
     ICPU._Zero = Registers.AL & *CPU.PC++;
+    Registers.PCw++;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
 #endif
@@ -576,6 +579,7 @@ static void Op89M0 (void)
     CPU.Cycles += CPU.MemSpeedx2;
 #endif
     CPU.PC += 2;
+    Registers.PCw += 2;
 }
 
 static void Op24M1 (void)
@@ -631,6 +635,7 @@ static void Op3CM0 (void)
 static void OpC9M1 (void)
 {
     Int32 = (int) Registers.AL - (int) *CPU.PC++;
+    Registers.PCw++;
     ICPU._Carry = Int32 >= 0;
     SetZN8 ((uint8) Int32);
 #ifndef SA1_OPCODES
@@ -649,6 +654,7 @@ static void OpC9M0 (void)
     ICPU._Carry = Int32 >= 0;
     SetZN16 ((uint16) Int32);
     CPU.PC += 2;
+    Registers.PCw += 2;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeedx2;
 #endif
@@ -828,6 +834,7 @@ static void OpD3M0 (void)
 static void OpE0X1 (void)
 {
     Int32 = (int) Registers.XL - (int) *CPU.PC++;
+    Registers.PCw++;
     ICPU._Carry = Int32 >= 0;
     SetZN8 ((uint8) Int32);
 #ifndef SA1_OPCODES
@@ -846,6 +853,7 @@ static void OpE0X0 (void)
     ICPU._Carry = Int32 >= 0;
     SetZN16 ((uint16) Int32);
     CPU.PC += 2;
+    Registers.PCw += 2;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeedx2;
 #endif
@@ -881,6 +889,7 @@ static void OpECX0 (void)
 static void OpC0X1 (void)
 {
     Int32 = (int) Registers.YL - (int) *CPU.PC++;
+    Registers.PCw++;
     ICPU._Carry = Int32 >= 0;
     SetZN8 ((uint8) Int32);
 #ifndef SA1_OPCODES
@@ -899,6 +908,7 @@ static void OpC0X0 (void)
     ICPU._Carry = Int32 >= 0;
     SetZN16 ((uint16) Int32);
     CPU.PC += 2;
+    Registers.PCw += 2;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeedx2;
 #endif
@@ -995,6 +1005,7 @@ static void OpDEM0 (void)
 static void Op49M1 (void)
 {
     Registers.AL ^= *CPU.PC++;
+    Registers.PCw++;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
 #endif
@@ -1009,6 +1020,7 @@ static void Op49M0 (void)
     Registers.A.W ^= *CPU.PC + (*(CPU.PC + 1) << 8);
 #endif
     CPU.PC += 2;
+    Registers.PCw += 2;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeedx2;
 #endif
@@ -1249,6 +1261,7 @@ static void OpFEM0 (void)
 static void OpA9M1 (void)
 {
     Registers.AL = *CPU.PC++;
+    Registers.PCw++;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
 #endif
@@ -1264,6 +1277,7 @@ static void OpA9M0 (void)
 #endif
 
     CPU.PC += 2;
+    Registers.PCw += 2;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeedx2;
 #endif
@@ -1444,6 +1458,7 @@ static void OpB3M0 (void)
 static void OpA2X1 (void)
 {
     Registers.XL = *CPU.PC++;
+    Registers.PCw++;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
 #endif
@@ -1458,6 +1473,7 @@ static void OpA2X0 (void)
     Registers.X.W = *CPU.PC + (*(CPU.PC + 1) << 8);
 #endif
     CPU.PC += 2;
+    Registers.PCw += 2;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeedx2;
 #endif
@@ -1517,6 +1533,7 @@ static void OpBEX0 (void)
 static void OpA0X1 (void)
 {
     Registers.YL = *CPU.PC++;
+    Registers.PCw++;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
 #endif
@@ -1532,6 +1549,7 @@ static void OpA0X0 (void)
 #endif
 
     CPU.PC += 2;
+    Registers.PCw += 2;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeedx2;
 #endif
@@ -1652,6 +1670,7 @@ static void Op5EM0 (void)
 static void Op09M1 (void)
 {
     Registers.AL |= *CPU.PC++;
+    Registers.PCw++;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
 #endif
@@ -1666,6 +1685,7 @@ static void Op09M0 (void)
     Registers.A.W |= *CPU.PC + (*(CPU.PC + 1) << 8);
 #endif
     CPU.PC += 2;
+    Registers.PCw += 2;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeedx2;
 #endif
@@ -2528,6 +2548,7 @@ static void Op0CM0 (void)
 	        return;\
 	    else\
 		CPU.PC = CPU.PCBase + OpAddress;\
+		Registers.PCw = (uint16) (OpAddress & 0xffff);\
     }
 
 #define BranchCheck2()\
@@ -2545,6 +2566,7 @@ static void Op0CM0 (void)
 	        return;\
 	    else\
 		CPU.PC = CPU.PCBase + OpAddress;\
+		Registers.PCw = (uint16) (OpAddress & 0xffff);\
     }
 #else
 #define BranchCheck0()
@@ -2615,6 +2637,7 @@ static void Op90 (void)
     if (!CheckCarry ())
     {
 	CPU.PC = CPU.PCBase + OpAddress;
+	Registers.PCw = (uint16) (OpAddress & 0xffff);
 #ifndef SA1_OPCODES
 	CPU.Cycles += ONE_CYCLE;
 #endif
@@ -2630,6 +2653,7 @@ static void OpB0 (void)
     if (CheckCarry ())
     {
 	CPU.PC = CPU.PCBase + OpAddress;
+	Registers.PCw = (uint16) (OpAddress & 0xffff);
 #ifndef SA1_OPCODES
 	CPU.Cycles += ONE_CYCLE;
 #endif
@@ -2645,6 +2669,7 @@ static void OpF0 (void)
     if (CheckZero ())
     {
 	CPU.PC = CPU.PCBase + OpAddress;
+	Registers.PCw = (uint16) (OpAddress & 0xffff);
 #ifndef SA1_OPCODES
 	CPU.Cycles += ONE_CYCLE;
 #endif
@@ -2660,6 +2685,7 @@ static void Op30 (void)
     if (CheckNegative ())
     {
 	CPU.PC = CPU.PCBase + OpAddress;
+	Registers.PCw = (uint16) (OpAddress & 0xffff);
 #ifndef SA1_OPCODES
 	CPU.Cycles += ONE_CYCLE;
 #endif
@@ -2675,6 +2701,7 @@ static void OpD0 (void)
     if (!CheckZero ())
     {
 	CPU.PC = CPU.PCBase + OpAddress;
+	Registers.PCw = (uint16) (OpAddress & 0xffff);
 
 #ifndef SA1_OPCODES
 	CPU.Cycles += ONE_CYCLE;
@@ -2691,6 +2718,7 @@ static void Op10 (void)
     if (!CheckNegative ())
     {
 	CPU.PC = CPU.PCBase + OpAddress;
+	Registers.PCw = (uint16) (OpAddress & 0xffff);
 #ifndef SA1_OPCODES
 	CPU.Cycles += ONE_CYCLE;
 #endif
@@ -2703,6 +2731,7 @@ static void Op80 (void)
 {
     Relative (JUMP);
     CPU.PC = CPU.PCBase + OpAddress;
+    Registers.PCw = (uint16) (OpAddress & 0xffff);
 #ifndef SA1_OPCODES
     CPU.Cycles += ONE_CYCLE;
 #endif
@@ -2717,6 +2746,7 @@ static void Op50 (void)
     if (!CheckOverflow ())
     {
 	CPU.PC = CPU.PCBase + OpAddress;
+	Registers.PCw = (uint16) (OpAddress & 0xffff);
 #ifndef SA1_OPCODES
 	CPU.Cycles += ONE_CYCLE;
 #endif
@@ -2732,6 +2762,7 @@ static void Op70 (void)
     if (CheckOverflow ())
     {
 	CPU.PC = CPU.PCBase + OpAddress;
+	Registers.PCw = (uint16) (OpAddress & 0xffff);
 #ifndef SA1_OPCODES
 	CPU.Cycles += ONE_CYCLE;
 #endif
@@ -3906,8 +3937,10 @@ static void Op54X1 (void)
 #endif
     
     Registers.DB = *CPU.PC++;
+    Registers.PCw++;
     ICPU.ShiftedDB = Registers.DB << 16;
     OpenBus = SrcBank = *CPU.PC++;
+    Registers.PCw++;
 
     S9xSetByte (S9xGetByte ((SrcBank << 16) + Registers.X.W), 
 	     ICPU.ShiftedDB + Registers.Y.W);
@@ -3915,8 +3948,10 @@ static void Op54X1 (void)
     Registers.XL++;
     Registers.YL++;
     Registers.A.W--;
-    if (Registers.A.W != 0xffff)
-	CPU.PC -= 3;
+    if (Registers.A.W != 0xffff) {
+        CPU.PC -= 3;
+        Registers.PCw -= 3;
+    }
 }
 
 static void Op54X0 (void)
@@ -3928,8 +3963,10 @@ static void Op54X0 (void)
 #endif
     
     Registers.DB = *CPU.PC++;
+    Registers.PCw++;
     ICPU.ShiftedDB = Registers.DB << 16;
     OpenBus = SrcBank = *CPU.PC++;
+    Registers.PCw++;
 
     S9xSetByte (S9xGetByte ((SrcBank << 16) + Registers.X.W), 
 	     ICPU.ShiftedDB + Registers.Y.W);
@@ -3937,8 +3974,10 @@ static void Op54X0 (void)
     Registers.X.W++;
     Registers.Y.W++;
     Registers.A.W--;
-    if (Registers.A.W != 0xffff)
-	CPU.PC -= 3;
+    if (Registers.A.W != 0xffff) {
+        CPU.PC -= 3;
+        Registers.PCw -= 3;
+    }
 }
 
 static void Op44X1 (void)
@@ -3949,16 +3988,20 @@ static void Op44X1 (void)
     CPU.Cycles += CPU.MemSpeedx2 + TWO_CYCLES;
 #endif    
     Registers.DB = *CPU.PC++;
+    Registers.PCw++;
     ICPU.ShiftedDB = Registers.DB << 16;
     OpenBus = SrcBank = *CPU.PC++;
+    Registers.PCw++;
     S9xSetByte (S9xGetByte ((SrcBank << 16) + Registers.X.W), 
 	     ICPU.ShiftedDB + Registers.Y.W);
 
     Registers.XL--;
     Registers.YL--;
     Registers.A.W--;
-    if (Registers.A.W != 0xffff)
-	CPU.PC -= 3;
+    if (Registers.A.W != 0xffff) {
+        CPU.PC -= 3;
+        Registers.PCw -= 3;
+    }
 }
 
 static void Op44X0 (void)
@@ -3969,16 +4012,20 @@ static void Op44X0 (void)
     CPU.Cycles += CPU.MemSpeedx2 + TWO_CYCLES;
 #endif    
     Registers.DB = *CPU.PC++;
+    Registers.PCw++;
     ICPU.ShiftedDB = Registers.DB << 16;
     OpenBus = SrcBank = *CPU.PC++;
+    Registers.PCw++;
     S9xSetByte (S9xGetByte ((SrcBank << 16) + Registers.X.W), 
 	     ICPU.ShiftedDB + Registers.Y.W);
 
     Registers.X.W--;
     Registers.Y.W--;
     Registers.A.W--;
-    if (Registers.A.W != 0xffff)
-	CPU.PC -= 3;
+    if (Registers.A.W != 0xffff) {
+        CPU.PC -= 3;
+        Registers.PCw -= 3;
+    }
 }
 
 /**********************************************************************************************/
@@ -3987,6 +4034,7 @@ static void Op44X0 (void)
 static void OpC2 (void)
 {
     Work8 = ~*CPU.PC++;
+    Registers.PCw++;
     Registers.PL &= Work8;
     ICPU._Carry &= Work8;
     ICPU._Overflow &= (Work8 >> 6);
@@ -4013,6 +4061,7 @@ static void OpC2 (void)
 static void OpE2 (void)
 {
     Work8 = *CPU.PC++;
+    Registers.PCw++;
     Registers.PL |= Work8;
     ICPU._Carry |= Work8 & 1;
     ICPU._Overflow |= (Work8 >> 6) & 1;
@@ -4123,6 +4172,7 @@ static void OpCB (void)
 
 	CPU.WaitingForInterrupt = TRUE;
 	CPU.PC--;
+	Registers.PCw--;
 #ifdef CPU_SHUTDOWN
 	if (Settings.Shutdown)
 	{
@@ -4153,6 +4203,7 @@ static void OpCB (void)
 static void OpDB (void)
 {
     CPU.PC--;
+    Registers.PCw--;
     CPU.Flags |= DEBUG_MODE_FLAG;
 }
 
