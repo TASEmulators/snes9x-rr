@@ -131,6 +131,7 @@ S9xSA1MainLoop:
 	cmpb $0, WaitingForInterrupt
 	je .nosa1wait
 	incl PC
+	incw SA1PCR
 	movb $0, WaitingForInterrupt
 .nosa1wait:
 	call S9xSA1Opcode_IRQ
@@ -158,6 +159,7 @@ S9xSA1MainLoop:
 #endif
 	movb (PC), %al
 	incl PC
+	incw SA1PCR
 	jmp *(%ecx,%eax,4)
 .globl S9xSA1MainAsmLoop
 S9xSA1MainAsmLoop:
@@ -1945,6 +1947,7 @@ Op90:
 	testb $0xff, SA1_Carry
 	jnz .BCC_EXIT
 	andl $0xffff, %edx
+	movw %dx, SA1PCR
 	addl SA1PCBase, %edx
 	movl %edx, PC
 .BCC_EXIT:
@@ -1956,6 +1959,7 @@ OpB0:
 	testb $0xff, SA1_Carry
 	jz .BCS_EXIT
 	andl $0xffff, %edx
+	movw %dx, SA1PCR
 	addl SA1PCBase, %edx
 	movl %edx, PC
 .BCS_EXIT:
@@ -1967,6 +1971,7 @@ OpF0:
 	testb $0xff, SA1_Zero
 	jnz .BEQ_EXIT
 	andl $0xffff, %edx
+	movw %dx, SA1PCR
 	addl SA1PCBase, %edx
 	movl %edx, PC
 	CPUShutdown BEQ
@@ -1979,6 +1984,7 @@ Op30:
 	testb $0x80, SA1_Negative
 	jz .BMI_EXIT
 	andl $0xffff, %edx
+	movw %dx, SA1PCR
 	addl SA1PCBase, %edx
 	movl %edx, PC
 	CPUShutdown BMI
@@ -1991,6 +1997,7 @@ OpD0:
 	testb $0xff, SA1_Zero
 	jz .BNE_EXIT
 	andl $0xffff, %edx
+	movw %dx, SA1PCR
 	addl SA1PCBase, %edx
 	movl %edx, PC
 	CPUShutdown BNE
@@ -2003,6 +2010,7 @@ Op10:
 	testb $0x80, SA1_Negative
 	jnz .BPL_EXIT
 	andl $0xffff, %edx
+	movw %dx, SA1PCR
 	addl SA1PCBase, %edx
 	movl %edx, PC
 	CPUShutdown BPL
@@ -2013,6 +2021,7 @@ Op10:
 Op80:
 	Relative
 	andl $0xffff, %edx
+	movw %dx, SA1PCR
 	addl SA1PCBase, %edx
 	movl %edx, PC
 	CPUShutdown BRA
@@ -2024,6 +2033,7 @@ Op50:
 	testb $0xff, SA1_Overflow
 	jnz .BVC_EXIT
 	andl $0xffff, %edx
+	movw %dx, SA1PCR
 	addl SA1PCBase, %edx
 	movl %edx, PC
 	CPUShutdown BVC
@@ -2036,6 +2046,7 @@ Op70:
 	testb $0xff, SA1_Overflow
 	jz .BVS_EXIT
 	andl $0xffff, %edx
+	movw %dx, SA1PCR
 	addl SA1PCBase, %edx
 	movl %edx, PC
 	CPUShutdown BVS
@@ -2990,9 +3001,11 @@ Op54X1:
 	cmpw $0xffff, %ax
 	je .MVN_EXIT8
 	decl PC
+	decw SA1PCR
 	jmp S9xSA1MainAsmLoop
 .MVN_EXIT8:
 	addl $2, PC
+	addw $2, SA1PCR
 	jmp S9xSA1MainAsmLoop
 
 Op54X0:
@@ -3016,9 +3029,11 @@ Op54X0:
 	cmpw $0xffff, %ax
 	je .MVN_EXIT16
 	decl PC
+	decw SA1PCR
 	jmp S9xSA1MainAsmLoop
 .MVN_EXIT16:
 	addl $2, PC
+	addw $2, SA1PCR
 	jmp S9xSA1MainAsmLoop
 
 /* MVP */
@@ -3043,9 +3058,11 @@ Op44X1:
 	cmpw $0xffff, %ax
 	je .MVP_EXIT8
 	decl PC
+	decw SA1PCR
 	jmp S9xSA1MainAsmLoop
 .MVP_EXIT8:
 	addl $2, PC
+	addw $2, SA1PCR
 	jmp S9xSA1MainAsmLoop
 
 Op44X0:
@@ -3069,15 +3086,18 @@ Op44X0:
 	cmpw $0xffff, %ax
 	je .MVP_EXIT16
 	decl PC
+	decw SA1PCR
 	jmp S9xSA1MainAsmLoop
 .MVP_EXIT16:
 	addl $2, PC
+	addw $2, SA1PCR
 	jmp S9xSA1MainAsmLoop
 
 /* REP */
 OpC2:
 	movb (PC), %al
 	incl PC
+	incw SA1PCR
 	notb %al
 	andb %al, FLAGS
 	andb %al, SA1_Negative
@@ -3107,6 +3127,7 @@ OpC2:
 OpE2:
 	movb (PC), %al
 	incl PC
+	incw SA1PCR
 	orb %al, FLAGS
 	orb %al, SA1_Negative
 	movb %al, %ah
@@ -3181,6 +3202,7 @@ Op40:
 OpCB:
 	movb $1, SA1WaitingForInterrupt
 	decl PC
+	decw SA1PCR
 #if 0
 // XXX: FIXME
 	movb Shutdown, %al
@@ -3226,6 +3248,7 @@ OpCB:
 /* ??? */
 OpDB:
 	decl PC
+	decw SA1PCR
 	orb $DEBUG_MODE_FLAG, SA1Flags
 	jmp S9xSA1MainAsmLoop
 

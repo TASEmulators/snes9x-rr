@@ -142,6 +142,7 @@ S9xMainLoop:
 	je .L17
 	movb $0, WaitingForInterrupt
 	incl PC
+	incw PCR
 .L17:
 	call S9xOpcode_NMI
 .NO_NMI:
@@ -183,6 +184,7 @@ S9xMainLoop:
 	jz .NOT_WAITING
 	movb $0, WaitingForInterrupt
 	incl PC
+	incw PCR
 .NOT_WAITING:
 	testb $0xff, IRQActive
 	jz .CLEAR_PENDING_IRQ_FLAG
@@ -240,6 +242,7 @@ S9xMainLoop:
 	addl MemSpeed, CYCLES
 	movl CPUOpcodes, %ecx
 	incl PC
+	incw PCR
 	jmp *(%ecx,%eax,4)
 MainAsmLoop:
 	SAVE_CYCLES
@@ -260,7 +263,7 @@ MainAsmLoop:
 	S9xPackStatus S9xMainLoop
 	STORE_REGISTERS
 	subl PCBase, PC
-	movw %di, PCR
+//	movw %di, PCR
 #ifdef SPC700_C
 	movl APUPC, %edx
 	movl APURAM, %eax
@@ -632,6 +635,7 @@ S9xSetIRQ:
 	// Final Fantasy Mystic Quest requires this.
 	movl $0, IRQCycleCount
 	incl PCS
+	incw PCR
 .NoIncPC:
 	ret
 

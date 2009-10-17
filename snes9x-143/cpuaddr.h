@@ -104,17 +104,20 @@ STATIC inline void Immediate8 (AccessMode a)
 {
     OpAddress = ICPU.ShiftedPB + CPU.PC - CPU.PCBase;
     CPU.PC++;
+    Registers.PCw++;
 }
 
 STATIC inline void Immediate16 (AccessMode a)
 {
     OpAddress = ICPU.ShiftedPB + CPU.PC - CPU.PCBase;
     CPU.PC += 2;
+    Registers.PCw += 2;
 }
 
 STATIC inline void Relative (AccessMode a)
 {
     Int8 = *CPU.PC++;
+    Registers.PCw++;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
 #endif    
@@ -132,6 +135,7 @@ STATIC inline void RelativeLong (AccessMode a)
     CPU.Cycles += CPU.MemSpeedx2 + ONE_CYCLE;
 #endif
     CPU.PC += 2;
+    Registers.PCw += 2;
     OpAddress += (CPU.PC - CPU.PCBase);
     OpAddress &= 0xffff;
 }
@@ -148,6 +152,7 @@ STATIC inline void AbsoluteIndexedIndirect (AccessMode a)
 #endif
     OpenBus = *(CPU.PC + 1);
     CPU.PC += 2;
+    Registers.PCw += 2;
     OpAddress = S9xGetWord (ICPU.ShiftedPB + OpAddress);
     if(a&READ) OpenBus = (uint8)(OpAddress>>8);
 }
@@ -165,6 +170,7 @@ STATIC inline void AbsoluteIndirectLong (AccessMode a)
 #endif
     OpenBus = *(CPU.PC + 1);
     CPU.PC += 2;
+    Registers.PCw += 2;
     if(a&READ) {
 	OpAddress = S9xGetWord (OpAddress) | ((OpenBus=S9xGetByte (OpAddress + 2)) << 16);
     } else {
@@ -185,6 +191,7 @@ STATIC inline void AbsoluteIndirect (AccessMode a)
 #endif
     OpenBus = *(CPU.PC + 1);
     CPU.PC += 2;
+    Registers.PCw += 2;
     OpAddress = S9xGetWord (OpAddress);
     if(a&READ) OpenBus = (uint8)(OpAddress>>8);
     OpAddress += ICPU.ShiftedPB;
@@ -199,6 +206,7 @@ STATIC inline void Absolute (AccessMode a)
 #endif
     if(a&READ) OpenBus = *(CPU.PC+1);
     CPU.PC += 2;
+    Registers.PCw += 2;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeedx2;
 #endif
@@ -213,6 +221,7 @@ STATIC inline void AbsoluteLong (AccessMode a)
 #endif
     if(a&READ) OpenBus = *(CPU.PC+2);
     CPU.PC += 3;
+    Registers.PCw += 3;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeedx2 + CPU.MemSpeed;
 #endif
@@ -222,6 +231,7 @@ STATIC inline void Direct(AccessMode a)
 {
     if(a&READ) OpenBus = *CPU.PC;
     OpAddress = (*CPU.PC++ + Registers.D.W) & 0xffff;
+    Registers.PCw++;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
 #endif
@@ -232,6 +242,7 @@ STATIC inline void DirectIndirectIndexed (AccessMode a)
 {
     OpenBus = *CPU.PC;
     OpAddress = (*CPU.PC++ + Registers.D.W) & 0xffff;
+    Registers.PCw++;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
 #endif
@@ -249,6 +260,7 @@ STATIC inline void DirectIndirectIndexedLong (AccessMode a)
 {
     OpenBus = *CPU.PC;
     OpAddress = (*CPU.PC++ + Registers.D.W) & 0xffff;
+    Registers.PCw++;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
 #endif
@@ -265,6 +277,7 @@ STATIC inline void DirectIndexedIndirect(AccessMode a)
 {
     OpenBus = *CPU.PC;
     OpAddress = (*CPU.PC++ + Registers.D.W + Registers.X.W) & 0xffff;
+    Registers.PCw++;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
 #endif
@@ -285,6 +298,7 @@ STATIC inline void DirectIndexedX (AccessMode a)
 {
 	if(a&READ) OpenBus = *CPU.PC;
     OpAddress = (*CPU.PC++ + Registers.D.W + Registers.X.W);
+    Registers.PCw++;
     OpAddress &= CheckEmulation() ? 0xff : 0xffff;
 
 #ifndef SA1_OPCODES
@@ -303,6 +317,7 @@ STATIC inline void DirectIndexedY (AccessMode a)
 {
 	if(a&READ) OpenBus = *CPU.PC;
     OpAddress = (*CPU.PC++ + Registers.D.W + Registers.Y.W);
+    Registers.PCw++;
     OpAddress &= CheckEmulation() ? 0xff : 0xffff;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
@@ -326,6 +341,7 @@ STATIC inline void AbsoluteIndexedX (AccessMode a)
 #endif
     if(a&READ) OpenBus = *(CPU.PC+1);
     CPU.PC += 2;
+    Registers.PCw += 2;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeedx2;
 #endif
@@ -343,6 +359,7 @@ STATIC inline void AbsoluteIndexedY (AccessMode a)
 #endif    
     if(a&READ) OpenBus = *(CPU.PC+1);
     CPU.PC += 2;
+    Registers.PCw += 2;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeedx2;
 #endif
@@ -359,6 +376,7 @@ STATIC inline void AbsoluteLongIndexedX (AccessMode a)
 #endif
     if(a&READ) OpenBus = *(CPU.PC+2);
     CPU.PC += 3;
+    Registers.PCw += 3;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeedx2 + CPU.MemSpeed;
 #endif
@@ -368,6 +386,7 @@ STATIC inline void DirectIndirect (AccessMode a)
 {
     OpenBus = *CPU.PC;
     OpAddress = (*CPU.PC++ + Registers.D.W) & 0xffff;
+    Registers.PCw++;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
 #endif
@@ -382,6 +401,7 @@ STATIC inline void DirectIndirectLong (AccessMode a)
 {
     OpenBus = *CPU.PC;
     OpAddress = (*CPU.PC++ + Registers.D.W) & 0xffff;
+    Registers.PCw++;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
 #endif
@@ -397,6 +417,7 @@ STATIC inline void StackRelative (AccessMode a)
 {
     if(a&READ) OpenBus = *CPU.PC;
     OpAddress = (*CPU.PC++ + Registers.S.W) & 0xffff;
+    Registers.PCw++;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
     CPU.Cycles += ONE_CYCLE;
@@ -407,6 +428,7 @@ STATIC inline void StackRelativeIndirectIndexed (AccessMode a)
 {
     OpenBus = *CPU.PC;
     OpAddress = (*CPU.PC++ + Registers.S.W) & 0xffff;
+    Registers.PCw++;
 #ifndef SA1_OPCODES
     CPU.Cycles += CPU.MemSpeed;
     CPU.Cycles += TWO_CYCLES;

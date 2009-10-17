@@ -420,6 +420,16 @@ S9xSA1SetWord:
 
 S9xSA1SetPCBase:
 	movl %edx, %eax
+	andl $0xffff, %eax
+	movw %ax, SA1PCR
+	movl %edx, %eax
+	shrl $16, %eax
+	movb %al, SA1PB
+	movl %edx, %eax
+	andl $0xff0000, %eax
+	movl %eax, SA1ShiftedPB
+
+	movl %edx, %eax
 	shrl $MEMMAP_SHIFT, %eax
 	and $MEMMAP_MASK, %eax
 	movl SA1Map(, %eax, 4), %eax

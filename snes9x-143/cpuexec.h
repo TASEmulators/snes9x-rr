@@ -89,9 +89,8 @@
 
 #ifndef _CPUEXEC_H_
 #define _CPUEXEC_H_
-#include "ppu.h"
-#include "memmap.h"
-#include "65c816.h"
+
+#include "snes9x.h"
 
 #define DO_HBLANK_CHECK() \
     if (CPU.Cycles >= CPU.NextEvent) \
@@ -137,6 +136,10 @@ extern struct SOpcodes S9xOpcodesM0X0 [256];
 
 extern struct SICPU ICPU;
 END_EXTERN_C
+
+#include "ppu.h"
+#include "memmap.h"
+#include "65c816.h"
 
 STATIC inline void S9xUnpackStatus()
 {

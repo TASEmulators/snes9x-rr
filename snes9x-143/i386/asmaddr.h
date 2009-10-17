@@ -156,6 +156,7 @@
 	movb (PC), %al
 	addl MemSpeed, CYCLES
 	incl PC
+	incw PCR
 .endm
 
 /************* IMMEDIATE16 ****************/
@@ -163,12 +164,14 @@
 	movw (PC), %ax
 	addl MemSpeedx2, CYCLES
 	addl $2, PC
+	addw $2, PCR
 .endm
 
 /************* Relative ****************/
 .macro Relative K A
 	movsbl (PC), %eax
 	incl PC
+	incw PCR
 	addl MemSpeed, CYCLES
 	movl PC, %edx
 	subl PCBase, %edx
@@ -183,6 +186,7 @@
 	movw (PC), %ax
 	addl $6, CYCLES
 	addl $2, PC
+	addw $2, PCR
 	movl PC, %edx
 	subl PCBase, %edx
 	addl %eax, %edx
@@ -198,6 +202,7 @@
 	addw XX, %dx
 	orl  ShiftedPB, %edx
 	addl $2, PC
+	addw $2, PCR
 	call S9xGetWord
 	movl %eax, %edx
 	andl $0xffff, %edx
@@ -212,6 +217,7 @@
 	addl MemSpeedx2, CYCLES
 	movb %dh, OpenBus
 	addl $2, PC
+	addw $2, PCR
 	andl $0xffff, %edx
 	pushl %edx
 	call S9xGetWord
@@ -234,6 +240,7 @@
 	addl MemSpeedx2, CYCLES
 	movb %dh, OpenBus
 	addl $2, PC
+	addw $2, PCR
 	andl $0xffff, %edx
 	call S9xGetWord
 	movl %eax, %edx
@@ -250,6 +257,7 @@
 	movb %dh, OpenBus
 .endif
 	addl $2, PC
+	addw $2, PCR
 	andl $0xffff, %edx
 	orl  ShiftedDB, %edx
 .endm
@@ -263,7 +271,8 @@
 	addl MemSpeedx2, CYCLES
 	andl $0xffffff, %edx
 	addl MemSpeed, CYCLES
-	add $3, PC
+	addl $3, PC
+	addw $3, PCR
 .endm
 
 .macro Direct8 K A
@@ -281,6 +290,7 @@
 .endif
 	addw DD, %dx
 	incl PC
+	incw PCR
 .endm
 
 .macro DirectIndirectIndexed8 K A
@@ -296,6 +306,7 @@
 	movb %dl, OpenBus
 	addw DD, %dx
 	incl PC
+	incw PCR
 	call S9xGetWord
 .if \A&READ
 	movb %ah, OpenBus
@@ -320,6 +331,7 @@
 	movb %dl, OpenBus
 	addw DD, %dx
 	incl PC
+	incw PCR
 	pushl %edx
 	call S9xGetWord
 	popl %edx
@@ -352,6 +364,7 @@
 	movb %dl, OpenBus
 	addw DD, %dx
 	incl PC
+	incw PCR
 	addw XX, %dx
 	call S9xGetWord
 .if \A&READ
@@ -374,6 +387,7 @@
 	movb (PC), %dl
 	addw DD, %dx
 	incl PC
+	incw PCR
 .if \A&READ
  	movb %dl, OpenBus
 .endif
@@ -401,6 +415,7 @@
 .endif	
 	addw DD, %dx
 	incl PC
+	incw PCR
 	addw YY, %dx
     testw $Emulation, FLAGS16
 	jz .DirectIndexedY8done\K
@@ -418,6 +433,7 @@
 	movb %dh, OpenBus
 .endif
 	addl $2, PC
+	addw $2, PCR
 	addl %eax, %edx
 	addl MemSpeedx2, CYCLES
 	andl $0xffffff, %edx
@@ -432,6 +448,7 @@
 	movb %dh, OpenBus
 .endif
 	addl $2, PC
+	addw $2, PCR
 	addl %eax, %edx
 	addl MemSpeedx2, CYCLES
 	andl $0xffffff, %edx
@@ -445,6 +462,7 @@
 	movl (PC), %edx
 	xorl %eax, %eax
 	addl $3, PC
+	addw $3, PCR
 	movw XX, %ax
 	addl MemSpeedx2, CYCLES
 	addl %eax, %edx
@@ -465,6 +483,7 @@
 	movb %dl, OpenBus
 	addw DD, %dx
 	incl PC
+	incw PCR
 	call S9xGetWord
 .if \A&READ
 	movb %ah, OpenBus
@@ -486,6 +505,7 @@
 	movb %dl, OpenBus
 	addw DD, %dx
 	incl PC
+	incw PCR
 	pushl %edx
 	call S9xGetWord
 	popl %edx
@@ -511,6 +531,7 @@
 	addl $6, CYCLES
 	addw SS, %dx
 	incl PC
+	incw PCR
 .endm
 
 .macro StackRelativeIndirectIndexed8 K A
@@ -521,6 +542,7 @@
 	addl $12, CYCLES
 	addw SS, %dx
 	incl PC
+	incw PCR
 	call S9xGetWord
 .if \A&READ
 	movb %ah, OpenBus
@@ -576,6 +598,7 @@
 	andl $0xffff, %edx
 	addl %edx, %eax
 	movl %eax, PC
+	movw %ax, PCR
 .BranchCheck1S9xExit\K:
 .endm
 
@@ -598,6 +621,7 @@
 	andl $0xffff, %edx
 	addl %edx, %eax
 	movl %eax, PC
+	movw %ax, PCR
 	jmp MainAsmLoop
 .BranchCheck2Not1\K:
 	cmpb $3, %al
@@ -612,6 +636,7 @@
 	andl $0xffff, %edx
 	addl %edx, %eax
 	movl %eax, PC
+	movw %ax, PCR
 .BranchCheck2S9xExit\K:
 .endm
 

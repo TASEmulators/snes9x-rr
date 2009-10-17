@@ -136,6 +136,7 @@ void S9xMainLoop (void)
 		    {
 			CPU.WaitingForInterrupt = FALSE;
 			CPU.PC++;
+			Registers.PCw++;
 		    }
 		    S9xOpcode_NMI ();
 		}
@@ -169,6 +170,7 @@ void S9xMainLoop (void)
 		    {
 			CPU.WaitingForInterrupt = FALSE;
 			CPU.PC++;
+			Registers.PCw++;
 		    }
 		    if (CPU.IRQActive && !Settings.DisableIRQ)
 		    {
@@ -206,6 +208,7 @@ void S9xMainLoop (void)
 #endif
 	CPU.Cycles += CPU.MemSpeed;
 
+	Registers.PCw++;
 	(*ICPU.S9xOpcodes [*CPU.PC++].S9xOpcode) ();
 	
 	S9xUpdateAPUTimer();
@@ -214,7 +217,7 @@ void S9xMainLoop (void)
 	    S9xSA1MainLoop ();
 	DO_HBLANK_CHECK();
     }
-    Registers.PCw = CPU.PC - CPU.PCBase;
+    //Registers.PCw = CPU.PC - CPU.PCBase;
     S9xPackStatus ();
     APURegisters.PC = IAPU.PC - IAPU.RAM;
     S9xAPUPackStatus ();
@@ -248,6 +251,7 @@ void S9xSetIRQ (uint32 source)
 	CPU.IRQCycleCount = 0;
 	CPU.WaitingForInterrupt = FALSE;
 	CPU.PC++;
+	Registers.PCw++;
     }
 }
 

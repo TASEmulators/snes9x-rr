@@ -1881,6 +1881,7 @@ Op90:
 	jnz .BCC_EXIT
 	addl $6, CYCLES
 	andl $0xffff, %edx
+	movw %dx, PCR
 	addl PCBase, %edx
 	movl %edx, PC
 .BCC_EXIT:
@@ -1894,6 +1895,7 @@ OpB0:
 	jz .BCS_EXIT
 	addl $6, CYCLES
 	andl $0xffff, %edx
+	movw %dx, PCR
 	addl PCBase, %edx
 	movl %edx, PC
 .BCS_EXIT:
@@ -1907,6 +1909,7 @@ OpF0:
 	jnz .BEQ_EXIT
 	addl $6, CYCLES
 	andl $0xffff, %edx
+	movw %dx, PCR
 	addl PCBase, %edx
 	movl %edx, PC
 	CPUShutdown BEQ
@@ -1921,6 +1924,7 @@ Op30:
 	jz .BMI_EXIT
 	addl $6, CYCLES
 	andl $0xffff, %edx
+	movw %dx, PCR
 	addl PCBase, %edx
 	movl %edx, PC
 	CPUShutdown BMI
@@ -1935,6 +1939,7 @@ OpD0:
 	jz .BNE_EXIT
 	addl $6, CYCLES
 	andl $0xffff, %edx
+	movw %dx, PCR
 	addl PCBase, %edx
 	movl %edx, PC
 	CPUShutdown BNE
@@ -1949,6 +1954,7 @@ Op10:
 	jnz .BPL_EXIT
 	addl $6, CYCLES
 	andl $0xffff, %edx
+	movw %dx, PCR
 	addl PCBase, %edx
 	movl %edx, PC
 	CPUShutdown BPL
@@ -1960,6 +1966,7 @@ Op80:
 	Relative JUMP
 	addl $6, CYCLES
 	andl $0xffff, %edx
+	movw %dx, PCR
 	addl PCBase, %edx
 	movl %edx, PC
 	jmp MainAsmLoop
@@ -1972,6 +1979,7 @@ Op50:
 	jnz .BVC_EXIT
 	addl $6, CYCLES
 	andl $0xffff, %edx
+	movw %dx, PCR
 	addl PCBase, %edx
 	movl %edx, PC
 	CPUShutdown BVC
@@ -1986,6 +1994,7 @@ Op70:
 	jz .BVS_EXIT
 	addl $6, CYCLES
 	andl $0xffff, %edx
+	movw %dx, PCR
 	addl PCBase, %edx
 	movl %edx, PC
 	CPUShutdown BVS
@@ -3071,9 +3080,11 @@ Op54X1:
 	cmpw $0xffff, %ax
 	je .MVN_EXIT8
 	decl PC
+	decw PCR
 	jmp MainAsmLoop
 .MVN_EXIT8:
 	addl $2, PC
+	addw $2, PCR
 	jmp MainAsmLoop
 
 Op54X0:
@@ -3100,9 +3111,11 @@ Op54X0:
 	cmpw $0xffff, %ax
 	je .MVN_EXIT16
 	decl PC
+	decw PCR
 	jmp MainAsmLoop
 .MVN_EXIT16:
 	addl $2, PC
+	addw $2, PCR
 	jmp MainAsmLoop
 
 /* MVP */
@@ -3130,9 +3143,11 @@ Op44X1:
 	cmpw $0xffff, %ax
 	je .MVP_EXIT8
 	decl PC
+	decw PCR
 	jmp MainAsmLoop
 .MVP_EXIT8:
 	addl $2, PC
+	addw $2, PCR
 	jmp MainAsmLoop
 
 Op44X0:
@@ -3159,9 +3174,11 @@ Op44X0:
 	cmpw $0xffff, %ax
 	je .MVP_EXIT16
 	decl PC
+	decw PCR
 	jmp MainAsmLoop
 .MVP_EXIT16:
 	addl $2, PC
+	addw $2, PCR
 	jmp MainAsmLoop
 
 /* REP */
@@ -3170,6 +3187,7 @@ OpC2:
 	addl $6, CYCLES
 	movb (PC), %al
 	incl PC
+	incw PCR
 	notb %al
 	andb %al, FLAGS
 	andb %al, _Negative
@@ -3201,6 +3219,7 @@ OpE2:
 	addl $6, CYCLES
 	movb (PC), %al
 	incl PC
+	incw PCR
 	orb %al, FLAGS
 	orb %al, _Negative
 	movb %al, %ah
@@ -3285,6 +3304,7 @@ OpCB:
 #endif
 	movb $1, WaitingForInterrupt
 	decl PC
+	decw PCR
 	movb Shutdown, %al
 	testb %al, %al
 	je .NoShutdown
@@ -3330,6 +3350,7 @@ OpCB:
 /* STP */
 OpDB:
 	decl PC
+	decw PCR
 	orb $DEBUG_MODE_FLAG, Flags
 	jmp MainAsmLoop
 

@@ -148,12 +148,14 @@
 .Macro Immediate8 K
 	movb (PC), %al
 	incl PC
+	incw SA1PCR
 .endm
 
 /************* IMMEDIATE16 ****************/
 .macro Immediate16 K
 	movw (PC), %ax
 	addl $2, PC
+	addw $2, SA1PCR
 .endm
 
 /************* Relative ****************/
@@ -162,6 +164,7 @@
 	movsbl (%edx), %eax
 	incl %edx
 	movl %edx, PC
+	incw SA1PCR
 	subl SA1PCBase, %edx
 	addl %eax, %edx
 	andl $0xffff, %edx
@@ -174,6 +177,7 @@
 	movw (%edx), %ax
 	addl $2, %edx
 	movl %edx, PC
+	addw $2, SA1PCR
 	subl SA1PCBase, %edx
 	addl %eax, %edx
 	andl $0xffff, %edx
@@ -185,6 +189,7 @@
 	movw XX, %dx
 	addw (PC), %dx
 	addl $2, PC
+	addw $2, SA1PCR
 	orl  SA1ShiftedPB, %edx
 	call S9xSA1GetWord
 	movl %eax, %edx
@@ -195,6 +200,7 @@
 .macro AbsoluteIndirectLong8 K
 	movw (PC), %dx
 	addl $2, PC
+	addw $2, SA1PCR
 	andl $0xffff, %edx
 	pushl %edx
 	call S9xSA1GetWord
@@ -212,6 +218,7 @@
 .macro AbsoluteIndirect8 K
 	movw (PC), %dx
 	addl $2, PC
+	addw $2, SA1PCR
 	andl $0xffff, %edx
 	call S9xSA1GetWord
 	movl %eax, %edx
@@ -221,13 +228,15 @@
 .macro Absolute8 K
 	movw (PC), %dx
 	addl $2, PC
+	addw $2, SA1PCR
 	andl $0xffff, %edx
 	orl  SA1ShiftedDB, %edx
 .endm
 
 .macro AbsoluteLong8 K
 	movl (PC), %edx
-	add $3, PC
+	addl $3, PC
+	addw $3, SA1PCR
 	andl $0xffffff, %edx
 .endm
 
@@ -236,12 +245,14 @@
 	movb (PC), %dl
 	addw DD, %dx
 	incl PC
+	incw SA1PCR
 .endm
 
 .macro DirectIndirectIndexed8 K
 	xorl %edx, %edx
 	movb (PC), %dl
 	incl PC
+	incw SA1PCR
 	addw DD, %dx
 	call S9xSA1GetWord
 	movl SA1ShiftedDB, %edx
@@ -256,6 +267,7 @@
 	movb (PC), %dl
 	addw DD, %dx
 	incl PC
+	incw SA1PCR
 	pushl %edx
 	call S9xSA1GetWord
 	popl %edx
@@ -276,6 +288,7 @@
 	movb (PC), %dl
 	addw DD, %dx
 	incl PC
+	incw SA1PCR
 	addw XX, %dx
 	call S9xSA1GetWord
 	movl SA1ShiftedDB, %edx
@@ -287,6 +300,7 @@
 	movb (PC), %dl
 	addw DD, %dx
 	incl PC
+	incw SA1PCR
 	addw XX, %dx
 .endm
 
@@ -295,6 +309,7 @@
 	movb (PC), %dl
 	addw DD, %dx
 	incl PC
+	incw SA1PCR
 	addw YY, %dx
 .endm
 
@@ -303,6 +318,7 @@
 	movw (PC), %dx
 	xorl %eax, %eax
 	addl $2, PC
+	addw $2, SA1PCR
 	movw XX, %ax
 	addl %eax, %edx
 	andl $0xffffff, %edx
@@ -313,6 +329,7 @@
 	movw (PC), %dx
 	xorl %eax, %eax
 	addl $2, PC
+	addw $2, SA1PCR
 	movw YY, %ax
 	addl %eax, %edx
 	andl $0xffffff, %edx
@@ -322,6 +339,7 @@
 	movl (PC), %edx
 	xorl %eax, %eax
 	addl $3, PC
+	addw $3, SA1PCR
 	movw XX, %ax
 	addl %eax, %edx
 	andl $0xffffff, %edx
@@ -332,6 +350,7 @@
 	movb (PC), %dl
 	addw DD, %dx
 	incl PC
+	incw SA1PCR
 	call S9xSA1GetWord
 	movl SA1ShiftedDB, %edx
 	movw %ax, %dx
@@ -342,6 +361,7 @@
 	movb (PC), %dl
 	addw DD, %dx
 	incl PC
+	incw SA1PCR
 	pushl %edx
 	call S9xSA1GetWord
 	popl %edx
@@ -359,6 +379,7 @@
 	movb (PC), %dl
 	addw SS, %dx
 	incl PC
+	incw SA1PCR
 .endm
 
 .macro StackRelativeIndirectIndexed8 K
@@ -366,6 +387,7 @@
 	movb (PC), %dl
 	addw SS, %dx
 	incl PC
+	incw SA1PCR
 	call S9xSA1GetWord
 	movl SA1ShiftedDB, %edx
 	movw %ax, %dx

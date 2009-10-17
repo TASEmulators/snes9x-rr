@@ -1022,6 +1022,16 @@ S9xSetWord:
 
 S9xSetPCBase:
 	movl %edx, %eax
+	andl $0xffff, %eax
+	movw %ax, PCR
+	movl %edx, %eax
+	shrl $16, %eax
+	movb %al, PB
+	movl %edx, %eax
+	andl $0xff0000, %eax
+	movl %eax, ShiftedPB
+
+	movl %edx, %eax
 	shrl $MEMMAP_SHIFT, %eax
 	and $MEMMAP_MASK, %eax
 	movb MemorySpeed(%eax), %cl
