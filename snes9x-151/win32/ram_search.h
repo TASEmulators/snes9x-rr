@@ -35,6 +35,7 @@ void Update_RAM_Search(); //keeps RAM values up to date in the search and watch 
 #define RW_VIRTUAL_ADDR_SHIFT	24
 #define RW_VIRTUAL_ADDR_MASK	((1<<(RW_VIRTUAL_ADDR_SHIFT))-1)
 #define RW_VIRTUAL_ADDR_SRAM	1
+#define RW_VIRTUAL_ADDR_FILLRAM	2
 
 
 static inline uint8* RWInternalToSoftwareAddress(HWAddressType address)
@@ -49,6 +50,10 @@ static inline uint8* RWInternalToSoftwareAddress(HWAddressType address)
 	case RW_VIRTUAL_ADDR_SRAM:
 		if (Memory.SRAM != NULL && base < 0x20000)
 			return &Memory.SRAM[base];
+		break;
+	case RW_VIRTUAL_ADDR_FILLRAM:
+		if (Memory.FillRAM != NULL && base < 0x8000)
+			return &Memory.FillRAM[base];
 		break;
 	default:
 		if (Memory.RAM != NULL && address >= 0x7e0000 && address <= 0x7fffff)
@@ -65,6 +70,11 @@ static inline HWAddressType DisplayToRWInternalAddress(const char* str)
 	case 's':
 		base = strtoul(&str[1], NULL, 16);
 		type = RW_VIRTUAL_ADDR_SRAM;
+		break;
+	case 'I':
+	case 'i':
+		base = strtoul(&str[1], NULL, 16);
+		type = RW_VIRTUAL_ADDR_FILLRAM;
 		break;
 	default:
 		base = strtoul(str, NULL, 16);
@@ -83,6 +93,9 @@ static inline const char* RWInternalToDisplayAddress(HWAddressType address)
 	case RW_VIRTUAL_ADDR_SRAM:
 		sprintf(str, "s%05X", base);
 		break;
+	case RW_VIRTUAL_ADDR_FILLRAM:
+		sprintf(str, "i%05X", base);
+		break;
 	default:
 		sprintf(str, "%06X", base);
 	}
@@ -97,6 +110,7 @@ static inline HWAddressType RWInternalToHardwareAddress(HWAddressType address)
 	switch(type) {
 	case RW_VIRTUAL_ADDR_SRAM:
 		return 0x700000 | (base & 0x1ffff); // FIXME: incorrect, but better than nothing
+	case RW_VIRTUAL_ADDR_FILLRAM: // FIXME
 	default:
 		return base;
 	}
