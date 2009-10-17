@@ -391,7 +391,20 @@ registerPointerMap a65c816PointerMap [] = {
 	RPM_ENTRY("y", Registers.Y.W)
 	RPM_ENTRY("pb", Registers.PB)
 	RPM_ENTRY("pc", Registers.PCw)
-	//RPM_ENTRY("pbpc", Registers.PBPC)
+	RPM_ENTRY("pbpc", Registers.PBPC)
+	{}
+};
+registerPointerMap sa1PointerMap [] = {
+	RPM_ENTRY("db", SA1Registers.DB)
+	RPM_ENTRY("p", SA1Registers.P.W)
+	RPM_ENTRY("a", SA1Registers.A.W)
+	RPM_ENTRY("d", SA1Registers.D.W)
+	RPM_ENTRY("s", SA1Registers.S.W)
+	RPM_ENTRY("x", SA1Registers.X.W)
+	RPM_ENTRY("y", SA1Registers.Y.W)
+	RPM_ENTRY("pb", SA1Registers.PB)
+	RPM_ENTRY("pc", SA1Registers.PCw)
+	RPM_ENTRY("pbpc", SA1Registers.PBPC)
 	{}
 };
 
@@ -404,6 +417,7 @@ cpuToRegisterMaps [] =
 {
 	{"65c816.", a65c816PointerMap},
 	{"main.", a65c816PointerMap},
+	{"sa1.", sa1PointerMap},
 	{"", a65c816PointerMap},
 };
 
