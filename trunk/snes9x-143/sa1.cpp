@@ -322,6 +322,9 @@ void S9xSA1SetWord (uint16 Word, uint32 address)
 
 void S9xSA1SetPCBase (uint32 address)
 {
+	SA1Registers.PBPC = address & 0xffffff;
+	SA1.ShiftedPB = address & 0xff0000;
+
     uint8 *GetAddress = SA1.Map [(address >> MEMMAP_SHIFT) & MEMMAP_MASK];
     if (GetAddress >= (uint8 *) CMemory::MAP_LAST)
     {

@@ -3,7 +3,7 @@
 
 enum LuaCallID
 {
-	LUACALL_BEFOREEMULATION, // also written in asmstruc.h for cpuexec.s!
+	LUACALL_BEFOREEMULATION, // also written in asmstruc.h!
 	LUACALL_AFTEREMULATION,
 	LUACALL_BEFOREEXIT,
 
@@ -11,7 +11,7 @@ enum LuaCallID
 };
 EXTERN_C void CallRegisteredLuaFunctions(LuaCallID calltype);
 
-enum LuaMemHookType
+enum LuaMemHookType // also written in asmstruc.h and sa1struc.h!
 {
 	LUAMEMHOOK_WRITE,
 	LUAMEMHOOK_READ,

@@ -233,13 +233,25 @@ S9xMainLoop:
 	movl %eax, Flags
 #endif
 .L15:
-	xorl %eax,%eax
-
 #ifdef CPU_SHUTDOWN
 	movl PC, PCAtOpcodeStart
 #endif	
-	movb (PC), %al
 	addl MemSpeed, CYCLES
+
+	pushl $LUAMEMHOOK_EXEC
+	movzbl (PC), %eax
+	pushl %eax
+	pushl $1
+	movl PCR, %eax
+	pushl %eax
+#if defined(__DJGCC) || defined(MICROSOFT_C) || defined(_WINDOWS) || defined(WIN32)
+	call _CallRegisteredLuaMemHook
+#else
+	call CallRegisteredLuaMemHook
+#endif
+	addl $16, %esp
+
+	movzbl (PC), %eax
 	movl CPUOpcodes, %ecx
 	incl PC
 	incw PCR
