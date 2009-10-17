@@ -3832,10 +3832,10 @@ static void Op22 (void)
 
 static void Op6BE1 (void)
 {
-    PullWENew (Registers.PC);
+    PullWENew (Registers.PCw);
     PullB (Registers.PB);
     ICPU.ShiftedPB = Registers.PB << 16;
-    S9xSetPCBase (ICPU.ShiftedPB + ((Registers.PC + 1) & 0xffff));
+    S9xSetPCBase (ICPU.ShiftedPB + ((Registers.PCw + 1) & 0xffff));
 #ifndef SA1_OPCODES
     CPU.Cycles += TWO_CYCLES;
 #endif
@@ -3843,10 +3843,10 @@ static void Op6BE1 (void)
 
 static void Op6B (void)
 {
-    PullW (Registers.PC);
+    PullW (Registers.PCw);
     PullB (Registers.PB);
     ICPU.ShiftedPB = Registers.PB << 16;
-    S9xSetPCBase (ICPU.ShiftedPB + ((Registers.PC + 1) & 0xffff));
+    S9xSetPCBase (ICPU.ShiftedPB + ((Registers.PCw + 1) & 0xffff));
 #ifndef SA1_OPCODES
     CPU.Cycles += TWO_CYCLES;
 #endif
@@ -3887,8 +3887,8 @@ static void OpFC (void)
 
 static void Op60 (void)
 {
-    PullW (Registers.PC);
-    S9xSetPCBase (ICPU.ShiftedPB + ((Registers.PC + 1) & 0xffff));
+    PullW (Registers.PCw);
+    S9xSetPCBase (ICPU.ShiftedPB + ((Registers.PCw + 1) & 0xffff));
 #ifndef SA1_OPCODES
     CPU.Cycles += ONE_CYCLE * 3;
 #endif
@@ -4055,7 +4055,7 @@ static void Op40 (void)
 {
     PullB (Registers.PL);
     S9xUnpackStatus ();
-    PullW (Registers.PC);
+    PullW (Registers.PCw);
     if (!CheckEmulation())
     {
 	PullB (Registers.PB);
@@ -4066,7 +4066,7 @@ static void Op40 (void)
 	SetFlags (MemoryFlag | IndexFlag);
 	missing.emulate6502 = 1;
     }
-    S9xSetPCBase (ICPU.ShiftedPB + Registers.PC);
+    S9xSetPCBase (ICPU.ShiftedPB + Registers.PCw);
     
     if (CheckIndex ())
     {

@@ -129,7 +129,7 @@ void S9xSA1FullInit ()
 void S9xSA1Reset ()
 {
     SA1Registers.PB = 0;
-    SA1Registers.PC = Memory.FillRAM [0x2203] |
+    SA1Registers.PCw = Memory.FillRAM [0x2203] |
 		      (Memory.FillRAM [0x2204] << 8);
     SA1Registers.D.W = 0;
     SA1Registers.DB = 0;
@@ -147,7 +147,7 @@ void S9xSA1Reset ()
     SA1.WaitingForInterrupt = FALSE;
     SA1.PC = NULL;
     SA1.PCBase = NULL;
-    S9xSA1SetPCBase (SA1Registers.PC);
+    S9xSA1SetPCBase (SA1Registers.PCw);
     SA1.S9xOpcodes = S9xSA1OpcodesM1X1;
 
     S9xSA1UnpackStatus();
@@ -195,7 +195,7 @@ void S9xFixSA1AfterSnapshotLoad ()
 		SA1.ShiftedDB = (uint32) SA1Registers.DB << 16;
 	}
 
-	S9xSA1SetPCBase (SA1.ShiftedPB + SA1Registers.PC);
+	S9xSA1SetPCBase (SA1.ShiftedPB + SA1Registers.PCw);
 
 	if(useOldMethod)
 		S9xSA1UnpackStatus ();

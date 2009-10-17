@@ -667,7 +667,7 @@ static FreezeData SnapRegisters [] = {
     INT_ENTRY(1, S.W),
     INT_ENTRY(1, X.W),
     INT_ENTRY(1, Y.W),
-    INT_ENTRY(1, PC),
+    INT_ENTRY(1, PCw),
 };
 
 #undef STRUCT
@@ -959,7 +959,7 @@ static FreezeData SnapSA1Registers [] = {
     INT_ENTRY(1, S.W),
     INT_ENTRY(1, X.W),
     INT_ENTRY(1, Y.W),
-    INT_ENTRY(1, PC),
+    INT_ENTRY(1, PCw),
 };
 
 #undef STRUCT
@@ -1482,7 +1482,7 @@ void S9xFreezeToStream (STREAM stream)
     // Special chips
     if (Settings.SA1)
     {
-		SA1Registers.PC = SA1.PC - SA1.PCBase;
+		SA1Registers.PCw = SA1.PC - SA1.PCBase;
 		S9xSA1PackStatus ();
 		FreezeStruct (stream, "SA1", &SA1, SnapSA1, COUNT (SnapSA1));
 		FreezeStruct (stream, "SAR", &SA1Registers, SnapSA1Registers, 
@@ -1960,7 +1960,7 @@ int S9xUnfreezeFromStream (STREAM stream)
 			ICPU.ShiftedPB = Registers.PB << 16;
 			ICPU.ShiftedDB = Registers.DB << 16;
 		}
-		S9xSetPCBase (ICPU.ShiftedPB + Registers.PC);
+		S9xSetPCBase (ICPU.ShiftedPB + Registers.PCw);
 		if(!local_icpu)
 			S9xUnpackStatus (); // seems to have something incorrect about its logic (because saving then immediately loading sometimes flips ICPU._Negative) so it's been replaced by simply saving the ICPU struct
 		S9xFixCycles ();
@@ -2553,7 +2553,7 @@ bool8 S9xUnfreezeZSNES (const char *filename)
 		Registers.X.W   = READ_WORD (&t[49]);
 		Registers.Y.W   = READ_WORD (&t[51]);
 		Registers.P.W   = READ_WORD (&t[53]);
-		Registers.PC    = READ_WORD (&t[55]);
+		Registers.PCw   = READ_WORD (&t[55]);
 		
 		fread (t, 1, 8, fs);
 		fread (t, 1, 3019, fs);
@@ -2804,7 +2804,7 @@ bool8 S9xUnfreezeZSNES (const char *filename)
 			SA1Registers.DB  = t[608];
 			SA1Registers.PB  = t[612];
 			SA1Registers.S.W = READ_DWORD (&t[616]);
-			SA1Registers.PC  = READ_DWORD (&t[636]);
+			SA1Registers.PCw = READ_DWORD (&t[636]);
 			SA1Registers.P.W = t[620] | (t[624] << 8);
 			
 			memmove (&Memory.FillRAM [0x3000], t + 692, 2 * 1024);
@@ -2963,7 +2963,7 @@ fread(&temp, 1, 4, fs);
 		S9xFixSoundAfterSnapshotLoad (1);
 		ICPU.ShiftedPB = Registers.PB << 16;
 		ICPU.ShiftedDB = Registers.DB << 16;
-		S9xSetPCBase (ICPU.ShiftedPB + Registers.PC);
+		S9xSetPCBase (ICPU.ShiftedPB + Registers.PCw);
 		S9xUnpackStatus ();
 		S9xFixCycles ();
 		S9xReschedule ();

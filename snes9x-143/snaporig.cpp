@@ -453,7 +453,7 @@ static int ReadOrigSnapshot (STREAM snap)
     S9xFixSoundAfterSnapshotLoad (1);
     ICPU.ShiftedPB = Registers.PB << 16;
     ICPU.ShiftedDB = Registers.DB << 16;
-    S9xSetPCBase (ICPU.ShiftedPB + Registers.PC);
+    S9xSetPCBase (ICPU.ShiftedPB + Registers.PCw);
     S9xUnpackStatus ();
     S9xFixCycles ();
     S9xReschedule ();

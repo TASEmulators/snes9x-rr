@@ -355,8 +355,8 @@ registerPointerMap a65c816PointerMap [] = {
 	RPM_ENTRY("s", Registers.S.W)
 	RPM_ENTRY("x", Registers.X.W)
 	RPM_ENTRY("y", Registers.Y.W)
-	RPM_ENTRY("pb", Registers.PB) // FIXME: so buggy!
-	RPM_ENTRY("pc", Registers.PC) // FIXME: so buggy!
+	RPM_ENTRY("pb", Registers.PB)
+	RPM_ENTRY("pc", Registers.PCw)
 	{}
 };
 
@@ -390,16 +390,11 @@ static int memory_getregister(lua_State *L)
 				registerPointerMap rpm = ctrm.rpmap[reg];
 				if(!stricmp(qualifiedRegisterName, rpm.registerName))
 				{
-					if ((INT_PTR) rpm.pointer == (INT_PTR) (&Registers.PC)) {
-						lua_pushinteger(L, CPU.PC - CPU.PCBase); // FIXME: still returns unstable value
-					}
-					else {
-						switch(rpm.dataSize)
-						{ default:
-						case 1: lua_pushinteger(L, *(unsigned char*)rpm.pointer); break;
-						case 2: lua_pushinteger(L, *(unsigned short*)rpm.pointer); break;
-						case 4: lua_pushinteger(L, *(unsigned long*)rpm.pointer); break;
-						}
+					switch(rpm.dataSize)
+					{ default:
+					case 1: lua_pushinteger(L, *(unsigned char*)rpm.pointer); break;
+					case 2: lua_pushinteger(L, *(unsigned short*)rpm.pointer); break;
+					case 4: lua_pushinteger(L, *(unsigned long*)rpm.pointer); break;
 					}
 					return 1;
 				}
@@ -429,16 +424,11 @@ static int memory_setregister(lua_State *L)
 				registerPointerMap rpm = ctrm.rpmap[reg];
 				if(!stricmp(qualifiedRegisterName, rpm.registerName))
 				{
-					if ((INT_PTR) rpm.pointer == (INT_PTR) (&Registers.PC)) {
-						luaL_error(L, "unsupported target \"%s\"", qualifiedRegisterName);
-					}
-					else {
-						switch(rpm.dataSize)
-						{ default:
-						case 1: *(unsigned char*)rpm.pointer = (unsigned char)(value & 0xFF); break;
-						case 2: *(unsigned short*)rpm.pointer = (unsigned short)(value & 0xFFFF); break;
-						case 4: *(unsigned long*)rpm.pointer = value; break;
-						}
+					switch(rpm.dataSize)
+					{ default:
+					case 1: *(unsigned char*)rpm.pointer = (unsigned char)(value & 0xFF); break;
+					case 2: *(unsigned short*)rpm.pointer = (unsigned short)(value & 0xFFFF); break;
+					case 4: *(unsigned long*)rpm.pointer = value; break;
 					}
 					return 0;
 				}

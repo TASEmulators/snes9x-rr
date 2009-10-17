@@ -23,8 +23,8 @@
 #define BRKTriggered CPU + 68
 #define NMICycleCount CPU + 72
 #define IRQCycleCount CPU + 76
-#define PB Registers + 0
-#define DB Registers + 1
+#define PB Registers + 18
+#define DB Registers + 0
 #define PP Registers + 2
 #define PL Registers + 2
 #define PH PL + 1
@@ -43,7 +43,7 @@
 #define YY Registers + 12
 #define YL Registers + 12
 #define YH YL + 1
-#define PCR Registers + 14
+#define PCR Registers + 16
 #define RAM Memory + 4
 #define ROM Memory + 8
 #define VRAM Memory + 12
@@ -112,7 +112,7 @@
 #define SA1Enabled Settings + 82
 #define SuperFXEnabled Settings + 80
 #define UseWIPAPUTiming Settings + 116
-#define BG_Forced Settings + 121
+#define BG_Forced Settings + 122
 #define ApuP APURegisters + 0
 #define ApuYA APURegisters + 2
 #define ApuA APURegisters + 2
@@ -252,8 +252,8 @@
 #define VirtualBitmapFormat SA1 + 32849
 #define SA1_in_char_dma SA1 + 32850
 #define SA1variable_bit_pos SA1 + 32851
-#define SA1PB SA1Registers + 0
-#define SA1DB SA1Registers + 1
+#define SA1PB SA1Registers + 18
+#define SA1DB SA1Registers + 0
 #define SA1PP SA1Registers + 2
 #define SA1PL SA1Registers + 2
 #define SA1PH SA1PL + 1
@@ -272,4 +272,4 @@
 #define SA1YY SA1Registers + 12
 #define SA1YL SA1Registers + 12
 #define SA1YH SA1YL + 1
-#define SA1PCR SA1Registers + 14
+#define SA1PCR SA1Registers + 16

@@ -214,7 +214,7 @@ void S9xMainLoop (void)
 	    S9xSA1MainLoop ();
 	DO_HBLANK_CHECK();
     }
-    Registers.PC = CPU.PC - CPU.PCBase;
+    Registers.PCw = CPU.PC - CPU.PCBase;
     S9xPackStatus ();
     APURegisters.PC = IAPU.PC - IAPU.RAM;
     S9xAPUPackStatus ();
@@ -352,7 +352,7 @@ void S9xDoHBlankProcessing ()
 	    if (CPU.Flags & SAVE_SNAPSHOT_FLAG)
 		{
 			CPU.Flags &= ~SAVE_SNAPSHOT_FLAG;
-			Registers.PC = CPU.PC - CPU.PCBase;
+			Registers.PCw = CPU.PC - CPU.PCBase;
 			S9xPackStatus ();
 			S9xAPUPackStatus ();
 			Snapshot (NULL);
