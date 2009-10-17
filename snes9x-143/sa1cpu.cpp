@@ -152,6 +152,7 @@ void S9xSA1MainLoop ()
 	{
 	    SA1.WaitingForInterrupt = FALSE;
 	    SA1.PC++;
+	    SA1Registers.PCw++;
 	}
 	S9xSA1Opcode_NMI ();
     }
@@ -164,6 +165,7 @@ void S9xSA1MainLoop ()
 	    {
 		SA1.WaitingForInterrupt = FALSE;
 		SA1.PC++;
+		SA1Registers.PCw++;
 	    }
 	    if (!SA1CheckFlag (IRQ))
 		S9xSA1Opcode_IRQ ();
@@ -180,6 +182,8 @@ void S9xSA1MainLoop ()
 #ifdef CPU_SHUTDOWN
 	    SA1.PCAtOpcodeStart = SA1.PC;
 #endif
+	CallRegisteredLuaMemHook(SA1Registers.PBPC, 1, *SA1.PC, LUAMEMHOOK_EXEC);
+	    SA1Registers.PCw++;
 	    (*SA1.S9xOpcodes [*SA1.PC++].S9xOpcode) ();
 	}
     }
@@ -190,6 +194,8 @@ void S9xSA1MainLoop ()
 #ifdef CPU_SHUTDOWN
 	SA1.PCAtOpcodeStart = SA1.PC;
 #endif
+	CallRegisteredLuaMemHook(SA1Registers.PBPC, 1, *SA1.PC, LUAMEMHOOK_EXEC);
+	SA1Registers.PCw++;
 	(*SA1.S9xOpcodes [*SA1.PC++].S9xOpcode) ();
     }
 }

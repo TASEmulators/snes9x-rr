@@ -219,6 +219,11 @@
 #define SA1LOAD_CYCLES
 #define SA1SAVE_CYCLES
 
+// see also: s9xlua.h
+#define LUAMEMHOOK_WRITE 0
+#define LUAMEMHOOK_READ  1
+#define LUAMEMHOOK_EXEC  2
+
 .macro LOAD_REGISTERS
 	SA1LOAD_CYCLES
 	movl SA1PCS, PC

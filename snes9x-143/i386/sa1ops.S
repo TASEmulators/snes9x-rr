@@ -152,12 +152,25 @@ S9xSA1MainLoop:
 	LOAD_REGISTERS
 .NO_SA1_TRACE:
 #endif
-	xorl %eax, %eax
-	movl SA1Opcodes, %ecx
 #ifdef CPU_SHUTDOWN
         movl PC, SA1PCAtOpcodeStart
 #endif
-	movb (PC), %al
+
+	pushl $LUAMEMHOOK_EXEC
+	movzbl (PC), %eax
+	pushl %eax
+	pushl $1
+	movl SA1PCR, %eax
+	pushl %eax
+#if defined(__DJGCC) || defined(MICROSOFT_C) || defined(_WINDOWS) || defined(WIN32)
+	call _CallRegisteredLuaMemHook
+#else
+	call CallRegisteredLuaMemHook
+#endif
+	addl $16, %esp
+
+	movl SA1Opcodes, %ecx
+	movzbl (PC), %eax
 	incl PC
 	incw SA1PCR
 	jmp *(%ecx,%eax,4)
