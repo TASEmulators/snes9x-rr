@@ -6,6 +6,28 @@
 
 HWND LuaConsoleHWnd = NULL;
 
+void PrintToWindowConsole(int hDlgAsInt, const char* str)
+{
+	HWND hDlg = (HWND)hDlgAsInt;
+	HWND hConsole = GetDlgItem(hDlg, IDC_LUACONSOLE);
+
+	int length = GetWindowTextLength(hConsole);
+	if(length >= 250000)
+	{
+		// discard first half of text if it's getting too long
+		SendMessage(hConsole, EM_SETSEL, 0, length/2);
+		SendMessage(hConsole, EM_REPLACESEL, false, (LPARAM)"");
+		length = GetWindowTextLength(hConsole);
+	}
+	SendMessage(hConsole, EM_SETSEL, length, length);
+
+	//LuaPerWindowInfo& info = LuaWindowInfo[hDlg];
+
+	{
+		SendMessage(hConsole, EM_REPLACESEL, false, (LPARAM)str);
+	}
+}
+
 void WinLuaOnStart(int hDlgAsInt)
 {
 	HWND hDlg = (HWND)hDlgAsInt;
@@ -15,7 +37,6 @@ void WinLuaOnStart(int hDlgAsInt)
 	EnableWindow(GetDlgItem(hDlg, IDC_BUTTON_LUASTOP), true);
 	SetWindowText(GetDlgItem(hDlg, IDC_BUTTON_LUARUN), "Restart");
 	SetWindowText(GetDlgItem(hDlg, IDC_LUACONSOLE), ""); // clear the console
-	SetDlgItemText(hDlg, IDC_LUACONSOLE, "print function is not implemented yet."); // TODO
 //	Show_Genesis_Screen(HWnd); // otherwise we might never show the first thing the script draws
 }
 
