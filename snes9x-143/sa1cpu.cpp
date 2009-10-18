@@ -182,9 +182,11 @@ void S9xSA1MainLoop ()
 #ifdef CPU_SHUTDOWN
 	    SA1.PCAtOpcodeStart = SA1.PC;
 #endif
-	CallRegisteredLuaMemHook(SA1Registers.PBPC, 1, *SA1.PC, LUAMEMHOOK_EXEC);
+	    //S9xSA1UnpackStatus ();
+	    CallRegisteredLuaMemHook(SA1Registers.PBPC, SA1.S9xOpLengths[*SA1.PC], *SA1.PC, LUAMEMHOOK_EXEC);
 	    SA1Registers.PCw++;
 	    (*SA1.S9xOpcodes [*SA1.PC++].S9xOpcode) ();
+	    S9xSA1PackStatus ();
 	}
     }
     else
@@ -194,9 +196,11 @@ void S9xSA1MainLoop ()
 #ifdef CPU_SHUTDOWN
 	SA1.PCAtOpcodeStart = SA1.PC;
 #endif
-	CallRegisteredLuaMemHook(SA1Registers.PBPC, 1, *SA1.PC, LUAMEMHOOK_EXEC);
+	//S9xSA1UnpackStatus ();
+	CallRegisteredLuaMemHook(SA1Registers.PBPC, SA1.S9xOpLengths[*SA1.PC], *SA1.PC, LUAMEMHOOK_EXEC);
 	SA1Registers.PCw++;
 	(*SA1.S9xOpcodes [*SA1.PC++].S9xOpcode) ();
+	S9xSA1PackStatus ();
     }
 }
 

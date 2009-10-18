@@ -105,6 +105,7 @@ struct SSA1Registers {
 
 struct SSA1 {
     struct  SOpcodes *S9xOpcodes;
+    uint8   *S9xOpLengths;
     uint8   _Carry;
     uint8   _Zero;
     uint8   _Negative;
@@ -201,22 +202,32 @@ STATIC inline void S9xSA1PackStatus()
 
 STATIC inline void S9xSA1FixCycles ()
 {
-    if (SA1CheckEmulation ())
+    if (SA1CheckEmulation ()) {
 	SA1.S9xOpcodes = S9xSA1OpcodesM1X1;
+	SA1.S9xOpLengths = S9xOpLengthsM1X1;
+    }
     else
     if (SA1CheckMemory ())
     {
-	if (SA1CheckIndex ())
+	if (SA1CheckIndex ()) {
 	    SA1.S9xOpcodes = S9xSA1OpcodesM1X1;
-	else
+	    SA1.S9xOpLengths = S9xOpLengthsM1X1;
+	}
+	else {
 	    SA1.S9xOpcodes = S9xSA1OpcodesM1X0;
+	    SA1.S9xOpLengths = S9xOpLengthsM1X0;
+	}
     }
     else
     {
-	if (SA1CheckIndex ())
+	if (SA1CheckIndex ()) {
 	    SA1.S9xOpcodes = S9xSA1OpcodesM0X1;
-	else
+	    SA1.S9xOpLengths = S9xOpLengthsM0X1;
+	}
+	else {
 	    SA1.S9xOpcodes = S9xSA1OpcodesM0X0;
+	    SA1.S9xOpLengths = S9xOpLengthsM0X0;
+	}
     }
 }
 #endif

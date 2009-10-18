@@ -147,6 +147,7 @@
 #define S9xSA1OpcodesM1X0 _S9xSA1OpcodesM1X0
 #define S9xSA1OpcodesM0X1 _S9xSA1OpcodesM0X1
 #define S9xSA1OpcodesM0X0 _S9xSA1OpcodesM0X0
+#define CallRegisteredLuaMemHook _CallRegisteredLuaMemHook
 
 #define A1 _A1
 #define A2 _A2
@@ -167,6 +168,10 @@
 #define S9xOpcodesM1X0 _S9xOpcodesM1X0
 #define S9xOpcodesM0X1 _S9xOpcodesM0X1
 #define S9xOpcodesM0X0 _S9xOpcodesM0X0
+#define S9xOpLengthsM1X1 _S9xOpLengthsM1X1
+#define S9xOpLengthsM1X0 _S9xOpLengthsM1X0
+#define S9xOpLengthsM0X1 _S9xOpLengthsM0X1
+#define S9xOpLengthsM0X0 _S9xOpLengthsM0X0
 #define APUROM _APUROM
 #define W1 _W1
 #define W2 _W2
@@ -213,9 +218,6 @@
 #define APUPC %ebp
 #endif
 
-#define FLAGS %bl
-#define FLAGS16 %bx
-
 #define SA1LOAD_CYCLES
 #define SA1SAVE_CYCLES
 
@@ -230,7 +232,6 @@
 #ifndef SPC700_C
 	movl APUPCS, APUPC
 #endif
-	movw PP, FLAGS16
 .endm
 
 .macro STORE_REGISTERS
@@ -239,7 +240,6 @@
 #ifndef SPC700_C
 	movl APUPC, APUPCS
 #endif
-	movw FLAGS16, PP
 .endm
 
 .macro PUSH_REGISTERS

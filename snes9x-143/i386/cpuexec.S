@@ -190,7 +190,8 @@ S9xMainLoop:
 	jz .CLEAR_PENDING_IRQ_FLAG
 	testb $0xff, DisableIRQ
 	jnz .CLEAR_PENDING_IRQ_FLAG
-	testb $IRQ, FLAGS
+	movb PP, %bl
+	testb $IRQ, %bl
 	jnz .NO_PENDING_IRQ
 	call S9xOpcode_IRQ
 	jmp .NO_PENDING_IRQ
@@ -202,7 +203,8 @@ S9xMainLoop:
 .DEC_IRQ_CYCLE_COUNT:
 	decl IRQCycleCount
         jnz .DEC_IRQ_CYCLE_COUNT_DONE
-	testb $IRQ, FLAGS
+	movb PP, %bl
+	testb $IRQ, %bl
         jz .DEC_IRQ_CYCLE_COUNT_DONE
         movb $1, IRQCycleCount
 .DEC_IRQ_CYCLE_COUNT_DONE:
@@ -238,17 +240,16 @@ S9xMainLoop:
 #endif	
 	addl MemSpeed, CYCLES
 
+	// S9xUnpackStatus S9xMainLoop
 	pushl $LUAMEMHOOK_EXEC
 	movzbl (PC), %eax
 	pushl %eax
-	pushl $1
+	movl CPUOpLengths, %ecx
+	movzbl (%ecx, %eax, 1), %eax
+	pushl %eax
 	movl PCR, %eax
 	pushl %eax
-#if defined(__DJGCC) || defined(MICROSOFT_C) || defined(_WINDOWS) || defined(WIN32)
-	call _CallRegisteredLuaMemHook
-#else
 	call CallRegisteredLuaMemHook
-#endif
 	addl $16, %esp
 
 	movzbl (PC), %eax
@@ -257,6 +258,7 @@ S9xMainLoop:
 	incw PCR
 	jmp *(%ecx,%eax,4)
 MainAsmLoop:
+	S9xPackStatus S9xMainLoop
 	SAVE_CYCLES
 	ccall S9xUpdateAPUTimer
 	cmpb $0, SA1Executing

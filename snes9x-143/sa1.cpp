@@ -149,6 +149,7 @@ void S9xSA1Reset ()
     SA1.PCBase = NULL;
     S9xSA1SetPCBase (SA1Registers.PCw);
     SA1.S9xOpcodes = S9xSA1OpcodesM1X1;
+    SA1.S9xOpLengths = S9xOpLengthsM1X1;
 
     S9xSA1UnpackStatus();
     S9xSA1FixCycles ();

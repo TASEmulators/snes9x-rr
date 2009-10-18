@@ -320,9 +320,11 @@ void S9xMainLoop (void)
 				Opcodes = S9xOpcodesSlow;
 		}
 
+		//S9xUnpackStatus();
 		CallRegisteredLuaMemHook(Registers.PBPC, ICPU.S9xOpLengths[Op], Op, LUAMEMHOOK_EXEC);
 		Registers.PCw++;
 		(*Opcodes[Op].S9xOpcode)();
+		S9xPackStatus();
 
 		if(ICPU.SavedAtOp)
 		{

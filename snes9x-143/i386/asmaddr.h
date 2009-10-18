@@ -393,7 +393,7 @@
 .endif
 
 	addw XX, %dx
-   testw $Emulation, FLAGS16
+   testw $Emulation, PP
 	jz .DirectIndexedX8done\K
    andw $0x00ff, %dx     /* Zero page indexed wraps in emulation mode */
 .DirectIndexedX8done\K:
@@ -417,7 +417,7 @@
 	incl PC
 	incw PCR
 	addw YY, %dx
-    testw $Emulation, FLAGS16
+    testw $Emulation, PP
 	jz .DirectIndexedY8done\K
     andw $0x00ff, %dx
 .DirectIndexedY8done\K:

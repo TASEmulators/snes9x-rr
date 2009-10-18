@@ -104,6 +104,8 @@
 #define S9xGetByte _S9xGetByte
 #define S9xSetWord _S9xSetWord
 #define S9xSetByte _S9xSetByte
+#define S9xSetWordWrapped _S9xSetWordWrapped
+#define S9xSetByteWrapped _S9xSetByteWrapped
 #define S9xSetPCBase _S9xSetPCBase
 #define memset _memset
 #define S9xDoHDMA _S9xDoHDMA
@@ -164,6 +166,7 @@
 #define S9xSoftReset _S9xSoftReset
 #define S9xLuaClearGui _S9xLuaClearGui
 #define CallRegisteredLuaFunctions _CallRegisteredLuaFunctions
+#define CallRegisteredLuaMemHook _CallRegisteredLuaMemHook
 
 #define A1 _A1
 #define A2 _A2
@@ -185,6 +188,10 @@
 #define S9xOpcodesM1X0 _S9xOpcodesM1X0
 #define S9xOpcodesM0X1 _S9xOpcodesM0X1
 #define S9xOpcodesM0X0 _S9xOpcodesM0X0
+#define S9xOpLengthsM1X1 _S9xOpLengthsM1X1
+#define S9xOpLengthsM1X0 _S9xOpLengthsM1X0
+#define S9xOpLengthsM0X1 _S9xOpLengthsM0X1
+#define S9xOpLengthsM0X0 _S9xOpLengthsM0X0
 #define APUROM _APUROM
 #define W1 _W1
 #define W2 _W2
@@ -233,9 +240,6 @@
 #define APUPC %ebp
 #endif
 
-#define FLAGS %bl
-#define FLAGS16 %bx
-
 #define LOAD_CYCLES movl Cycles, CYCLES
 #define SAVE_CYCLES movl CYCLES, Cycles
 
@@ -251,7 +255,6 @@
 #ifndef SPC700_C
 	movl APUPCS, APUPC
 #endif
-	movw PP, FLAGS16
 .endm
 
 .macro STORE_REGISTERS
@@ -260,7 +263,6 @@
 #ifndef SPC700_C
 	movl APUPC, APUPCS
 #endif
-	movw FLAGS16, PP
 .endm
 
 .macro PUSH_REGISTERS

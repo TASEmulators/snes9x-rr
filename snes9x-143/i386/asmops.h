@@ -87,7 +87,7 @@
   Nintendo Co., Limited and its subsidiary companies.
 *******************************************************************************/
 .macro Adc8 K
-	testb $Decimal, FLAGS
+	testb $Decimal, PP
 	jnz .ADC8Decimal\K
 	GetCarry
 	adcb AL, %al
@@ -128,7 +128,7 @@
 .endm
 
 .macro Adc16 K
-	testb $Decimal, FLAGS
+	testb $Decimal, PP
 	jnz .ADC16Decimal\K
 	GetCarry
 	adcw AA, %ax
@@ -210,7 +210,7 @@
 .endm
 
 .macro Sbc8 K
-	testb $Decimal, FLAGS
+	testb $Decimal, PP
 	jnz .SBC8Decimal\K
 	GetNotCarry
 	sbbb %al, AL
@@ -232,7 +232,7 @@
 .endm
 
 .macro Sbc16 K
-	testb $Decimal, FLAGS
+	testb $Decimal, PP
 	jnz .SBC16Decimal\K
 	GetNotCarry
 	sbbw %ax, AA
@@ -765,7 +765,7 @@
 .macro CheckForIrq K
 	testb $0xff, IRQActive
 	jz .CheckForIrqS9xExit\K
-	testb $IRQ, FLAGS
+	testb $IRQ, PP
 	jnz .CheckForIrqS9xExit\K
 	testb $0xff, DisableIRQ
 	jnz .CheckForIrqS9xExit\K
@@ -774,58 +774,63 @@
 .endm
 
 .macro S9xFixCycles K
-	testw $Emulation, FLAGS16
+	testw $Emulation, PP
 	jz .S9xFixCyclesNoEmulation\K
 	movl $S9xOpcodesE1, CPUOpcodes
+	movl $S9xOpLengthsM1X1, CPUOpLengths
 	jmp .S9xFixCyclesS9xExit\K
 
 .S9xFixCyclesNoEmulation\K:	
-	testb $MemoryFlag, FLAGS
+	testb $MemoryFlag, PP
 	jz .S9xFixCyclesNoMemory\K
-	testb $IndexFlag, FLAGS
+	testb $IndexFlag, PP
 	jz .S9xFixCyclesNoIndex\K
 	movl $S9xOpcodesM1X1, CPUOpcodes
+	movl $S9xOpLengthsM1X1, CPUOpLengths
 	jmp .S9xFixCyclesS9xExit\K
 .S9xFixCyclesNoIndex\K:
 	movl $S9xOpcodesM1X0, CPUOpcodes
+	movl $S9xOpLengthsM1X0, CPUOpLengths
 	jmp .S9xFixCyclesS9xExit\K
 
 .S9xFixCyclesNoMemory\K:
-	testb $IndexFlag, FLAGS
+	testb $IndexFlag, PP
 	jz .S9xFixCyclesNoIndex2\K
 	movl $S9xOpcodesM0X1, CPUOpcodes
+	movl $S9xOpLengthsM0X1, CPUOpLengths
 	jmp .S9xFixCyclesS9xExit\K
 .S9xFixCyclesNoIndex2\K:
 	movl $S9xOpcodesM0X0, CPUOpcodes
+	movl $S9xOpLengthsM0X0, CPUOpLengths
 .S9xFixCyclesS9xExit\K:
 .endm
 
 .macro S9xUnpackStatus K
-	movb FLAGS, %al
+	movb PP, %al
 	movb %al, _Negative
 	testb $Zero, %al
 	setz _Zero
-	testb $Carry, FLAGS
+	testb $Carry, PP
 	setnz _Carry
-	testb $Overflow, FLAGS
+	testb $Overflow, PP
 	setnz _Overflow
 .endm
 
 .macro S9xPackStatus K
 //	movb _Carry, %al
-	andb $~(Zero | Negative | Carry | Overflow), FLAGS
-//	orb %al, FLAGS
+	andb $~(Zero | Negative | Carry | Overflow), PP
+//	orb %al, PP
 	movb _Negative, %al
 	andb $0x80, %al
 	orb _Carry, %al
-	orb %al, FLAGS
+	orb %al, PP
 	movb _Overflow, %al
 	salb $6, %al
-	orb %al, FLAGS
+	orb %al, PP
 	testb $0xff, _Zero
 	setz %al
 	salb %al
-	orb %al, FLAGS
+	orb %al, PP
 .endm
 
 .macro CPUShutdown K
