@@ -384,7 +384,7 @@ struct registerPointerMap
 registerPointerMap a65c816PointerMap [] = {
 	RPM_ENTRY("db", Registers.DB)
 	RPM_ENTRY("p", Registers.PL)
-	RPM_ENTRY("e", Registers.PH)
+	RPM_ENTRY("e", Registers.PH) // 1bit flag, how should lua engine handle it?
 	RPM_ENTRY("a", Registers.A.W)
 	RPM_ENTRY("d", Registers.D.W)
 	RPM_ENTRY("s", Registers.S.W)
@@ -398,7 +398,7 @@ registerPointerMap a65c816PointerMap [] = {
 registerPointerMap sa1PointerMap [] = {
 	RPM_ENTRY("db", SA1Registers.DB)
 	RPM_ENTRY("p", SA1Registers.PL)
-	RPM_ENTRY("e", SA1Registers.PH)
+	RPM_ENTRY("e", SA1Registers.PH) // 1bit flag, how should lua engine handle it?
 	RPM_ENTRY("a", SA1Registers.A.W)
 	RPM_ENTRY("d", SA1Registers.D.W)
 	RPM_ENTRY("s", SA1Registers.S.W)
