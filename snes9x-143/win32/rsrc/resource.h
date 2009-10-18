@@ -43,10 +43,10 @@
 #define IDD_MULTICART                   138
 #define IDD_MOVIE_SEEK                  139
 #define IDD_MACRO_SETTINGS              140
-#define IDD_LUA_ADD                     141
+#define IDD_LUA                         141
 #define IDD_STRING_INPUT                142
-#define IDD_FILE_LUA_LOAD               143
-#define IDD_FILE_LUA_STOP               144
+#define IDD_FILE_LUA_OPEN               143
+#define IDD_FILE_LUA_CLOSE_ALL          144
 #define IDD_FRAMESKIP_SETTINGS          145
 #define IDD_FILE_LUA_RELOAD             146
 #define IDD_RAMSEARCH                   147
@@ -149,7 +149,7 @@
 #define IDC_PORTNUMBER                  1093
 #define IDC_CLEARHISTORY                1094
 #define IDC_STATIC2                     1095
-#define IDC_LUA_FILENAME                1096
+#define IDC_EDIT_LUAPATH                1096
 #define IDC_EDIT1                       1097
 #define IDC_UP                          1098
 #define IDC_VALUE_ENTER                 1099
@@ -412,7 +412,7 @@
 #define IDC_MACRO5_STEP                 1356
 #define IDC_MACRO_METHOD_NONE           1357
 #define IDC_MACRO_METHOD_OVERWRITE      1358
-#define IDC_LUA_BROWSE                  1359
+#define IDC_BUTTON_LUABROWSE            1359
 #define IDC_MACRO_METHOD_TOGGLE         1360
 #define IDC_PAUSE_WITH_MACRO            1361
 #define IDC_SKIPCOUNT                   1362
@@ -479,6 +479,10 @@
 #define IDC_PROMPT_TEXT                 1423
 #define IDC_PROMPT_TEXT2                1424
 #define IDC_PROMPT_EDIT                 1425
+#define IDC_BUTTON_LUARUN               1426
+#define IDC_BUTTON_LUASTOP              1427
+#define IDC_LUACONSOLE                  1428
+#define IDC_BUTTON_LUAEDIT              1429
 #define ID_FILE_EXIT                    40001
 #define ID_LANGUAGE_ENGLISH             40002
 #define ID_LANGUAGE_NEDERLANDS          40003
@@ -754,7 +758,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        152
 #define _APS_NEXT_COMMAND_VALUE         40291
-#define _APS_NEXT_CONTROL_VALUE         1426
+#define _APS_NEXT_CONTROL_VALUE         1430
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -207,6 +207,7 @@ INT_PTR CALLBACK DlgOpenMovie(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 HRESULT CALLBACK EnumModesCallback( LPDDSURFACEDESC lpDDSurfaceDesc, LPVOID lpContext);
 INT_PTR CALLBACK DlgSeekProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
+extern HWND LuaConsoleHWnd;
 extern INT_PTR CALLBACK DlgLuaScriptDialog(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
 INT_PTR CALLBACK test(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -2418,27 +2419,18 @@ LRESULT CALLBACK WinProc(
 				RestoreSNESDisplay ();// re-enter after dialog
 			}
 			break;
-		case IDD_FILE_LUA_LOAD: 
+		case IDD_FILE_LUA_OPEN: 
 			{
-				RestoreGUIDisplay();
-				int success = 0;
-				DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_LUA_ADD), hWnd, DlgLuaScriptDialog,(LPARAM) &success);
-				if (success) {
-					// there is nothing to do
-				}
-				RestoreSNESDisplay();
+				if(!LuaConsoleHWnd)
+					LuaConsoleHWnd = CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_LUA), hWnd, (DLGPROC) DlgLuaScriptDialog);
+				else
+					SetForegroundWindow(LuaConsoleHWnd);
 			}
 			break;
-		case IDD_FILE_LUA_RELOAD: 
+		case IDD_FILE_LUA_CLOSE_ALL:
 			{
-				S9xReloadLuaCode();
-			}
-			break;
-		case IDD_FILE_LUA_STOP:
-			{
-				// I'm going to assume that Windows will adequately guard against this being executed
-				// uselessly. Even if it wasn't, it's no big deal.
-				S9xLuaStop();
+				if(LuaConsoleHWnd)
+					PostMessage(LuaConsoleHWnd, WM_CLOSE, 0, 0);
 			}
 			break;
 		case ID_FILE_MOVIE_RECORD:
@@ -4317,9 +4309,9 @@ void HotkeyToggleMacro6 (bool justPressed) { HotkeyToggleMacro(6); }
 void HotkeyToggleMacro7 (bool justPressed) { HotkeyToggleMacro(7); }
 void HotkeyEditMacro (bool justPressed) { PostMenuCommand(ID_OPTIONS_INPUT_MACRO); }
 void HotkeyToggleCheats (bool justPressed) { PostMenuCommand(ID_CHEAT_DISABLE); }
-void HotkeyLoadLuaScript (bool justPressed) { PostMenuCommand(IDD_FILE_LUA_LOAD); }
-void HotkeyReloadLuaScript (bool justPressed) { PostMenuCommand(IDD_FILE_LUA_RELOAD); }
-void HotkeyStopLuaScript (bool justPressed) { PostMenuCommand(IDD_FILE_LUA_STOP); }
+void HotkeyLoadLuaScript (bool justPressed) { PostMenuCommand(IDD_FILE_LUA_OPEN); }
+void HotkeyReloadLuaScript (bool justPressed) { S9xReloadLuaCode(); }
+void HotkeyStopLuaScript (bool justPressed) { PostMenuCommand(IDD_FILE_LUA_CLOSE_ALL); }
 
 /*****************************************************************************/
 /* WinInit                                                                   */
@@ -4859,7 +4851,8 @@ int WINAPI WinMain(
 			// do not process non-modal dialog messages
 			if ((oldRamSearchHWND && IsDialogMessage(oldRamSearchHWND, &msg))
 			 || (inputMacroHWND && IsDialogMessage(inputMacroHWND, &msg))
-			 || (RamSearchHWnd && IsDialogMessage(RamSearchHWnd, &msg)))
+			 || (RamSearchHWnd && IsDialogMessage(RamSearchHWnd, &msg))
+			 || (LuaConsoleHWnd && IsDialogMessage(LuaConsoleHWnd, &msg)))
 				continue;
 
 			if (RamWatchHWnd && IsDialogMessage(RamWatchHWnd, &msg)) {
@@ -5348,13 +5341,10 @@ static void CheckMenuStates ()
 		mii.fState |= MFS_DISABLED;
 	SetMenuItemInfo (GUI.hMenu, ID_OPTIONS_INPUT_MACRO, FALSE, &mii);
 
-	bool luaRunning = S9xLuaRunning()!=0;
-	mii.fState = MFS_UNCHECKED; // | (luaRunning ? MFS_DISABLED : 0);
-	SetMenuItemInfo (GUI.hMenu, IDD_FILE_LUA_LOAD, FALSE, &mii);
-	mii.fState = MFS_UNCHECKED;
-	SetMenuItemInfo (GUI.hMenu, IDD_FILE_LUA_RELOAD, FALSE, &mii);
-	mii.fState = MFS_UNCHECKED | (!luaRunning ? MFS_DISABLED : 0);
-	SetMenuItemInfo (GUI.hMenu, IDD_FILE_LUA_STOP, FALSE, &mii);
+	mii.fState = (LuaConsoleHWnd ? MFS_CHECKED : MFS_UNCHECKED);
+	SetMenuItemInfo (GUI.hMenu, IDD_FILE_LUA_OPEN, FALSE, &mii);
+	mii.fState = (LuaConsoleHWnd ? 0 : MFS_DISABLED);
+	SetMenuItemInfo (GUI.hMenu, IDD_FILE_LUA_CLOSE_ALL, FALSE, &mii);
 
 	for (i = 0; i < COUNT(idJoypad); i++) {
 		mii.fState = Joypad[i].Enabled ? MFS_CHECKED : MFS_UNCHECKED;

@@ -59,6 +59,13 @@ extern "C" {
 #include "win32/rsrc/resource.h"
 #endif
 
+#ifdef _WIN32
+extern HWND LuaConsoleHWnd;
+extern INT_PTR CALLBACK DlgLuaScriptDialog(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
+extern void WinLuaOnStart(int hDlgAsInt);
+extern void WinLuaOnStop(int hDlgAsInt);
+#endif
+
 static lua_State *LUA;
 
 // Are we running any code right now?
@@ -3941,6 +3948,12 @@ int S9xLoadLuaCode(const char *filename) {
 	// Set up our protection hook to be executed once every 10,000 bytecode instructions.
 	lua_sethook(thread, S9xLuaHookFunction, LUA_MASKCOUNT, 10000);
 
+#ifdef _WIN32
+	if(!LuaConsoleHWnd)
+		LuaConsoleHWnd = CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_LUA), GUI.hWnd, (DLGPROC) DlgLuaScriptDialog);
+	WinLuaOnStart((int)LuaConsoleHWnd);
+#endif
+
 	// We're done.
 	return 1;
 }
@@ -3984,6 +3997,9 @@ void S9xLuaStop() {
 
 	//lua_gc(LUA,LUA_GCCOLLECT,0);
 
+#ifdef _WIN32
+	WinLuaOnStop((int)LuaConsoleHWnd);
+#endif
 
 	lua_close(LUA); // this invokes our garbage collectors for us
 	LUA = NULL;
