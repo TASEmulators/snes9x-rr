@@ -545,6 +545,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\luaconsole.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\oldramsearch.cpp"
 				>
 			</File>
