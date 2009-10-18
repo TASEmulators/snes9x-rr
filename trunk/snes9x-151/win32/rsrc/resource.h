@@ -46,7 +46,7 @@
 #define IDD_FULLSCREEN_SETTINGS         141
 #define IDD_STRING_INPUT                142
 #define IDD_FRAMESKIP_SETTINGS          143
-#define IDD_LUA_ADD                     144
+#define IDD_LUA                         144
 #define IDD_FILE_LUA_RELOAD             145
 #define IDD_RAMSEARCH                   146
 #define IDD_RAMWATCH                    147
@@ -442,8 +442,8 @@
 #define IDC_HOTKEY18                    1387
 #define IDC_HOTKEY19                    1388
 #define IDC_HOTKEY20                    1389
-#define IDC_LUA_FILENAME                1390
-#define IDC_LUA_BROWSE                  1391
+#define IDC_EDIT_LUAPATH                1390
+#define IDC_BUTTON_LUABROWSE            1391
 #define IDC_RAMLIST                     1392
 #define IDC_C_SEARCH                    1393
 #define IDC_C_ADDCHEAT                  1394
@@ -487,6 +487,10 @@
 #define IDC_PROMPT_TEXT                 1432
 #define IDC_PROMPT_TEXT2                1433
 #define IDC_PROMPT_EDIT                 1434
+#define IDC_BUTTON_LUARUN               1435
+#define IDC_BUTTON_LUASTOP              1436
+#define IDC_LUACONSOLE                  1437
+#define IDC_BUTTON_LUAEDIT              1438
 #define ID_FILE_EXIT                    40001
 #define ID_LANGUAGE_ENGLISH             40002
 #define ID_LANGUAGE_NEDERLANDS          40003
@@ -726,8 +730,8 @@
 #define ID_FILE_WRITE_WAV               40238
 #define ID_FILE_STOP_WAV                40239
 #define ID_COUNTER_IN_FRAMES            40240
-#define IDD_FILE_LUA_LOAD               40241
-#define IDD_FILE_LUA_STOP               40242
+#define IDD_FILE_LUA_OPEN               40241
+#define IDD_FILE_LUA_CLOSE_ALL          40242
 #define ID_FILE_WAV_RECORDING           40243
 #define ID_FILE_AVI_RECORDING           40244
 #define ID_SOUNDINTERFACE_DIRECTSOUND   40245
@@ -768,7 +772,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        151
 #define _APS_NEXT_COMMAND_VALUE         40301
-#define _APS_NEXT_CONTROL_VALUE         1435
+#define _APS_NEXT_CONTROL_VALUE         1439
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
