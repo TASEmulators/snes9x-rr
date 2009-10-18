@@ -4311,7 +4311,7 @@ void HotkeyEditMacro (bool justPressed) { PostMenuCommand(ID_OPTIONS_INPUT_MACRO
 void HotkeyToggleCheats (bool justPressed) { PostMenuCommand(ID_CHEAT_DISABLE); }
 void HotkeyLoadLuaScript (bool justPressed) { PostMenuCommand(IDD_FILE_LUA_OPEN); }
 void HotkeyReloadLuaScript (bool justPressed) { S9xReloadLuaCode(); }
-void HotkeyStopLuaScript (bool justPressed) { PostMenuCommand(IDD_FILE_LUA_CLOSE_ALL); }
+void HotkeyStopLuaScript (bool justPressed) { S9xLuaStop(); }
 
 /*****************************************************************************/
 /* WinInit                                                                   */
