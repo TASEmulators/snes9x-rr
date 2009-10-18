@@ -737,11 +737,7 @@ S9xSetByte:
 	pushl %eax
 	pushl $1
 	pushl %edx
-#if defined(__DJGCC) || defined(MICROSOFT_C) || defined(_WINDOWS) || defined(WIN32)
-	call _CallRegisteredLuaMemHook
-#else
 	call CallRegisteredLuaMemHook
-#endif
 	addl $16, %esp
 	ret
 
@@ -762,11 +758,7 @@ S9xSetWord:
 	pushl %eax
 	pushl $2
 	pushl %edx
-#if defined(__DJGCC) || defined(MICROSOFT_C) || defined(_WINDOWS) || defined(WIN32)
-	call _CallRegisteredLuaMemHook
-#else
 	call CallRegisteredLuaMemHook
-#endif
 	addl $16, %esp
 	ret
 

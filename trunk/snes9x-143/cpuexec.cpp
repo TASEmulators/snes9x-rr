@@ -208,9 +208,11 @@ void S9xMainLoop (void)
 #endif
 	CPU.Cycles += CPU.MemSpeed;
 
-	CallRegisteredLuaMemHook(Registers.PBPC, 1, *CPU.PC, LUAMEMHOOK_EXEC);
+	//S9xUnpackStatus ();
+	CallRegisteredLuaMemHook(Registers.PBPC, ICPU.S9xOpLengths[*CPU.PC], *CPU.PC, LUAMEMHOOK_EXEC);
 	Registers.PCw++;
 	(*ICPU.S9xOpcodes [*CPU.PC++].S9xOpcode) ();
+	S9xPackStatus ();
 	
 	S9xUpdateAPUTimer();
 	

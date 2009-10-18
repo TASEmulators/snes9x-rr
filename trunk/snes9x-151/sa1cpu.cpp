@@ -271,9 +271,11 @@ void S9xSA1MainLoop ()
             SA1Registers.PBPC = oldPC;
             Opcodes = S9xSA1OpcodesSlow;
         }
+        //S9xUnpackStatus();
         CallRegisteredLuaMemHook(Registers.PBPC, SA1.S9xOpLengths[Op], Op, LUAMEMHOOK_EXEC);
         Registers.PCw++;
         (*Opcodes[Op].S9xOpcode) ();
+        S9xPackStatus();
     }
 }
 

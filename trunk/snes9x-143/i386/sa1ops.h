@@ -87,7 +87,7 @@
   Nintendo Co., Limited and its subsidiary companies.
 *******************************************************************************/
 .macro Adc8 K
-	testb $Decimal, FLAGS
+	testb $Decimal, SA1PP
 	jnz .ADC8Decimal\K
 	GetCarry
 	adcb AL, %al
@@ -105,7 +105,7 @@
 .endm
 
 .macro Adc16 K
-	testb $Decimal, FLAGS
+	testb $Decimal, SA1PP
 	jnz .ADC16Decimal\K
 	GetCarry
 	adcw AA, %ax
@@ -135,7 +135,7 @@
 .endm
 
 .macro Sbc8 K
-	testb $Decimal, FLAGS
+	testb $Decimal, SA1PP
 	jnz .SBC8Decimal\K
 	GetNotCarry
 	sbbb %al, AL
@@ -157,7 +157,7 @@
 .endm
 
 .macro Sbc16 K
-	testb $Decimal, FLAGS
+	testb $Decimal, SA1PP
 	jnz .SBC16Decimal\K
 	GetNotCarry
 	sbbw %ax, AA
@@ -574,64 +574,69 @@
 .macro CheckForIrq K
 	testb $0xff, SA1IRQActive
 	jz .CheckForIrqS9xSA1Exit\K
-	testb $IRQ, FLAGS
+	testb $IRQ, SA1PP
 	jnz .CheckForIrqS9xSA1Exit\K
 	call S9xSA1Opcode_IRQ
 .CheckForIrqS9xSA1Exit\K:
 .endm
 
 .macro S9xSA1FixCycles K
-	testw $Emulation, FLAGS16
+	testw $Emulation, SA1PP
 	jz .S9xSA1FixCyclesNoEmulation\K
 	movl $S9xSA1OpcodesM1X1, SA1Opcodes
+	movl $S9xOpLengthsM1X1, SA1OpLengths
 	jmp .S9xSA1FixCyclesS9xSA1Exit\K
 
 .S9xSA1FixCyclesNoEmulation\K:	
-	testb $MemoryFlag, FLAGS
+	testb $MemoryFlag, SA1PP
 	jz .S9xSA1FixCyclesNoMemory\K
-	testb $IndexFlag, FLAGS
+	testb $IndexFlag, SA1PP
 	jz .S9xSA1FixCyclesNoIndex\K
 	movl $S9xSA1OpcodesM1X1, SA1Opcodes
+	movl $S9xOpLengthsM1X1, SA1OpLengths
 	jmp .S9xSA1FixCyclesS9xSA1Exit\K
 .S9xSA1FixCyclesNoIndex\K:
 	movl $S9xSA1OpcodesM1X0, SA1Opcodes
+	movl $S9xOpLengthsM1X0, SA1OpLengths
 	jmp .S9xSA1FixCyclesS9xSA1Exit\K
 
 .S9xSA1FixCyclesNoMemory\K:
-	testb $IndexFlag, FLAGS
+	testb $IndexFlag, SA1PP
 	jz .S9xSA1FixCyclesNoIndex2\K
 	movl $S9xSA1OpcodesM0X1, SA1Opcodes
+	movl $S9xOpLengthsM0X1, SA1OpLengths
 	jmp .S9xSA1FixCyclesS9xSA1Exit\K
 .S9xSA1FixCyclesNoIndex2\K:
 	movl $S9xSA1OpcodesM0X0, SA1Opcodes
+	movl $S9xOpLengthsM0X0, SA1OpLengths
 .S9xSA1FixCyclesS9xSA1Exit\K:
 .endm
 
 .macro S9xSA1UnpackStatus K
-	movb FLAGS, %al
+	movb SA1PP, %al
 	movb %al, SA1_Negative
 	testb $Zero, %al
 	setz SA1_Zero
-	testb $Carry, FLAGS
+	testb $Carry, SA1PP
 	setnz SA1_Carry
-	testb $Overflow, FLAGS
+	testb $Overflow, SA1PP
 	setnz SA1_Overflow
 .endm
 
 .macro S9xSA1PackStatus K
 	movb SA1_Carry, %al
-	andb $~(Zero | Negative | Carry | Overflow), FLAGS
-	orb %al, FLAGS
+	andb $~(Zero | Negative | Carry | Overflow), SA1PP
+	orb %al, SA1PP
 	movb SA1_Negative, %al
 	andb $0x80, %al
-	orb %al, FLAGS
+	orb %al, SA1PP
 	movb SA1_Overflow, %al
 	salb $6, %al
-	orb %al, FLAGS
+	orb %al, SA1PP
 	testb $0xff, SA1_Zero
 	setz %al
 	salb %al
-	orb %al, FLAGS
+	orb %al, SA1PP
 .endm
 
 .macro CPUShutdown K

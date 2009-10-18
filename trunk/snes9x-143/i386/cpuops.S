@@ -2017,13 +2017,13 @@ Op18:
 
 /* CLD */
 OpD8:
-	andb $~Decimal, FLAGS
+	andb $~Decimal, PP
 	addl $6, CYCLES
 	jmp MainAsmLoop
 
 /* CLI */
 Op58:
-	andb $~IRQ, FLAGS
+	andb $~IRQ, PP
 	addl $6, CYCLES
 #if 0 /* C version has this commented out? */
 	cmpb $0, IRQActive
@@ -2236,14 +2236,14 @@ Op4B:
 Op08E1:
 	addl $6, CYCLES
 	S9xPackStatus PHP
-	movb FLAGS, %al
+	movb PP, %al
 	PushByteE PHP
 	jmp MainAsmLoop
 
 Op08:
 	addl $6, CYCLES
 	S9xPackStatus PHP
-	movb FLAGS, %al
+	movb PP, %al
 	PushByte PHP
 	jmp MainAsmLoop
 
@@ -2350,9 +2350,9 @@ Op2B:
 Op28E1:
 	addl $12, CYCLES
 	PullByteE PLPE
-	movb %al, FLAGS
+	movb %al, PP
 
-	testb $IndexFlag, FLAGS
+	testb $IndexFlag, PP
 	jz .PLP16E
 	xorb %al, %al
 	movb %al, XH
@@ -2366,9 +2366,9 @@ Op28E1:
 Op28:
 	addl $12, CYCLES
 	PullByte PLP
-	movb %al, FLAGS
+	movb %al, PP
 
-	testb $IndexFlag, FLAGS
+	testb $IndexFlag, PP
 	jz .PLP16
 	xorb %al, %al
 	movb %al, XH
@@ -2434,13 +2434,13 @@ Op38:
 /* SED */
 OpF8:
 	
-	orb $Decimal, FLAGS
+	orb $Decimal, PP
 	addl $6, CYCLES
 	jmp MainAsmLoop
 
 /* SEI */
 Op78:
-	orb $IRQ, FLAGS
+	orb $IRQ, PP
 	addl $6, CYCLES
 	jmp MainAsmLoop
 
@@ -2490,7 +2490,7 @@ Op1B:
 	addl $6, CYCLES
 	movw AA, %ax
 	movw %ax, SS
-	testw $Emulation, FLAGS16
+	testw $Emulation, PP
 	jz .TCS_EXIT
 	movb $1, SH
 .TCS_EXIT:
@@ -2551,7 +2551,7 @@ Op9A:
 	addl $6, CYCLES
 	movw XX, %ax
 	movw %ax, SS
-	testw $Emulation, FLAGS16
+	testw $Emulation, PP
 	jz .TXS_EXIT
 	movb $1, SH
 .TXS_EXIT:
@@ -2608,20 +2608,20 @@ OpBBX0:
 /* XCE */
 OpFB:
 	addl $6, CYCLES
-	movw FLAGS16, %ax
-	andw $~(Emulation | Carry), FLAGS16
+	movw PP, %ax
+	andw $~(Emulation | Carry), PP
 	GetCarry
 	jnc .XCE_NO_CARRY
-	orw $Emulation, FLAGS16
+	orw $Emulation, PP
 .XCE_NO_CARRY:
 	testw $Emulation, %ax
 	setnz _Carry
-	testw $Emulation, FLAGS16
+	testw $Emulation, PP
 	jz .XCE_NO_EMULATION2
-	orw $(MemoryFlag | IndexFlag), FLAGS16
+	orw $(MemoryFlag | IndexFlag), PP
 	movb $1, SH
 .XCE_NO_EMULATION2:
-	testw $IndexFlag, FLAGS16
+	testw $IndexFlag, PP
 	jz .XCE_NO_INDEX
 	xorl %eax, %eax
 	movb %al, XH
@@ -2645,7 +2645,7 @@ Op00:
 .BRK_NO_TRACE:
 #endif
 	movb $1, BRKTriggered
-	testw $Emulation, FLAGS16
+	testw $Emulation, PP
 	jnz .BRK_EMULATION
 	movb PB, %al
 	PushByte BRK1
@@ -2655,10 +2655,10 @@ Op00:
 	PushWord BRK2
 	
 	S9xPackStatus BRK
-	movb FLAGS, %al
+	movb PP, %al
 	movb %al, OpenBus
-	andb $~Decimal, FLAGS
-	orb $IRQ, FLAGS
+	andb $~Decimal, PP
+	orb $IRQ, PP
 	
 	PushByte BRK3
 	xorl %ecx, %ecx
@@ -2678,10 +2678,10 @@ Op00:
 	PushWord BRK2
 	
 	S9xPackStatus BRK2
-	movb FLAGS, %al
+	movb PP, %al
 	movb %al, OpenBus
-	andb $~Decimal, FLAGS
-	orb $IRQ, FLAGS
+	andb $~Decimal, PP
+	orb $IRQ, PP
 	
 	PushByte BRK3
 	xorl %ecx, %ecx
@@ -2710,7 +2710,7 @@ S9xOpcode_IRQ:
 	addl $4, %esp
 .IRQ_NO_TRACE:
 #endif
-	testw $Emulation, FLAGS16
+	testw $Emulation, PP
 	jnz .IRQ_EMULATION
 	movb PB, %al
 	PushByte IRQ1
@@ -2719,10 +2719,10 @@ S9xOpcode_IRQ:
 	PushWord IRQ2
 	
 	S9xPackStatus IRQ
-	movb FLAGS, %al
+	movb PP, %al
 	movb %al, OpenBus
-	andb $~Decimal, FLAGS
-	orb $IRQ, FLAGS
+	andb $~Decimal, PP
+	orb $IRQ, PP
 	
 	PushByte IRQ3
 	xorl %ecx, %ecx
@@ -2750,10 +2750,10 @@ S9xOpcode_IRQ:
 	PushWord IRQ4
 	
 	S9xPackStatus IRQ2
-	movb FLAGS, %al
+	movb PP, %al
 	movb %al, OpenBus
-	andb $~Decimal, FLAGS
-	orb $IRQ, FLAGS
+	andb $~Decimal, PP
+	orb $IRQ, PP
 	
 	PushByte IRQ5
 	xorl %ecx, %ecx
@@ -2781,7 +2781,7 @@ S9xOpcode_NMI:
 	addl $4, %esp
 .NMI_NO_TRACE:
 #endif
-	testw $Emulation, FLAGS16
+	testw $Emulation, PP
 	jnz .NMI_EMULATION
 	movb PB, %al
 	PushByte NMI1
@@ -2790,10 +2790,10 @@ S9xOpcode_NMI:
 	PushWord NMI2
 	
 	S9xPackStatus NMI
-	movb FLAGS, %al
+	movb PP, %al
 	movb %al, OpenBus
-	andb $~Decimal, FLAGS
-	orb $IRQ, FLAGS
+	andb $~Decimal, PP
+	orb $IRQ, PP
 	
 	PushByte NMI3
 	xorl %ecx, %ecx
@@ -2811,10 +2811,10 @@ S9xOpcode_NMI:
 	PushWord NMI4
 	
 	S9xPackStatus NMI2
-	movb FLAGS, %al
+	movb PP, %al
 	movb %al, OpenBus
-	andb $~Decimal, FLAGS
-	orb $IRQ, FLAGS
+	andb $~Decimal, PP
+	orb $IRQ, PP
 	
 	PushByte NMI5
 	xorl %ecx, %ecx
@@ -2841,7 +2841,7 @@ Op02:
 	addl $4,%esp
 .COP_NO_TRACE:
 #endif
-	testw $Emulation, FLAGS16
+	testw $Emulation, PP
 	jnz .COP_EMULATION
 	movb PB, %al
 	PushByte COP1
@@ -2851,10 +2851,10 @@ Op02:
 	PushWord COP2
 	
 	S9xPackStatus COP
-	movb FLAGS, %al
+	movb PP, %al
 	movb %al, OpenBus
-	andb $~Decimal, FLAGS
-	orb $IRQ, FLAGS
+	andb $~Decimal, PP
+	orb $IRQ, PP
 	
 	PushByte COP3
 	xorl %ecx, %ecx
@@ -2874,10 +2874,10 @@ Op02:
 	PushWord COP4
 	
 	S9xPackStatus COP2
-	movb FLAGS, %al
+	movb PP, %al
 	movb %al, OpenBus
-	andb $~Decimal, FLAGS
-	orb $IRQ, FLAGS
+	andb $~Decimal, PP
+	orb $IRQ, PP
 	
 	PushByte COP5
 	xorl %ecx, %ecx
@@ -3189,7 +3189,7 @@ OpC2:
 	incl PC
 	incw PCR
 	notb %al
-	andb %al, FLAGS
+	andb %al, PP
 	andb %al, _Negative
 	andb %al, _Carry
 	testb $Zero, %al
@@ -3198,12 +3198,12 @@ OpC2:
 	shrb $6, %al
 	andb %al, _Overflow
 
-	testw $Emulation, FLAGS16
+	testw $Emulation, PP
 	jz .REP_NO_EMU
-	orb $(MemoryFlag | IndexFlag), FLAGS
+	orb $(MemoryFlag | IndexFlag), PP
 	
 .REP_NO_EMU:
-	testb $IndexFlag, FLAGS
+	testb $IndexFlag, PP
 	jz .REP16
 	xorb %al, %al
 	movb %al, XH
@@ -3220,7 +3220,7 @@ OpE2:
 	movb (PC), %al
 	incl PC
 	incw PCR
-	orb %al, FLAGS
+	orb %al, PP
 	orb %al, _Negative
 	movb %al, %ah
 	shrb $6, %ah
@@ -3232,12 +3232,12 @@ OpE2:
 .SEP_NO_ZERO:
 	andb $1, %al
 	orb %al, _Carry
-	testw $Emulation, FLAGS16
+	testw $Emulation, PP
 	jz .SEP_NO_EMU
-	orb $(MemoryFlag | IndexFlag), FLAGS
+	orb $(MemoryFlag | IndexFlag), PP
 	
 .SEP_NO_EMU:
-	testb $IndexFlag, FLAGS
+	testb $IndexFlag, PP
 	jz .SEP16
 	xorb %al, %al
 	movb %al, XH
@@ -3260,17 +3260,17 @@ OpEB:
 Op40:
 	addl $12, CYCLES
 	PullByte RTI
-	movb %al, FLAGS
+	movb %al, PP
 	PullWord RTI
 	andl $0xffff, %eax
 	pushl %eax
-	testw $Emulation, FLAGS16
+	testw $Emulation, PP
 	jnz .RTI_EMU
 	PullByte RTI2
 	andl $0xff, %eax
 	jmp .RTI_SKIP_EMU
 .RTI_EMU:
-	orb $(MemoryFlag | IndexFlag), FLAGS
+	orb $(MemoryFlag | IndexFlag), PP
 	/*XXX: HERE xorl %eax, %eax*/
 	movl ShiftedPB, %eax
 	sarl $16, %eax
@@ -3282,7 +3282,7 @@ Op40:
 	movl %eax, ShiftedPB
 
 	call S9xSetPCBase
-	testb $IndexFlag, FLAGS
+	testb $IndexFlag, PP
 	jz .RTI16
 	xorb %al, %al
 	movb %al, XH
@@ -4660,3 +4660,89 @@ S9xOpcodesM0X1:
 	.long OpFDM0
 	.long OpFEM0
 	.long OpFFM0
+
+/*
+.globl S9xOpLengthsM0X0
+	.align 1
+S9xOpLengthsM0X0:
+	//    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 0
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 1
+	.byte 3, 2, 4, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 2
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 3
+	.byte 1, 2, 2, 2, 3, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 4
+	.byte 2, 2, 2, 2, 3, 2, 2, 2, 1, 3, 1, 1, 4, 3, 3, 4 // 5
+	.byte 1, 2, 3, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 6
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 7
+	.byte 2, 2, 3, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 8
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 9
+	.byte 3, 2, 3, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // A
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // B
+	.byte 3, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // C
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // D
+	.byte 3, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // E
+	.byte 2, 2, 2, 2, 3, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // F
+
+.globl S9xOpLengthsM0X1
+	.align 1
+S9xOpLengthsM0X1:
+	//    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 0
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 1
+	.byte 3, 2, 4, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 2
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 3
+	.byte 1, 2, 2, 2, 3, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 4
+	.byte 2, 2, 2, 2, 3, 2, 2, 2, 1, 3, 1, 1, 4, 3, 3, 4 // 5
+	.byte 1, 2, 3, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 6
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 7
+	.byte 2, 2, 3, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 8
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 9
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // A
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // B
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // C
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // D
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // E
+	.byte 2, 2, 2, 2, 3, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // F
+
+.globl S9xOpLengthsM1X0
+	.align 1
+S9xOpLengthsM1X0:
+	//    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 3, 3, 3, 4 // 0
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 1
+	.byte 3, 2, 4, 2, 2, 2, 2, 2, 1, 2, 1, 1, 3, 3, 3, 4 // 2
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 3
+	.byte 1, 2, 2, 2, 3, 2, 2, 2, 1, 2, 1, 1, 3, 3, 3, 4 // 4
+	.byte 2, 2, 2, 2, 3, 2, 2, 2, 1, 3, 1, 1, 4, 3, 3, 4 // 5
+	.byte 1, 2, 3, 2, 2, 2, 2, 2, 1, 2, 1, 1, 3, 3, 3, 4 // 6
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 7
+	.byte 2, 2, 3, 2, 2, 2, 2, 2, 1, 2, 1, 1, 3, 3, 3, 4 // 8
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 9
+	.byte 3, 2, 3, 2, 2, 2, 2, 2, 1, 2, 1, 1, 3, 3, 3, 4 // A
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // B
+	.byte 3, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 3, 3, 3, 4 // C
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // D
+	.byte 3, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 3, 3, 3, 4 // E
+	.byte 2, 2, 2, 2, 3, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // F
+
+.globl S9xOpLengthsM1X1
+	.align 1
+S9xOpLengthsM1X1:
+	//    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 3, 3, 3, 4 // 0
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 1
+	.byte 3, 2, 4, 2, 2, 2, 2, 2, 1, 2, 1, 1, 3, 3, 3, 4 // 2
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 3
+	.byte 1, 2, 2, 2, 3, 2, 2, 2, 1, 2, 1, 1, 3, 3, 3, 4 // 4
+	.byte 2, 2, 2, 2, 3, 2, 2, 2, 1, 3, 1, 1, 4, 3, 3, 4 // 5
+	.byte 1, 2, 3, 2, 2, 2, 2, 2, 1, 2, 1, 1, 3, 3, 3, 4 // 6
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 7
+	.byte 2, 2, 3, 2, 2, 2, 2, 2, 1, 2, 1, 1, 3, 3, 3, 4 // 8
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // 9
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 3, 3, 3, 4 // A
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // B
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 3, 3, 3, 4 // C
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // D
+	.byte 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 3, 3, 3, 4 // E
+	.byte 2, 2, 2, 2, 3, 2, 2, 2, 1, 3, 1, 1, 3, 3, 3, 4 // F
+*/

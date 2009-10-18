@@ -126,7 +126,7 @@ S9xSA1MainLoop:
 	jz .nosa1irq2
 	testb $0xff, SA1IRQActive
 	jz .nosa1irq1
-	testb $IRQ, FLAGS
+	testb $IRQ, SA1PP
 	jnz .nosa1irq2
 	cmpb $0, WaitingForInterrupt
 	je .nosa1wait
@@ -156,17 +156,16 @@ S9xSA1MainLoop:
         movl PC, SA1PCAtOpcodeStart
 #endif
 
+	// S9xSA1UnpackStatus S9xSA1MainAsmLoop
 	pushl $LUAMEMHOOK_EXEC
 	movzbl (PC), %eax
 	pushl %eax
-	pushl $1
+	movl SA1OpLengths, %ecx
+	movzbl (%ecx, %eax, 1), %eax
+	pushl %eax
 	movl SA1PCR, %eax
 	pushl %eax
-#if defined(__DJGCC) || defined(MICROSOFT_C) || defined(_WINDOWS) || defined(WIN32)
-	call _CallRegisteredLuaMemHook
-#else
 	call CallRegisteredLuaMemHook
-#endif
 	addl $16, %esp
 
 	movl SA1Opcodes, %ecx
@@ -176,6 +175,7 @@ S9xSA1MainLoop:
 	jmp *(%ecx,%eax,4)
 .globl S9xSA1MainAsmLoop
 S9xSA1MainAsmLoop:
+	S9xSA1PackStatus S9xSA1MainAsmLoop
 	popl %eax
 	decl %eax
 	jnz .instruction_loop
@@ -2081,12 +2081,12 @@ Op18:
 
 /* CLD */
 OpD8:
-	andb $~Decimal, FLAGS
+	andb $~Decimal, SA1PP
 	jmp S9xSA1MainAsmLoop
 
 /* CLI */
 Op58:
-	andb $~IRQ, FLAGS
+	andb $~IRQ, SA1PP
 	cmpb $0, SA1IRQActive
 	jz .CLI_EXIT
 	/* XXX: test for Settings.DisableIRQ */
@@ -2252,13 +2252,13 @@ Op4B:
 /* PHP */
 Op08E1:
 	S9xSA1PackStatus PHP
-	movb FLAGS, %al
+	movb SA1PP, %al
 	PushByteE PHP
 	jmp S9xSA1MainAsmLoop
 
 Op08:
 	S9xSA1PackStatus PHP
-	movb FLAGS, %al
+	movb SA1PP, %al
 	PushByte PHP
 	jmp S9xSA1MainAsmLoop
 
@@ -2351,9 +2351,9 @@ Op2B:
 /* PLP */
 Op28E1:
 	PullByteE PLPE
-	movb %al, FLAGS
+	movb %al, SA1PP
 
-	testb $IndexFlag, FLAGS
+	testb $IndexFlag, SA1PP
 	jz .PLP16E
 	xorb %al, %al
 	movb %al, XH
@@ -2366,9 +2366,9 @@ Op28E1:
 
 Op28:
 	PullByte PLP
-	movb %al, FLAGS
+	movb %al, SA1PP
 
-	testb $IndexFlag, FLAGS
+	testb $IndexFlag, SA1PP
 	jz .PLP16
 	xorb %al, %al
 	movb %al, XH
@@ -2427,12 +2427,12 @@ Op38:
 /* SED */
 OpF8:
 	
-	orb $Decimal, FLAGS
+	orb $Decimal, SA1PP
 	jmp S9xSA1MainAsmLoop
 
 /* SEI */
 Op78:
-	orb $IRQ, FLAGS
+	orb $IRQ, SA1PP
 	jmp S9xSA1MainAsmLoop
 
 /* TAX */
@@ -2475,7 +2475,7 @@ Op5B:
 Op1B:
 	movw AA, %ax
 	movw %ax, SS
-	testw $Emulation, FLAGS16
+	testw $Emulation, SA1PP
 	jz .TCS_EXIT
 	movb $1, SH
 .TCS_EXIT:
@@ -2529,7 +2529,7 @@ Op8AM0:
 Op9A:
 	movw XX, %ax
 	movw %ax, SS
-	testw $Emulation, FLAGS16
+	testw $Emulation, SA1PP
 	jz .TXS_EXIT
 	movb $1, SH
 .TXS_EXIT:
@@ -2579,20 +2579,20 @@ OpBBX0:
 
 /* XCE */
 OpFB:
-	movw FLAGS16, %ax
-	andw $~(Emulation | Carry), FLAGS16
+	movw SA1PP, %ax
+	andw $~(Emulation | Carry), SA1PP
 	GetCarry
 	jnc .XCE_NO_CARRY
-	orw $Emulation, FLAGS16
+	orw $Emulation, SA1PP
 .XCE_NO_CARRY:
 	testw $Emulation, %ax
 	setnz SA1_Carry
-	testw $Emulation, FLAGS16
+	testw $Emulation, SA1PP
 	jz .XCE_NO_EMULATION2
-	orw $(MemoryFlag | IndexFlag), FLAGS16
+	orw $(MemoryFlag | IndexFlag), SA1PP
 	movb $1, SH
 .XCE_NO_EMULATION2:
-	testw $IndexFlag, FLAGS16
+	testw $IndexFlag, SA1PP
 	jz .XCE_NO_INDEX
 	xorl %eax, %eax
 	movb %al, XH
@@ -2615,7 +2615,7 @@ Op00:
 	addl $4,%esp
 .BRK_NO_TRACE:
 #endif
-	testw $Emulation, FLAGS16
+	testw $Emulation, SA1PP
 	jnz .BRK_EMULATION
 	movb PB, %al
 	PushByte BRK1
@@ -2625,9 +2625,9 @@ Op00:
 	PushWord BRK2
 	
 	S9xSA1PackStatus BRK
-	movb FLAGS, %al
-	andb $~Decimal, FLAGS
-	orb $IRQ, FLAGS
+	movb SA1PP, %al
+	andb $~Decimal, SA1PP
+	orb $IRQ, SA1PP
 	
 	PushByte BRK3
 	xorl %ecx, %ecx
@@ -2646,9 +2646,9 @@ Op00:
 	PushWord BRK2
 	
 	S9xSA1PackStatus BRK2
-	movb FLAGS, %al
-	andb $~Decimal, FLAGS
-	orb $IRQ, FLAGS
+	movb SA1PP, %al
+	andb $~Decimal, SA1PP
+	orb $IRQ, SA1PP
 	
 	PushByte BRK3
 	xorl %ecx, %ecx
@@ -2676,7 +2676,7 @@ S9xSA1Opcode_IRQ:
 	addl $4, %esp
 .IRQ_NO_TRACE:
 #endif
-	testw $Emulation, FLAGS16
+	testw $Emulation, SA1PP
 	jnz .IRQ_EMULATION
 	movb PB, %al
 	PushByte IRQ1
@@ -2685,9 +2685,9 @@ S9xSA1Opcode_IRQ:
 	PushWord IRQ2
 	
 	S9xSA1PackStatus IRQ
-	movb FLAGS, %al
-	andb $~Decimal, FLAGS
-	orb $IRQ, FLAGS
+	movb SA1PP, %al
+	andb $~Decimal, SA1PP
+	orb $IRQ, SA1PP
 	
 	PushByte IRQ3
 	xorl %ecx, %ecx
@@ -2704,9 +2704,9 @@ S9xSA1Opcode_IRQ:
 	PushWord IRQ4
 	
 	S9xSA1PackStatus IRQ2
-	movb FLAGS, %al
-	andb $~Decimal, FLAGS
-	orb $IRQ, FLAGS
+	movb SA1PP, %al
+	andb $~Decimal, SA1PP
+	orb $IRQ, SA1PP
 	
 	PushByte IRQ5
 	xorl %ecx, %ecx
@@ -2733,7 +2733,7 @@ S9xSA1Opcode_NMI:
 	addl $4, %esp
 .NMI_NO_TRACE:
 #endif
-	testw $Emulation, FLAGS16
+	testw $Emulation, SA1PP
 	jnz .NMI_EMULATION
 	movb PB, %al
 	PushByte NMI1
@@ -2742,9 +2742,9 @@ S9xSA1Opcode_NMI:
 	PushWord NMI2
 	
 	S9xSA1PackStatus NMI
-	movb FLAGS, %al
-	andb $~Decimal, FLAGS
-	orb $IRQ, FLAGS
+	movb SA1PP, %al
+	andb $~Decimal, SA1PP
+	orb $IRQ, SA1PP
 	
 	PushByte NMI3
 	xorl %ecx, %ecx
@@ -2761,9 +2761,9 @@ S9xSA1Opcode_NMI:
 	PushWord NMI4
 	
 	S9xSA1PackStatus NMI2
-	movb FLAGS, %al
-	andb $~Decimal, FLAGS
-	orb $IRQ, FLAGS
+	movb SA1PP, %al
+	andb $~Decimal, SA1PP
+	orb $IRQ, SA1PP
 	
 	PushByte NMI5
 	xorl %ecx, %ecx
@@ -2789,7 +2789,7 @@ Op02:
 	addl $4,%esp
 .COP_NO_TRACE:
 #endif
-	testw $Emulation, FLAGS16
+	testw $Emulation, SA1PP
 	jnz .COP_EMULATION
 	movb PB, %al
 	PushByte COP1
@@ -2799,9 +2799,9 @@ Op02:
 	PushWord COP2
 	
 	S9xSA1PackStatus COP
-	movb FLAGS, %al
-	andb $~Decimal, FLAGS
-	orb $IRQ, FLAGS
+	movb SA1PP, %al
+	andb $~Decimal, SA1PP
+	orb $IRQ, SA1PP
 	
 	PushByte COP3
 	xorl %ecx, %ecx
@@ -2820,9 +2820,9 @@ Op02:
 	PushWord COP4
 	
 	S9xSA1PackStatus COP2
-	movb FLAGS, %al
-	andb $~Decimal, FLAGS
-	orb $IRQ, FLAGS
+	movb SA1PP, %al
+	andb $~Decimal, SA1PP
+	orb $IRQ, SA1PP
 	
 	PushByte COP5
 	xorl %ecx, %ecx
@@ -3112,7 +3112,7 @@ OpC2:
 	incl PC
 	incw SA1PCR
 	notb %al
-	andb %al, FLAGS
+	andb %al, SA1PP
 	andb %al, SA1_Negative
 	andb %al, SA1_Carry
 	testb $Zero, %al
@@ -3121,12 +3121,12 @@ OpC2:
 	shrb $6, %al
 	andb %al, SA1_Overflow
 
-	testw $Emulation, FLAGS16
+	testw $Emulation, SA1PP
 	jz .REP_NO_EMU
-	orb $(MemoryFlag | IndexFlag), FLAGS
+	orb $(MemoryFlag | IndexFlag), SA1PP
 	
 .REP_NO_EMU:
-	testb $IndexFlag, FLAGS
+	testb $IndexFlag, SA1PP
 	jz .REP16
 	xorb %al, %al
 	movb %al, XH
@@ -3141,7 +3141,7 @@ OpE2:
 	movb (PC), %al
 	incl PC
 	incw SA1PCR
-	orb %al, FLAGS
+	orb %al, SA1PP
 	orb %al, SA1_Negative
 	movb %al, %ah
 	shrb $6, %ah
@@ -3153,12 +3153,12 @@ OpE2:
 .SEP_NO_ZERO:
 	andb $1, %al
 	orb %al, SA1_Carry
-	testw $Emulation, FLAGS16
+	testw $Emulation, SA1PP
 	jz .SEP_NO_EMU
-	orb $(MemoryFlag | IndexFlag), FLAGS
+	orb $(MemoryFlag | IndexFlag), SA1PP
 	
 .SEP_NO_EMU:
-	testb $IndexFlag, FLAGS
+	testb $IndexFlag, SA1PP
 	jz .SEP16
 	xorb %al, %al
 	movb %al, XH
@@ -3179,17 +3179,17 @@ OpEB:
 /* RTI */
 Op40:
 	PullByte RTI
-	movb %al, FLAGS
+	movb %al, SA1PP
 	PullWord RTI
 	andl $0xffff, %eax
 	pushl %eax
-	testw $Emulation, FLAGS16
+	testw $Emulation, SA1PP
 	jnz .RTI_EMU
 	PullByte RTI2
 	andl $0xff, %eax
 	jmp .RTI_SKIP_EMU
 .RTI_EMU:
-	orb $(MemoryFlag | IndexFlag), FLAGS
+	orb $(MemoryFlag | IndexFlag), SA1PP
 	/*XXX: HERE xorl %eax, %eax*/
 	movl SA1ShiftedPB, %eax
 	sarl $16, %eax
@@ -3200,7 +3200,7 @@ Op40:
 	orl %eax, %edx
 	movl %eax, SA1ShiftedPB
 	call S9xSA1SetPCBase
-	testb $IndexFlag, FLAGS
+	testb $IndexFlag, SA1PP
 	jz .RTI16
 	xorb %al, %al
 	movb %al, XH

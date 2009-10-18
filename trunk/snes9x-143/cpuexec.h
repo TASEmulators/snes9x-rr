@@ -108,6 +108,7 @@ struct SICPU
 {
     uint8  *Speed;
     struct SOpcodes *S9xOpcodes;
+    uint8  *S9xOpLengths;
     uint8  _Carry;
     uint8  _Zero;
     uint8  _Negative;
@@ -133,6 +134,10 @@ extern struct SOpcodes S9xOpcodesM1X1 [256];
 extern struct SOpcodes S9xOpcodesM1X0 [256];
 extern struct SOpcodes S9xOpcodesM0X1 [256];
 extern struct SOpcodes S9xOpcodesM0X0 [256];
+extern uint8 S9xOpLengthsM1X1 [256];
+extern uint8 S9xOpLengthsM1X0 [256];
+extern uint8 S9xOpLengthsM0X1 [256];
+extern uint8 S9xOpLengthsM0X0 [256];
 
 extern struct SICPU ICPU;
 END_EXTERN_C
@@ -168,6 +173,7 @@ STATIC inline void S9xFixCycles ()
     if (CheckEmulation ())
     {
 	ICPU.S9xOpcodes = S9xOpcodesE1;
+	ICPU.S9xOpLengths = S9xOpLengthsM1X1;
     }
     else
     if (CheckMemory ())
@@ -175,10 +181,12 @@ STATIC inline void S9xFixCycles ()
 	if (CheckIndex ())
 	{
 	    ICPU.S9xOpcodes = S9xOpcodesM1X1;
+	    ICPU.S9xOpLengths = S9xOpLengthsM1X1;
 	}
 	else
 	{
 	    ICPU.S9xOpcodes = S9xOpcodesM1X0;
+	    ICPU.S9xOpLengths = S9xOpLengthsM1X0;
 	}
     }
     else
@@ -186,10 +194,12 @@ STATIC inline void S9xFixCycles ()
 	if (CheckIndex ())
 	{
 	    ICPU.S9xOpcodes = S9xOpcodesM0X1;
+	    ICPU.S9xOpLengths = S9xOpLengthsM0X1;
 	}
 	else
 	{
 	    ICPU.S9xOpcodes = S9xOpcodesM0X0;
+	    ICPU.S9xOpLengths = S9xOpLengthsM0X0;
 	}
     }
 }
