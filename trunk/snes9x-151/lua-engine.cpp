@@ -40,6 +40,7 @@
 #include "ppu.h"
 #include "controls.h"
 #include "65c816.h"
+#include "apu.h"
 
 extern "C" {
 	#include "lua.h"
@@ -1225,6 +1226,75 @@ static int memory_readbyterange(lua_State *L) {
 	for(int a = address, n = 1; n <= length; a++, n++)
 	{
 		unsigned char value = S9xGetByte(a, true);
+		lua_pushinteger(L, value);
+		lua_rawseti(L, -2, n);
+	}
+
+	return 1;
+}
+
+static int apu_readbyte(lua_State *L)
+{
+	lua_pushinteger(L, IAPU.RAM[luaL_checkinteger(L,1)]);
+	return 1;
+}
+
+static int apu_readbytesigned(lua_State *L) {
+	signed char c = (signed char) IAPU.RAM[luaL_checkinteger(L,1)];
+	lua_pushinteger(L, c);
+	return 1;
+}
+
+static int apu_readword(lua_State *L)
+{
+	lua_pushinteger(L, READ_WORD(&IAPU.RAM[luaL_checkinteger(L,1)]));
+	return 1;
+}
+
+static int apu_readwordsigned(lua_State *L) {
+	signed short c = (signed short) READ_WORD(&IAPU.RAM[luaL_checkinteger(L,1)]);
+	lua_pushinteger(L, c);
+	return 1;
+}
+
+static int apu_readdword(lua_State *L)
+{
+	uint32 addr = luaL_checkinteger(L,1);
+	uint32 val = READ_DWORD(&IAPU.RAM[addr]);
+
+	// lua_pushinteger doesn't work properly for 32bit system, does it?
+	if (val >= 0x80000000 && sizeof(int) <= 4)
+		lua_pushnumber(L, val);
+	else
+		lua_pushinteger(L, val);
+	return 1;
+}
+
+static int apu_readdwordsigned(lua_State *L) {
+	uint32 addr = luaL_checkinteger(L,1);
+	int32 val = (signed) READ_DWORD(&IAPU.RAM[addr]);
+
+	lua_pushinteger(L, val);
+	return 1;
+}
+
+static int apu_readbyterange(lua_State *L) {
+	uint32 address = luaL_checkinteger(L,1);
+	int length = luaL_checkinteger(L,2);
+
+	if(length < 0)
+	{
+		address += length;
+		length = -length;
+	}
+
+	// push the array
+	lua_createtable(L, abs(length), 0);
+
+	// put all the values into the (1-based) array
+	for(int a = address, n = 1; n <= length; a++, n++)
+	{
+		unsigned char value = IAPU.RAM[a];
 		lua_pushinteger(L, value);
 		lua_rawseti(L, -2, n);
 	}
@@ -3994,6 +4064,19 @@ static const struct luaL_reg memorylib [] = {
 	{NULL,NULL}
 };
 
+static const struct luaL_reg apulib [] = {
+
+	{"readbyte", apu_readbyte},
+	{"readbytesigned", apu_readbytesigned},
+	{"readword", apu_readword},
+	{"readwordsigned", apu_readwordsigned},
+	{"readdword", apu_readdword},
+	{"readdwordsigned", apu_readdwordsigned},
+	{"readbyterange", apu_readbyterange},
+
+	{NULL,NULL}
+};
+
 static const struct luaL_reg joypadlib[] = {
 	{"get", joypad_get},
 	{"set", joypad_set},
@@ -4202,6 +4285,7 @@ int S9xLoadLuaCode(const char *filename) {
 		luaL_register(LUA, "emu", snes9xlib); // added for better cross-emulator compatibility
 		luaL_register(LUA, "snes9x", snes9xlib); // kept for backward compatibility
 		luaL_register(LUA, "memory", memorylib);
+		luaL_register(LUA, "apu", apulib);
 		luaL_register(LUA, "joypad", joypadlib);
 		luaL_register(LUA, "savestate", savestatelib);
 		luaL_register(LUA, "movie", movielib);
