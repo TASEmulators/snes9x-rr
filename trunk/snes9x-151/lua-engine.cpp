@@ -1302,6 +1302,12 @@ static int apu_readbyterange(lua_State *L) {
 	return 1;
 }
 
+static int apu_writespc(lua_State *L) {
+	const char *filename = luaL_checkstring(L,1);
+	S9xSPCDump (filename);
+	return 0;
+}
+
 static int memory_writebyte(lua_State *L)
 {
 	S9xSetByte(luaL_checkinteger(L,2), luaL_checkinteger(L,1), true);
@@ -4073,6 +4079,7 @@ static const struct luaL_reg apulib [] = {
 	{"readdword", apu_readdword},
 	{"readdwordsigned", apu_readdwordsigned},
 	{"readbyterange", apu_readbyterange},
+	{"writespc", apu_writespc},
 
 	{NULL,NULL}
 };
