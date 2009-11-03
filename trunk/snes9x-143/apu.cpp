@@ -448,6 +448,17 @@ void S9xSetAPUDSP (uint8 byte)
 				spc_is_dumping = 0;
 			}
 		}
+		extern char lua_spc_autosearch_filename[];
+		if (strcmp(lua_spc_autosearch_filename, ""))
+		{
+			if (byte & ~spc_is_dumping_temp)
+			{
+				APURegisters.PC = IAPU.PC - IAPU.RAM;
+				S9xAPUPackStatus();
+				S9xSPCDump (lua_spc_autosearch_filename);
+				strcpy(lua_spc_autosearch_filename, "");
+			}
+		}
 		if (byte)
 		{
 			uint8 mask = 1;
