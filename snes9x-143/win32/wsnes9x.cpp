@@ -3269,7 +3269,9 @@ LRESULT CALLBACK WinProc(
 						case ID_EMULATOR_SAVECOMPRESS9: Settings.CompressionLevel = 9; break;
 						case ID_FILE_SAVE_SPC_DATA:
 							spc_is_dumping = 1;
-							//                    S9xSPCDump (S9xGetFilenameInc (".spc", SPC_DIR));
+							break;
+						case ID_FILE_SAVE_SPC_DATA_IMM:
+							S9xSPCDump (S9xGetFilenameInc((".spc"), SPC_DIR));
 							break;
 						case ID_SAVESCREENSHOT:
 							Settings.TakeScreenshot=true;

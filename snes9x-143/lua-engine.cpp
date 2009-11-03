@@ -45,6 +45,8 @@
 #include "gfx.h"
 #include "ppu.h"
 #include "65c816.h"
+#include "apu.h"
+#include "apumem.h"
 
 extern "C" {
 	#include "lua.h"
@@ -162,6 +164,8 @@ CTASSERT(sizeof(luaMemHookTypeStrings)/sizeof(*luaMemHookTypeStrings) ==  LUAMEM
 
 static char* rawToCString(lua_State* L, int idx=0);
 static const char* toCString(lua_State* L, int idx=0);
+
+char lua_spc_autosearch_filename[_MAX_PATH] = {0};
 
 INLINE void S9xSetDWord (uint32 DWord, uint32 Address);
 INLINE uint32 S9xGetDWord (uint32 Address);
@@ -1215,6 +1219,148 @@ static int memory_writedword(lua_State *L)
 	S9xSetDWord(luaL_checkinteger(L,2), luaL_checkinteger(L,1));
 	return 0;
 }
+
+
+INLINE uint8 LuaAPUGetByte (uint32 Address)
+{
+	if (Address >= 0xf4 && Address <= 0xf7)
+		return IAPU.RAM[Address];
+	else
+		return S9xAPUGetByte(Address);
+}
+INLINE uint16 LuaAPUGetWord (uint32 Address)
+{
+	uint16 ret;
+	ret = LuaAPUGetByte(Address);
+	ret |= (LuaAPUGetByte(Address+1) << 8);
+	return ret;
+}
+INLINE uint32 LuaAPUGetDWord (uint32 Address)
+{
+	uint32 ret;
+	ret = LuaAPUGetByte(Address);
+	ret |= (LuaAPUGetByte(Address+1) << 8);
+	ret |= (LuaAPUGetByte(Address+2) << 16);
+	ret |= (LuaAPUGetByte(Address+3) << 24);
+	return ret;
+}
+
+static int apu_readbyte(lua_State *L)
+{
+	lua_pushinteger(L, LuaAPUGetByte(luaL_checkinteger(L,1)));
+	return 1;
+}
+
+static int apu_readbytesigned(lua_State *L) {
+	signed char c = (signed char) LuaAPUGetByte(luaL_checkinteger(L,1));
+	lua_pushinteger(L, c);
+	return 1;
+}
+
+static int apu_readword(lua_State *L)
+{
+	lua_pushinteger(L, LuaAPUGetWord(luaL_checkinteger(L,1)));
+	return 1;
+}
+
+static int apu_readwordsigned(lua_State *L) {
+	signed short c = (signed short) LuaAPUGetWord(luaL_checkinteger(L,1));
+	lua_pushinteger(L, c);
+	return 1;
+}
+
+static int apu_readdword(lua_State *L)
+{
+	uint32 addr = luaL_checkinteger(L,1);
+	uint32 val = LuaAPUGetDWord(addr);
+
+	// lua_pushinteger doesn't work properly for 32bit system, does it?
+	//if (val >= 0x80000000 && sizeof(int) <= 4)
+	//	lua_pushnumber(L, val);
+	//else
+		lua_pushinteger(L, val);
+	return 1;
+}
+
+static int apu_readdwordsigned(lua_State *L) {
+	uint32 addr = luaL_checkinteger(L,1);
+	int32 val = (signed) LuaAPUGetDWord(addr);
+
+	lua_pushinteger(L, val);
+	return 1;
+}
+
+static int apu_readbyterange(lua_State *L) {
+	uint32 address = luaL_checkinteger(L,1);
+	int length = luaL_checkinteger(L,2);
+
+	if(length < 0)
+	{
+		address += length;
+		length = -length;
+	}
+
+	// push the array
+	lua_createtable(L, abs(length), 0);
+
+	// put all the values into the (1-based) array
+	for(int a = address, n = 1; n <= length; a++, n++)
+	{
+		unsigned char value = LuaAPUGetByte(a);
+		lua_pushinteger(L, value);
+		lua_rawseti(L, -2, n);
+	}
+
+	return 1;
+}
+
+INLINE void S9xAPUSetWord (uint16 Word, uint32 Address)
+{
+	S9xAPUSetByte(Word & 0xff, Address);
+	S9xAPUSetByte(Word >> 8, Address+1);
+}
+INLINE void S9xAPUSetDWord (uint32 DWord, uint32 Address)
+{
+	S9xAPUSetWord(DWord & 0xffff, Address);
+	S9xAPUSetWord(DWord >> 16, Address+2);
+}
+
+static int apu_writebyte(lua_State *L)
+{
+	S9xAPUSetByte(luaL_checkinteger(L,2), luaL_checkinteger(L,1));
+	return 0;
+}
+
+static int apu_writeword(lua_State *L)
+{
+	S9xAPUSetWord(luaL_checkinteger(L,2), luaL_checkinteger(L,1));
+	return 0;
+}
+
+static int apu_writedword(lua_State *L)
+{
+	S9xAPUSetDWord(luaL_checkinteger(L,2), luaL_checkinteger(L,1));
+	return 0;
+}
+
+// apu.writespc(filename, autosearch = false)
+static int apu_writespc(lua_State *L) {
+	const char *filename = luaL_checkstring(L,1);
+	bool autosearch = false;
+
+	if (!lua_isnil(L,2))
+		autosearch = (lua_toboolean(L,2)!=0);
+
+	if (autosearch) {
+		// FIXME: the function cannot handle more than two requests at the same time.
+		if(!strcmp(lua_spc_autosearch_filename, ""))
+			strcpy(lua_spc_autosearch_filename, filename);
+	}
+	else
+		S9xSPCDump (filename);
+	return 0;
+}
+
 
 // table joypad.get(int which = 1)
 //
@@ -3580,6 +3726,23 @@ static const struct luaL_reg memorylib [] = {
 	{NULL,NULL}
 };
 
+static const struct luaL_reg apulib [] = {
+
+	{"readbyte", apu_readbyte},
+	{"readbytesigned", apu_readbytesigned},
+	{"readword", apu_readword},
+	{"readwordsigned", apu_readwordsigned},
+	{"readdword", apu_readdword},
+	{"readdwordsigned", apu_readdwordsigned},
+	{"readbyterange", apu_readbyterange},
+	{"writebyte", apu_writebyte},
+	{"writeword", apu_writeword},
+	{"writedword", apu_writedword},
+	{"writespc", apu_writespc},
+
+	{NULL,NULL}
+};
+
 static const struct luaL_reg joypadlib[] = {
 	{"get", joypad_get},
 	{"set", joypad_set},
@@ -3783,6 +3946,7 @@ int S9xLoadLuaCode(const char *filename) {
 		luaL_register(LUA, "emu", snes9xlib); // added for better cross-emulator compatibility
 		luaL_register(LUA, "snes9x", snes9xlib); // kept for backward compatibility
 		luaL_register(LUA, "memory", memorylib);
+		luaL_register(LUA, "apu", apulib);
 		luaL_register(LUA, "joypad", joypadlib);
 		luaL_register(LUA, "savestate", savestatelib);
 		luaL_register(LUA, "movie", movielib);

@@ -1155,6 +1155,7 @@ BEGIN
         POPUP "Save Other"
         BEGIN
             MENUITEM "S&ave SPC Data",              ID_FILE_SAVE_SPC_DATA
+            MENUITEM "S&ave SPC Data (Immediate)",  ID_FILE_SAVE_SPC_DATA_IMM
             MENUITEM "Save Screenshot",             ID_SAVESCREENSHOT
             MENUITEM "Sa&ve S-RAM Data",            ID_FILE_SAVE_SRAM_DATA, GRAYED
             MENUITEM "Save SPC&7110 log",           IDM_LOG_7110, GRAYED
