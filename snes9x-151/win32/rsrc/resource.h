@@ -225,7 +225,7 @@
 #define IDC_BLUE                        1170
 #define IDC_LUACONSOLE_CLEAR            1171
 #define IDC_LABEL_BLUE                  1172
-//#define IDC_1_BYTE                      1173
+#define IDC_LUACONSOLE_CHOOSEFONT       1173
 #define IDC_2_BYTE                      1174
 #define IDC_3_BYTE                      1175
 #define IDC_4_BYTE                      1176
