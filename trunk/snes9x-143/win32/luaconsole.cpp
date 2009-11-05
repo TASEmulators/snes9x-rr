@@ -281,6 +281,11 @@ INT_PTR CALLBACK DlgLuaScriptDialog(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 				if(file)
 					fclose(file);
 			}	break;
+
+			case IDC_LUACONSOLE_CLEAR:
+			{
+				SetWindowText(GetDlgItem(hDlg, IDC_LUACONSOLE), "");
+			}	break;
 		}
 		break;
 
