@@ -1504,6 +1504,7 @@ LUAWINDOW_MENU MENU
 BEGIN
     POPUP "Console"
     BEGIN
+        MENUITEM "&Font...",                    IDC_LUACONSOLE_CHOOSEFONT
         MENUITEM "Clear",                       IDC_LUACONSOLE_CLEAR
     END
 END
