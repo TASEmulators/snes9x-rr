@@ -2177,6 +2177,35 @@ static inline uint32 gui_getcolour_wrapped(lua_State *L, int offset, bool hasDef
 			uint32 colour = (uint32) lua_tointeger(L,offset);
 			return colour;
 		}
+	case LUA_TTABLE:
+		{
+			int color = 0xFF;
+			lua_pushnil(L); // first key
+			int keyIndex = lua_gettop(L);
+			int valueIndex = keyIndex + 1;
+			bool first = true;
+			while(lua_next(L, offset))
+			{
+				bool keyIsString = (lua_type(L, keyIndex) == LUA_TSTRING);
+				bool keyIsNumber = (lua_type(L, keyIndex) == LUA_TNUMBER);
+				int key = keyIsString ? tolower(*lua_tostring(L, keyIndex)) : (keyIsNumber ? lua_tointeger(L, keyIndex) : 0);
+				int value = lua_tointeger(L, valueIndex);
+				if(value < 0) value = 0;
+				if(value > 255) value = 255;
+				switch(key)
+				{
+				case 1: case 'r': color |= value << 24; break;
+				case 2: case 'g': color |= value << 16; break;
+				case 3: case 'b': color |= value << 8; break;
+				case 4: case 'a': color = (color & ~0xFF) | value; break;
+				}
+				lua_pop(L, 1);
+			}
+			return color;
+		}	break;
+	case LUA_TFUNCTION:
+		luaL_error(L, "invalid colour"); // NYI
+		return 0;
 	default:
 		if (hasDefaultValue)
 			return defaultColour;
