@@ -2132,6 +2132,12 @@ int snes9x_lagged(lua_State *L) {
 	return 1;
 }
 
+// boolean snes9x.emulating()
+int snes9x_emulating(lua_State *L) {
+	lua_pushboolean(L, !Settings.StopEmulation);
+	return 1;
+}
+
 int movie_isactive(lua_State *L) {
 	lua_pushboolean(L, S9xMovieActive());
 	return 1;
@@ -4155,6 +4161,7 @@ static const struct luaL_reg snes9xlib [] = {
 	{"framecount", snes9x_framecount},
 	{"lagcount", snes9x_lagcount},
 	{"lagged", snes9x_lagged},
+	{"emulating", snes9x_emulating},
 	{"registerbefore", snes9x_registerbefore},
 	{"registerafter", snes9x_registerafter},
 	{"registerexit", snes9x_registerexit},
