@@ -2260,31 +2260,26 @@ static int gui_drawpixel(lua_State *L) {
 	return 0;
 }
 
-// gui.drawline(x1,y1,x2,y2,type colour)
+// gui.drawline(x1,y1,x2,y2,color,skipFirst)
 static int gui_drawline(lua_State *L) {
 
 	int x1,y1,x2,y2;
-	uint32 colour;
+	uint32 color;
 	x1 = luaL_checkinteger(L,1);
 	y1 = luaL_checkinteger(L,2);
 	x2 = luaL_checkinteger(L,3);
 	y2 = luaL_checkinteger(L,4);
-	colour = gui_getcolour(L,5);
-
-//	if (!gui_check_boundary(x1, y1))
-//		luaL_error(L,"bad coordinates");
-//
-//	if (!gui_check_boundary(x2, y2))
-//		luaL_error(L,"bad coordinates");
+	color = gui_optcolour(L,5,LUA_BUILD_PIXEL(255, 255, 255, 255));
+	int skipFirst = lua_toboolean(L,6);
 
 	gui_prepare();
 
-	gui_drawline_internal(x1, y1, x2, y2, true, colour);
+	gui_drawline_internal(x2, y2, x1, y1, !skipFirst, color);
 
 	return 0;
 }
 
-// gui.drawbox(x1, y1, x2, y2, colour)
+// gui.drawbox(x1, y1, x2, y2, fillcolor, outlinecolor)
 static int gui_drawbox(lua_State *L) {
 
 	int x1,y1,x2,y2;
