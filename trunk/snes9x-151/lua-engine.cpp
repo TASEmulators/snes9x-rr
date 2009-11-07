@@ -1542,8 +1542,7 @@ static int joypad_settype(lua_State *L) {
 // table joypad.get([int which = 1])
 //
 //  Reads the joypads as inputted by the user.
-//  This is really the only way to get input to the system.
-static int joypad_get(lua_State *L) {
+static int joy_get_internal(lua_State *L, bool reportUp, bool reportDown) {
 
 	// Reads the joypads as inputted by the user
 	int which = lua_isnoneornil(L,1) ? 1 : luaL_checkinteger(L,1);
@@ -1568,8 +1567,9 @@ static int joypad_get(lua_State *L) {
 
 			// set table with joypad buttons
 			for (int i = 1; i < 16; i++) {
-				if (buttons & (1<<i)) {
-					lua_pushinteger(L,1);
+				bool pressed = (buttons & (1<<i))!=0;
+				if ((pressed && reportDown) || (!pressed && reportUp)) {
+					lua_pushboolean(L, pressed);
 					lua_setfield(L, -2, button_mappings[i]);
 				}
 			}
@@ -1674,6 +1674,27 @@ static int joypad_get(lua_State *L) {
 	}
 
 	return 1;
+}
+// joypad.get(which)
+// returns a table of every game button,
+// true meaning currently-held and false meaning not-currently-held
+// (as of last frame boundary)
+// this WILL read input from a currently-playing movie
+static int joypad_get(lua_State *L)
+{
+	return joy_get_internal(L, true, true);
+}
+// joypad.getdown(which)
+// returns a table of every game button that is currently held
+static int joypad_getdown(lua_State *L)
+{
+	return joy_get_internal(L, false, true);
+}
+// joypad.getup(which)
+// returns a table of every game button that is not currently held
+static int joypad_getup(lua_State *L)
+{
+	return joy_get_internal(L, true, false);
 }
 
 
@@ -4200,12 +4221,16 @@ static const struct luaL_reg apulib [] = {
 
 static const struct luaL_reg joypadlib[] = {
 	{"get", joypad_get},
+	{"getdown", joypad_getdown},
+	{"getup", joypad_getup},
 	{"set", joypad_set},
 	{"gettype", joypad_gettype},
 	{"settype", joypad_settype},
 	// alternative names
 	{"read", joypad_get},
 	{"write", joypad_set},
+	{"readdown", joypad_getdown},
+	{"readup", joypad_getup},
 	{NULL,NULL}
 };
 
