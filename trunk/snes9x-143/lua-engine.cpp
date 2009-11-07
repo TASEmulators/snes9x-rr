@@ -1788,6 +1788,10 @@ static void gui_prepare() {
 #define DECOMPOSE_PIXEL_ARGB8888(PIX,A,R,G,B) { (A) = ((PIX) >> 24) & 0xff; (R) = ((PIX) >> 16) & 0xff; (G) = ((PIX) >> 8) & 0xff; (B) = (PIX) & 0xff; }
 #define LUA_BUILD_PIXEL BUILD_PIXEL_ARGB8888
 #define LUA_DECOMPOSE_PIXEL DECOMPOSE_PIXEL_ARGB8888
+#define LUA_PIXEL_A(PIX) (((PIX) >> 24) & 0xff)
+#define LUA_PIXEL_R(PIX) (((PIX) >> 16) & 0xff)
+#define LUA_PIXEL_G(PIX) (((PIX) >> 8) & 0xff)
+#define LUA_PIXEL_B(PIX) ((PIX) & 0xff)
 
 template <class T> static void swap(T &one, T &two) {
 	T temp = one;
@@ -2255,23 +2259,26 @@ static int gui_drawline(lua_State *L) {
 static int gui_drawbox(lua_State *L) {
 
 	int x1,y1,x2,y2;
-	uint32 colour;
+	uint32 fillcolor;
+	uint32 outlinecolor;
 
 	x1 = luaL_checkinteger(L,1);
 	y1 = luaL_checkinteger(L,2);
 	x2 = luaL_checkinteger(L,3);
 	y2 = luaL_checkinteger(L,4);
-	colour = gui_getcolour(L,5);
+	fillcolor = gui_optcolour(L,5,LUA_BUILD_PIXEL(63, 255, 255, 255));
+	outlinecolor = gui_optcolour(L,6,LUA_BUILD_PIXEL(255, LUA_PIXEL_R(fillcolor), LUA_PIXEL_G(fillcolor), LUA_PIXEL_B(fillcolor)));
 
-//	if (!gui_check_boundary(x1, y1))
-//		luaL_error(L,"bad coordinates");
-//
-//	if (!gui_check_boundary(x2, y2))
-//		luaL_error(L,"bad coordinates");
+	if (x1 > x2) 
+		swap<int>(x1, x2);
+	if (y1 > y2) 
+		swap<int>(y1, y2);
 
 	gui_prepare();
 
-	gui_drawbox_internal(x1, y1, x2, y2, colour);
+	gui_drawbox_internal(x1, y1, x2, y2, outlinecolor);
+	if ((x2 - x1) >= 2 && (y2 - y1) >= 2)
+		gui_fillbox_internal(x1+1, y1+1, x2-1, y2-1, fillcolor);
 
 	return 0;
 }
@@ -3797,10 +3804,7 @@ static const struct luaL_reg guilib[] = {
 	{"box", gui_drawbox},
 	{"line", gui_drawline},
 	{"pixel", gui_drawpixel},
-	{"circle", gui_drawcircle},
 	{"opacity", gui_setopacity},
-	{"fillbox", gui_fillbox},
-	{"fillcircle", gui_fillcircle},
 	{"transparency", gui_transparency},
 	{"popup", gui_popup},
 	{"gdscreenshot", gui_gdscreenshot},
@@ -3814,7 +3818,6 @@ static const struct luaL_reg guilib[] = {
 	{"drawpixel", gui_drawpixel},
 	{"setpixel", gui_drawpixel},
 	{"writepixel", gui_drawpixel},
-	{"drawcircle", gui_drawcircle},
 	{"rect", gui_drawbox},
 	{"drawrect", gui_drawbox},
 	{"drawimage", gui_gdoverlay},
