@@ -2849,6 +2849,17 @@ static int gui_getpixel(lua_State *L) {
 	return 3;
 }
 
+static int gui_parsecolor(lua_State *L)
+{
+	int r, g, b, a;
+	uint32 color = gui_getcolour(L,1);
+	LUA_DECOMPOSE_PIXEL(color, a, r, g, b);
+	lua_pushinteger(L, r);
+	lua_pushinteger(L, g);
+	lua_pushinteger(L, b);
+	lua_pushinteger(L, a);
+	return 4;
+}
 
 // gui.gdscreenshot()
 //
@@ -4246,6 +4257,7 @@ static const struct luaL_reg guilib[] = {
 	{"opacity", gui_setopacity},
 	{"transparency", gui_transparency},
 	{"popup", gui_popup},
+	{"parsecolor", gui_parsecolor},
 	{"gdscreenshot", gui_gdscreenshot},
 	{"gdoverlay", gui_gdoverlay},
 	{"getpixel", gui_getpixel},
