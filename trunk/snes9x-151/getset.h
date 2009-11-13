@@ -189,7 +189,7 @@ INLINE uint8 S9xGetByte (uint32 Address, bool free=false);
 INLINE uint16 S9xGetWord (uint32 Address, enum s9xwrap_t w=WRAP_NONE, bool free=false);
 #endif
 
-INLINE uint8 S9xGetByte (uint32 Address, bool free)
+INLINE uint8 S9xGetByteWrapped (uint32 Address, bool free)
 {
     int block;
     uint8 *GetAddress = Memory.Map [block = ((Address&0xffffff) >> MEMMAP_SHIFT)];
@@ -271,31 +271,31 @@ INLINE uint8 S9xGetByte (uint32 Address, bool free)
     }
 }
 
-INLINE uint16 S9xGetWord (uint32 Address, enum s9xwrap_t w, bool free)
+INLINE uint16 S9xGetWordWrapped (uint32 Address, enum s9xwrap_t w, bool free)
 {
     uint16 ret;
     uint32 mask=MEMMAP_MASK&(w==WRAP_PAGE?0xff:(w==WRAP_BANK?0xffff:0xffffff));
     if ((Address & mask) == mask)
     {
-        OpenBus=S9xGetByte(Address, free);
+        OpenBus=S9xGetByteWrapped(Address, free);
         switch(w){
           case WRAP_PAGE:
             {
                 PC_t a;
                 a.xPBPC = Address;
                 a.B.xPCl++;
-                return (OpenBus | (S9xGetByte (a.xPBPC, free) << 8));
+                return (OpenBus | (S9xGetByteWrapped (a.xPBPC, free) << 8));
             }
           case WRAP_BANK:
             {
                 PC_t a;
                 a.xPBPC = Address;
                 a.W.xPC++;
-                return (OpenBus | (S9xGetByte (a.xPBPC, free) << 8));
+                return (OpenBus | (S9xGetByteWrapped (a.xPBPC, free) << 8));
             }
           case WRAP_NONE:
           default:
-            return (OpenBus | (S9xGetByte (Address + 1, free) << 8));
+            return (OpenBus | (S9xGetByteWrapped (Address + 1, free) << 8));
         }
     }
     int block;
@@ -318,8 +318,8 @@ INLINE uint16 S9xGetWord (uint32 Address, enum s9xwrap_t w, bool free)
     {
       case CMemory::MAP_PPU:
         if(CPU.InDMAorHDMA){
-            OpenBus=S9xGetByte (Address, free);
-            return (OpenBus | (S9xGetByte (Address + 1, free) << 8));
+            OpenBus=S9xGetByteWrapped (Address, free);
+            return (OpenBus | (S9xGetByteWrapped (Address + 1, free) << 8));
         }
         ret = S9xGetPPU (Address & 0xffff);
         ret |= (S9xGetPPU ((Address + 1) & 0xffff) << 8);
@@ -427,6 +427,22 @@ INLINE uint16 S9xGetWord (uint32 Address, enum s9xwrap_t w, bool free)
       case CMemory::MAP_NONE:
         return (OpenBus | (OpenBus<<8));
     }
+}
+
+INLINE uint8 S9xGetByte (uint32 Address, bool free)
+{
+	uint8 Byte = S9xGetByteWrapped(Address, free);
+	if (!free)
+		CallRegisteredLuaMemHook(Address, 1, Byte, LUAMEMHOOK_READ);
+	return Byte;
+}
+
+INLINE uint16 S9xGetWord (uint32 Address, enum s9xwrap_t w, bool free)
+{
+	uint16 Word = S9xGetWordWrapped(Address, w, free);
+	if (!free)
+		CallRegisteredLuaMemHook(Address, 2, Word, LUAMEMHOOK_READ);
+	return Word;
 }
 
 INLINE void S9xSetByteWrapped (uint8 Byte, uint32 Address, bool free)

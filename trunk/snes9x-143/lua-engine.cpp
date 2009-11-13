@@ -3792,7 +3792,7 @@ static const struct luaL_reg memorylib [] = {
 
 	// memory hooks
 	{"registerwrite", memory_registerwrite},
-	//{"registerread", memory_registerread},
+	{"registerread", memory_registerread},
 	{"registerexec", memory_registerexec},
 	// alternate names
 	{"register", memory_registerwrite},
