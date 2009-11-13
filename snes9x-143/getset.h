@@ -119,7 +119,7 @@ INLINE uint8 S9xGetByte(uint32, bool free=false);
 INLINE uint16 S9xGetWord (uint32 Address, bool free=false);
 #endif
 
-INLINE uint8 S9xGetByte (uint32 Address, bool free)
+INLINE uint8 S9xGetByteWrapped (uint32 Address, bool free)
 {
     int block;
     uint8 *GetAddress = Memory.Map [block = (Address >> MEMMAP_SHIFT) & MEMMAP_MASK];
@@ -210,13 +210,13 @@ INLINE uint8 S9xGetByte (uint32 Address, bool free)
     }
 }
 
-INLINE uint16 S9xGetWord (uint32 Address, bool free)
+INLINE uint16 S9xGetWordWrapped (uint32 Address, bool free)
 {
     uint16 ret;
     if ((Address & 0x0fff) == 0x0fff)
     {
-		OpenBus=S9xGetByte (Address,free);
-		return (OpenBus | (S9xGetByte (Address + 1,free) << 8));
+		OpenBus=S9xGetByteWrapped (Address,free);
+		return (OpenBus | (S9xGetByteWrapped (Address + 1,free) << 8));
     }
     int block;
     uint8 *GetAddress = Memory.Map [block = (Address >> MEMMAP_SHIFT) & MEMMAP_MASK];
@@ -344,6 +344,22 @@ INLINE uint16 S9xGetWord (uint32 Address, bool free)
 #endif
 		return (OpenBus | (OpenBus<<8));
     }
+}
+
+INLINE uint8 S9xGetByte (uint32 Address, bool free)
+{
+	uint8 Byte = S9xGetByteWrapped(Address, free);
+	if (!free)
+		CallRegisteredLuaMemHook(Address, 1, Byte, LUAMEMHOOK_READ);
+	return Byte;
+}
+
+INLINE uint16 S9xGetWord (uint32 Address, bool free)
+{
+	uint16 Word = S9xGetWordWrapped(Address, free);
+	if (!free)
+		CallRegisteredLuaMemHook(Address, 2, Word, LUAMEMHOOK_READ);
+	return Word;
 }
 
 

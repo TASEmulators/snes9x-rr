@@ -78,9 +78,9 @@
 	.long 0
 .text
 
-.globl S9xGetByte
+.globl S9xGetByteWrapped
 
-S9xGetByte:
+S9xGetByteWrapped:
 	movl %edx, %eax
 	shrl $MEMMAP_SHIFT, %eax
 	and $MEMMAP_MASK, %eax
@@ -244,9 +244,9 @@ S9xGetByte:
 	ret
 
 
-.globl S9xGetWord
+.globl S9xGetWordWrapped
 
-S9xGetWord:
+S9xGetWordWrapped:
 	movl %edx, %eax
 	/*MK: blocks can be 0x1000 bytes, not a 0x2000 minimum*/
 	andl $0x0fff, %eax
@@ -254,11 +254,11 @@ S9xGetWord:
 	/*MK*/
 	jne .GWNotAtBlockBoundary
 	pushl %edx
-	call S9xGetByte
+	call S9xGetByteWrapped
 	popl %edx
         movb %al, OpenBus
 	incl %edx
-	call S9xGetByte
+	call S9xGetByteWrapped
         movb %al, %ah
 	movb OpenBus, %al
 	ret
@@ -718,6 +718,40 @@ S9xSetWordWrapped:
 	movb 1(%esp), %al
 	call S9xSetByte
 	popl %ecx
+	ret
+
+.globl S9xGetByte
+S9xGetByte:
+	pushl %edx
+	call S9xGetByteWrapped
+	popl %edx
+	pushl %eax
+	andl $0xff, %eax
+
+	pushl $LUAMEMHOOK_READ
+	pushl %eax
+	pushl $1
+	pushl %edx
+	call CallRegisteredLuaMemHook
+	addl $16, %esp
+	popl %eax
+	ret
+
+.globl S9xGetWord
+S9xGetWord:
+	pushl %edx
+	call S9xGetWordWrapped
+	popl %edx
+	pushl %eax
+	andl $0xffff, %eax
+
+	pushl $LUAMEMHOOK_READ
+	pushl %eax
+	pushl $2
+	pushl %edx
+	call CallRegisteredLuaMemHook
+	addl $16, %esp
+	popl %eax
 	ret
 
 .globl S9xSetByte
