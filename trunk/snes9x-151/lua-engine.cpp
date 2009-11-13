@@ -1566,7 +1566,7 @@ static int joy_get_internal(lua_State *L, bool reportUp, bool reportDown) {
 			uint32 buttons = S9xReadJoypadNext(which - 1);
 
 			// set table with joypad buttons
-			for (int i = 1; i < 16; i++) {
+			for (int i = 4; i < 16; i++) {
 				bool pressed = (buttons & (1<<i))!=0;
 				if ((pressed && reportDown) || (!pressed && reportUp)) {
 					lua_pushboolean(L, pressed);
@@ -1730,10 +1730,16 @@ static int joypad_set(lua_State *L) {
 			lua_joypads_used |= 1 << port;
 			lua_joypads[port] = 0;
 
-			for (int i=1; i < 16; i++) {
-				lua_getfield(L, tableIndex, button_mappings[i]);
-				if (!lua_isnil(L,-1))
-					lua_joypads[port] |= 1 << i;
+			for (int i = 4; i < 16; i++) {
+				const char* name = button_mappings[i];
+				lua_getfield(L, tableIndex, name);
+				if (!lua_isnil(L,-1)) {
+					bool pressed = lua_toboolean(L,-1) != 0;
+					if (pressed)
+						lua_joypads[port] |= 1 << i;
+					else
+						lua_joypads[port] &= ~(1 << i);
+				}
 				lua_pop(L,1);
 			}
 		}
@@ -4340,6 +4346,9 @@ void S9xLuaFrameBoundary() {
 
 //	printf("Lua Frame\n");
 
+	lua_joypads_used = 0;
+	ClearCommandTransforms();
+
 	// HA!
 	if (!LUA || !luaRunning)
 		return;
@@ -4352,9 +4361,6 @@ void S9xLuaFrameBoundary() {
 	// Lua calling C must know that we're busy inside a frame boundary
 	frameBoundary = TRUE;
 	frameAdvanceWaiting = FALSE;
-
-	lua_joypads_used = 0;
-	ClearCommandTransforms();
 
 	numTries = 1000;
 	chdir(luaCWD);

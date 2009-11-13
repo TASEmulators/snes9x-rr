@@ -124,7 +124,7 @@ static unsigned int numMemHooks;
 
 // Look in snes9x.h for macros named like SNES9X_UP_MASK to determine the order.
 static const char *button_mappings[] = {
-	"","b1","b2","b3", // These are normally unused, but supported for custom input display
+	"","b1","b2","b3", // These are not used anyway
 	
 	"R", "L", "X", "A", "right", "left", "down", "up", "start", "select", "Y", "B"
 };
@@ -1380,7 +1380,7 @@ static int joy_get_internal(lua_State *L, bool reportUp, bool reportDown) {
 	lua_newtable(L);
 	
 	int i;
-	for (i = 1; i < 16; i++) {
+	for (i = 4; i < 16; i++) {
 		bool pressed = (buttons & (1<<i))!=0;
 		if ((pressed && reportDown) || (!pressed && reportUp)) {
 			lua_pushboolean(L, pressed);
@@ -1434,11 +1434,16 @@ static int joypad_set(lua_State *L) {
 	lua_joypads_used |= 1 << (which-1);
 	lua_joypads[which-1] = 0;
 
-	int i;
-	for (i=1; i < 16; i++) {
-		lua_getfield(L, 2, button_mappings[i]);
-		if (!lua_isnil(L,-1))
-			lua_joypads[which-1] |= 1 << i;
+	for (int i = 4; i < 16; i++) {
+		const char* name = button_mappings[i];
+		lua_getfield(L, 2, name);
+		if (!lua_isnil(L,-1)) {
+			bool pressed = lua_toboolean(L,-1) != 0;
+			if (pressed)
+				lua_joypads[which-1] |= 1 << i;
+			else
+				lua_joypads[which-1] &= ~(1 << i);
+		}
 		lua_pop(L,1);
 	}
 	
@@ -3926,6 +3931,8 @@ void S9xLuaFrameBoundary() {
 
 //	printf("Lua Frame\n");
 
+	lua_joypads_used = 0;
+
 	// HA!
 	if (!LUA || !luaRunning)
 		return;
@@ -3938,8 +3945,6 @@ void S9xLuaFrameBoundary() {
 	// Lua calling C must know that we're busy inside a frame boundary
 	frameBoundary = TRUE;
 	frameAdvanceWaiting = FALSE;
-
-	lua_joypads_used = 0;
 
 	numTries = 1000;
 	chdir(luaCWD);
