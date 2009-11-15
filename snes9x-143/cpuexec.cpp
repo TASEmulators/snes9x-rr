@@ -103,6 +103,7 @@
 #include "spc7110.h"
 #include "movie.h"
 #include "s9xlua.h"
+#include "disasm.h"
 
 void S9xMainLoop (void)
 {
@@ -209,6 +210,7 @@ void S9xMainLoop (void)
 	CPU.Cycles += CPU.MemSpeed;
 
 	//S9xUnpackStatus ();
+	S9xTraceCPU();
 	CallRegisteredLuaMemHook(Registers.PBPC, ICPU.S9xOpLengths[*CPU.PC], *CPU.PC, LUAMEMHOOK_EXEC);
 	Registers.PCw++;
 	(*ICPU.S9xOpcodes [*CPU.PC++].S9xOpcode) ();

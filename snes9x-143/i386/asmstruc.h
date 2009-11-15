@@ -167,6 +167,7 @@
 #define S9xLuaClearGui _S9xLuaClearGui
 #define CallRegisteredLuaFunctions _CallRegisteredLuaFunctions
 #define CallRegisteredLuaMemHook _CallRegisteredLuaMemHook
+#define S9xTraceCPU _S9xTraceCPU
 
 #define A1 _A1
 #define A2 _A2

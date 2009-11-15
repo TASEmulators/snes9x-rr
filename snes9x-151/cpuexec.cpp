@@ -177,6 +177,7 @@
 #include "language.h"
 #include "movie.h"
 #include "s9xlua.h"
+#include "disasm.h"
 
 #ifdef WIN32
 #include "win32/wsnes9x.h" // for avi recording
@@ -321,6 +322,7 @@ void S9xMainLoop (void)
 		}
 
 		//S9xUnpackStatus();
+		S9xTraceCPU();
 		CallRegisteredLuaMemHook(Registers.PBPC, ICPU.S9xOpLengths[Op], Op, LUAMEMHOOK_EXEC);
 		Registers.PCw++;
 		(*Opcodes[Op].S9xOpcode)();

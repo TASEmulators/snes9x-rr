@@ -117,6 +117,7 @@
 #include "../movie.h"
 #include "../conffile.h"
 #include "../soundux.h"
+#include "../disasm.h"
 #include "WAVOutput.h"
 #include "AVIOutput.h"
 #include "InputCustom.h"
@@ -3515,6 +3516,39 @@ LRESULT CALLBACK WinProc(
 							}
 							RestoreSNESDisplay ();
 							break;
+						case ID_TRACE_LOGGER: {
+							if (S9xTraceLogStream) {
+								fclose(S9xTraceLogStream);
+								S9xTraceLogStream = NULL;
+							}
+							else {
+								RestoreGUIDisplay ();  //exit DirectX
+								OPENFILENAME  ofn;
+								char  szFileName[MAX_PATH];
+								char  szPathName[MAX_PATH];
+
+								//SetCurrentDirectory(S9xGetDirectory(DEFAULT_DIR));
+								//_fullpath(szPathName, GUI.SPCDir, MAX_PATH);
+								//mkdir(szPathName);
+								strcpy(szPathName, "");
+								strcpy(szFileName, S9xGetFilenameRel("log"));
+
+								ZeroMemory( (LPVOID)&ofn, sizeof(OPENFILENAME) );
+								ofn.lStructSize = sizeof(OPENFILENAME);
+								ofn.hwndOwner = GUI.hWnd;
+								ofn.lpstrFilter = "Log Text (*.log;*.txt)" "\0*.log;*.txt\0" FILE_INFO_ANY_FILE_TYPE "\0*.*\0\0";
+								ofn.lpstrFile = szFileName;
+								ofn.lpstrDefExt = "log";
+								ofn.nMaxFile = MAX_PATH;
+								ofn.Flags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
+								ofn.lpstrInitialDir = szPathName;
+								if(GetSaveFileName( &ofn ))
+								{
+									S9xTraceLogStream = fopen(szFileName, "w");
+								}
+								RestoreSNESDisplay ();// re-enter after dialog
+							}
+						}	break;
 						case ID_CHEAT_DISABLE:
 							Settings.ApplyCheats = !Settings.ApplyCheats;
 							if (!Settings.ApplyCheats){
@@ -5338,6 +5372,10 @@ static void CheckMenuStates ()
 		mii.fState |= MFS_DISABLED;
 	SetMenuItemInfo (GUI.hMenu, ID_RAM_SEARCH_OLD, FALSE, &mii);
 
+	//mii.fState = Settings.StopEmulation ? MFS_DISABLED : MFS_ENABLED;
+	mii.fState = MFS_ENABLED;
+	SetMenuItemInfo (GUI.hMenu, ID_TRACE_LOGGER, FALSE, &mii);
+
 	mii.fState = (inputMacroHWND && IsWindowVisible(inputMacroHWND)) ? MFS_CHECKED : MFS_UNCHECKED;
 	if (Settings.StopEmulation || GUI.FullScreen)
 		mii.fState |= MFS_DISABLED;
@@ -5620,6 +5658,9 @@ static void CheckMenuStates ()
 	SetMenuItemInfo (GUI.hMenu, ID_FILE_WAV_RECORDING, FALSE, &mii);
 	mii.dwTypeData = !GUI.AVIOut ? "Start AVI Recording..." : "Stop AVI Recording";
 	SetMenuItemInfo (GUI.hMenu, ID_FILE_AVI_RECORDING, FALSE, &mii);
+
+	mii.dwTypeData = !S9xTraceLogStream ? "Start Trace Logger..." : "Stop Trace Logger";
+	SetMenuItemInfo (GUI.hMenu, ID_TRACE_LOGGER, FALSE, &mii);
 
 	ZeroMemory( &mii, sizeof( mii));
 	mii.cbSize = sizeof( mii);
