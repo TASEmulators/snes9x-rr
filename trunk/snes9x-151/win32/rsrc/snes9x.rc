@@ -1495,6 +1495,8 @@ BEGIN
         MENUITEM "&Input Macro Editor...",      ID_OPTIONS_INPUT_MACRO, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "Fast Forward to Frame",       ID_FILE_MOVIE_SEEK, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Start Trace Logger...",       ID_TRACE_LOGGER, GRAYED
     END
     POPUP "&Help"
     BEGIN

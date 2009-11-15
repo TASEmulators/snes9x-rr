@@ -476,6 +476,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\disasm.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\disasm.h"
+				>
+			</File>
+			<File
 				RelativePath="..\display.h"
 				>
 			</File>

@@ -241,6 +241,7 @@ S9xMainLoop:
 	addl MemSpeed, CYCLES
 
 	// S9xUnpackStatus S9xMainLoop
+	call S9xTraceCPU
 	pushl $LUAMEMHOOK_EXEC
 	movzbl (PC), %eax
 	pushl %eax

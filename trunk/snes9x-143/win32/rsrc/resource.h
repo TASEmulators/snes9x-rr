@@ -751,13 +751,14 @@
 #define ID_RAM_WATCH                    40267
 #define RW_MENU_FIRST_RECENT_FILE       42270
 #define RW_MENU_LAST_RECENT_FILE        42290
+#define ID_TRACE_LOGGER                 42291
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        152
-#define _APS_NEXT_COMMAND_VALUE         40291
+#define _APS_NEXT_COMMAND_VALUE         40292
 #define _APS_NEXT_CONTROL_VALUE         1430
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
