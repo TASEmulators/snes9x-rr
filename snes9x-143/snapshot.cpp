@@ -1764,8 +1764,13 @@ int S9xUnfreezeFromStream (STREAM stream)
 		memcpy (Memory.RAM, local_ram, 0x20000);
 		memcpy (Memory.SRAM, local_sram, 0x20000);
 		memcpy (Memory.FillRAM, local_fillram, 0x8000);
-		APU.NextAPUTimerPos = CPU.Cycles * 10000L;
-		APU.APUTimerCounter = 0; 
+		if (version < 5)
+		{
+			// This is not correct, it causes desyncs frequently.
+			// So they have been stored in a snapshot since ver.5.
+			APU.NextAPUTimerPos = CPU.Cycles * 10000L;
+			APU.APUTimerCounter = 0; 
+		}
 		if(local_apu)
 		{
 			UnfreezeStructFromCopy (&APU, SnapAPU, COUNT (SnapAPU), local_apu, version);
