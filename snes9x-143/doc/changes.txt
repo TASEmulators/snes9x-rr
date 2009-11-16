@@ -1,5 +1,17 @@
 Snes9x 1.43+
 
+Newest changes in 1.43+ v17:
+
+Probably this become the final version of snes9x-rr 1.43.
+
+* Fix flag checking of SuperFX code. (thanks: @757_ @homingA @33953YoShI)
+* Lua: embedded LuaBitOp as a better/common bit operation library.
+* Lua: added/changed a lot of functions. It has become like Gens a little more.
+* Lua: windows: added Lua console.
+* Win32: added Gens compatible RAM Watch and RAM Search.
+  Old search is still left. You can convert old watchlist by using it.
+* Win32: added trace logger. (ported from bsnes, thanks byuu)
+
 Newest changes in 1.43+ v16:
 
 * A lot of desync fixes. Older versions cannot read the new savestate.
