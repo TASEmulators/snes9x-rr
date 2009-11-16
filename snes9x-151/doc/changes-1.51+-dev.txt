@@ -88,10 +88,6 @@ Snes9x 1.51+ v2
 - Win32: Fixed macro vanishing bug.                         (gocha)
 - Win32: Added an experimental option "NotifySoundDSPRead"  (gocha)
 - Win32: Added temporary solution for random sound desync.  (gocha)
-- Win32: Changed to not uncheck read-only check when
-  "Movie File" edit control is clicked. (*)                 (gocha)
-- Win32: Re-numbered resource IDs. (*)                      (gocha)
-- Win32: Changes for old Windows (and the latest SDK). (*)  (gocha)
 
 Snes9x 1.51+
 - Fixed invalid memory accesses in C4 and OBC1.
@@ -100,8 +96,6 @@ Snes9x 1.51+
   related to APU and HDMA.                                  (gocha)
 - Fixed inconsistent snapshot detection.                    (gocha)
 - ROM name in movie now contains katakana.                  (gocha)
-- Modified conffile.* and removed an assertion error. (*)   (h0shu, gocha)
-- Fixed C linkage error in global.cpp. (*)                  (gocha)
 - Win32: Added a simple macro feature. Though it's not
   very smart, it's somewhat useful. The macro feature's
   syntax is described in lazymacro.txt.                     (gocha)
@@ -111,14 +105,6 @@ Snes9x 1.51+
   hi-res title (see AVIDoubleScale in config file).         (gocha)
 - Win32: Added hotkeys to toggle sound channel.             (gocha)
 - Win32: Fixed input related bug and modified auto-fire.    (gocha)
-- Win32: Added a function for Snes9x Watch. (*)             (gocha)
-- Win32: Fixed message loop for non-modal dialogs. (*)      (gocha)
-- Win32: Fixed crash issue when press "watch" at the
-  cheat menu, without having a RAM address selected. (*)    (gocha)
-- Win32: Fix for non-OpenGL build. (*)                      (gocha)
-- Win32: VC8.0 fatal error C1063 temporary fix. (*)         (gocha)
-- Removed some unused or highly deprecated files. (*)       (gocha)
 - Win32: Fixed hq*x filter bug.                             (Air)
 - Win32: Modified smart frame advance related.              (nitsujrehtona)
 - Win32: Added fast-forward to frame for movie.             (nitsujrehtona)
-- Several small fixes. (*)                                  (nitsujrehtona)
