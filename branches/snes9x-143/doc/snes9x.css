@@ -1,0 +1,13 @@
+@charset 'UTF-8';
+
+@import url('http://www.w3.org/StyleSheets/Core/Steely');
+
+dl { margin-left: 1.618em; }
+pre { font-size: 80%; line-height: 1.618; }
+
+.document_version { font-size: 75%; float: right; color: #666666; }
+ul.toc { font-size: 75%; }
+
+.littlenote { font-size: 75%; }
+.version_notice { color: #800000; }
+.smiley { }
