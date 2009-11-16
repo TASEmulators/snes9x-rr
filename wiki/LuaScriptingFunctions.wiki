@@ -52,7 +52,7 @@ Returns the lag count.
 
 ===boolean emu.lagged()===
 
-Returns true if the current frame is a lag frame, false otherwise.
+Returns true if the last frame was a lag frame, false otherwise.
 
 ===boolean emu.emulating()===
 
@@ -139,11 +139,11 @@ Calls the function whenever the given address is executed. Function can be nil.
 
 =apu=
 
-It's not much useful for TASing, but it might be useful for automatic SPC dumping.
+It's not very useful for TASing, but it might be useful for automatic SPC dumping.
 
 ===apu.readbyte, apu.readbytesigned, apu.readword, apu.readwordsigned, apu.readdword, apu.readdwordsigned, apu.readbyterange, apu.writebyte, apu.writeword, apu.writedword===
 
-Read/Write value from/to APU RAM. Besides that, most of the information about the same function in memory library applies to this function as well. 
+Read/Write value from/to APU RAM. Besides that, most of the information about the same functions in the memory library applies to these functions as well. 
 
 ===`apu.writespc(filename [, autosearch = false])`===
 
@@ -321,7 +321,7 @@ see gui.popup
 
 ===table input.get()===
 
-Returns a table of which keyboard buttons are pressed as well as mouse status. Key values for keyboard buttons and mouse clicks are true for pressed, nil for not pressed. Mouse position is returned in terms of game screen pixel coordinates. Coordinates assume that the game screen is 256 by 224. Keys for mouse are (xmouse, ymouse, leftclick, rightclick, middleclick). Keys for keyboard buttons:
+Returns a table of which keyboard buttons are pressed as well as mouse status. (note: this is not related to the SNES mouse peripheral, it's simply your PC mouse cursor.) Key values for keyboard buttons and mouse clicks are true for pressed, nil for not pressed. Mouse position is returned in terms of game screen pixel coordinates. Coordinates assume that the game screen is 256 by 224. Keys for mouse are (xmouse, ymouse, leftclick, rightclick, middleclick). Keys for keyboard buttons:
 (backspace, tab, enter, shift, control, alt, pause, capslock, escape, space, pageup, pagedown, end, home, left, up, right, down, insert, delete,
 0, 1, ..., 9, A, B, ..., Z, numpad0, numpad1, ..., numpad9, numpad`*`, numpad+, numpad-, numpad., numpad/, F1, F2, ..., F24,
 numlock, scrolllock, semicolon, plus, comma, minus, period, slash, tilde, leftbracket, backslash, rightbracket, quote)
