@@ -1,0 +1,74 @@
+Various software and tools are required to compile Snes9x on Windows:
+
+- Microsoft Visual C++ 6.0 SP5 with the latest Platform SDK to compile all the 
+  C++ source code... Alternatively, Microsoft Visual Studio.NET (VC++ 7.0) 
+  or MinGW 3.2 should work.
+
+- gcc(optional) - I use version 2.95.2. Used to assemble various CPU i386 asm
+  cores that I wrote. Available as part of Cygwin - a UNIX-like environment
+  for Windows. To download, follow the links from from www.cygwin.com.
+  Specifically you will need these files in the path or the directory with 
+  makeasm.bat: as.exe, cpp.exe, gcc.exe, nasmw.exe, ndisasmw.exe,
+               cygiconv-2.dll, cygintl-1.dll, cygintl-3.dll, cygwin1.dll.
+  Without gcc only the slower, C/C++ versions of the CPU cores can be used. To
+  compile without gcc, disable cpuexec.obj, cpuops.obj and sa1ops.obj from the
+  build process and enable cpuexec.cpp, cpuops.cpp and sa1cpu.cpp (this is already
+  done in the Debug build).
+
+- nasm. I use version 0.97. Used to assemble portions of the ZSNES source
+  code included in Snes9x, Anti Res' sample decode method and Kreed's image
+  filtering code. Download from www.web-sites.co.uk/nasm
+
+- zlib(optional) - There's an included as source version, but the release binaries
+  are built against a static zlib instead. zlibmt.lib is simply zlib compiled
+  against VC's multi-threaded C runtime, to avoid linker conflicts, and renamed
+  to avoid conflicts with the single threaded version I use elsewhere.
+  removing ZLIB from the preprocessor definitions and zlibmt.lib from the library
+  listing will disable zip support, or you can enable the zlib folder in VC, instead
+  of building your own library. (zlib 1.2.2 is recommended)
+
+- libpng(optional) - Like zlib, this is a renamed libpng.lib, built against the same
+  C runtime for the same reasons. Building your own is as simple as changing the runtime
+  used by libpng's own project files, compiling, renaming the result to libpngmt.lib
+  HAVE_LIBPNG is the define used to include this code, used for screenshots.
+
+- fmod(optional) - Versions 3.20 and above. Used to provide extra sound output
+  options that increases hardware compatibility with some PC hardware.
+  Version 3.33 broke A3D support on some hardware so I reverted back to
+  version 3.20. However, I'm told 3.40, just released at time of writing,  fixes the problem.
+  Download from www.fmod.org Unpack into a temp folder and copy the API
+  sub-folder contents into snes9xr\fmod. Disable fmod support by removing the
+  FMOD_SUPPORT from the Projects->Settings->C/C++->Preprocessor->Preprocessor
+  Definitions text box and fmodvc.lib from the Projects->Settings->C/C++->
+  Link->Object/library modules text box.
+
+- Glide SDK(optional) - Used to provide a 3dfx Glide image filtering and
+  scaling output option. The software development kit was originally available
+  from www.3dfx.com but now its not there anymore. If you don't already have
+  the SDK or you don't want to compile with 3dfx support, remove the USE_GLIDE
+  define from the Preprocessor Definitions and remove glide2x.lib from the
+  Object/library modules text box.
+
+- OpenGL SDK(optional) - used to provide an OpenGL hardware accelerated output
+  image filtering and scaling option. I'm currently investigating adding an
+  OpenGL SNES screen rendering mode as well. Disable by removing USE_OPENGL
+  from the Preprocessor Definitions and remove opengl32.lib and glu32.lib from
+  the Object/library modules text box.  To compile up Snes9x:o cd snes9xr\snes9x
+  Run the MAKEASM.BAT script. Both gcc and nasmw will need to be on your path
+  for the script to work. Start up Visual C++ 6.0.o Load the Snes9x workspace file,
+  snes9xr\snes9x.dsw. Compile Snes9x by selecting Build->Rebuild All.
+  Either Start up Borland C++ Builder 4 (or above?) and then
+  Open Project->snes9xr\gui\snes9xw.bpr followed by Project->Build All Projects
+  and then copy snes9xr\gui\snes9xw.dll to snes9xr\Release or just copy the DLL
+  from the pre-built, released copy of Snes9x.Start Snes9x by running snes9xr\Release\snes9xw
+
+
+  The asm CPU core code often needs to access variable values stored in C++ structures.
+  To avoid hard-wiring structure offsets into the asm code, I usean automatically
+  generated offsets.h file. Under UNIX the makefile builds an
+  executable and runs it, which it turn outputs the required offsets.h file. My
+  Windows skills are not so advanced: you need to edit snes9xr\snes9x\Win32.cpp
+  and uncomment the //#define GENERATE_OFFSETS_H line, compile snes9x, run it
+  and then quit without loading a game. Copy the generated snes9xr\Release\offsets.h
+  file to snes9xr\snes9x\i386. Then recompile the asm code by using the MAKEASM.BAT script
+  and finally relink Snes9x.
