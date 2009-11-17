@@ -3,10 +3,7 @@ Snes9x 1.51+ v6
 I hadn't released a new version for over a year.
 There are too many changes. it's hard to tell all, but:
 
-- A lot of desync fixes. Older versions cannot read the new
-  savestate. Also, a new sync flag is added to SMV. Most
-  SMV editors might not care about the new flag byte.
-  Be careful, or you might experience a desync.             (nitsuja)
+- Desync fixes. Older versions cannot read the new savestate(nitsuja)
 - Some minor fixes on sound code.                           (gocha)
 - Fix flag checking of SuperFX code.                        (@gochaism @757_ @homingA @33953YoShI)
 - Lua: added Lua from 1.43. some functions works buggy,
