@@ -198,8 +198,8 @@ static void S9xLuaOnStop() {
 	luaRunning = FALSE;
 	lua_joypads_used = 0;
 	gui_used = false;
-	if (wasPaused)
-		Settings.Paused = TRUE;
+	/*if (wasPaused)
+		Settings.Paused = TRUE;*/
 }
 
 /**
@@ -209,8 +209,14 @@ static void S9xLuaOnStop() {
  * need not do anything.
  */
 int S9xLuaSpeed() {
-	if (!LUA || !luaRunning)
+	if (!LUA/* || !luaRunning*/)
 		return 0;
+#ifdef WIN32
+	if (GUI.AVIOut!=0) {
+		IPPU.RenderThisFrame = TRUE;
+		return 0;
+	}
+#endif
 
 	//printf("%d\n", speedmode);
 
@@ -3968,8 +3974,9 @@ void S9xLuaFrameBoundary() {
 		fprintf(stderr, "Lua thread bombed out: %s\n", lua_tostring(thread,-1));
 #endif
 	} else {
-		S9xLuaOnStop();
-		printf("Script died of natural causes.\n");
+		//S9xLuaOnStop();
+		//printf("Script died of natural causes.\n");
+		luaRunning = FALSE;
 	}
 
 	// Past here, the snes actually runs, so any Lua code is called mid-frame. We must
@@ -4099,6 +4106,7 @@ int S9xLoadLuaCode(const char *filename) {
 
 	wasPaused = Settings.Paused;
 	Settings.Paused = FALSE;
+	speedmode = SPEED_NORMAL;
 
 	// And run it right now. :)
 	//S9xLuaFrameBoundary();
