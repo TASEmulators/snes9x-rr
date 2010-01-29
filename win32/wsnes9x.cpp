@@ -311,7 +311,7 @@ extern bool8 do_frame_adjust;
 HINSTANCE g_hInst;
 
 #ifdef DEBUGGER
-extern "C" void Trace ();
+#include "../debug.h"
 #endif
 
 static const char *rom_filename = NULL;
@@ -2247,7 +2247,7 @@ LRESULT CALLBACK WinProc(
 #ifdef DEBUGGER
 						case ID_DEBUG_TRACE:
 							{
-								Trace ();
+								S9xTrace ();
 								break;
 							}
 						case ID_DEBUG_FRAME_ADVANCE:

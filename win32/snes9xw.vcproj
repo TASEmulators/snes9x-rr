@@ -155,7 +155,7 @@
 				OmitFramePointers="true"
 				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="$(ProjectDir),$(ProjectDir)userconfig,$(ProjectDir)defaultconfig,$(ProjectDir)..\,$(ProjectDir)directx,$(ProjectDir)zlib,$(ProjectDir)..\unzip,$(ProjectDir)FMOD\api\inc,$(ProjectDir)FMODEx\api\inc,$(ProjectDir)libpng,$(ProjectDir)..\snes9x"
-				PreprocessorDefinitions="NDEBUG;HAVE_LIBPNG;SPC700_C;JMA_SUPPORT;SDD1_DECOMP;CORRECT_VRAM_READS;SPC700_SHUTDOWN;CPU_SHUTDOWN;ZLIB;VAR_CYCLES;UNZIP_SUPPORT;EXECUTE_SUPERFX_PER_LINE;__WIN32__;__MSC__;FMODEX_SUPPORT;NEW_COLOUR_BLENDING;NETPLAY_SUPPORT"
+				PreprocessorDefinitions="DEBUGGER;NDEBUG;HAVE_LIBPNG;SPC700_C;JMA_SUPPORT;SDD1_DECOMP;CORRECT_VRAM_READS;SPC700_SHUTDOWN;CPU_SHUTDOWN;ZLIB;VAR_CYCLES;UNZIP_SUPPORT;EXECUTE_SUPERFX_PER_LINE;__WIN32__;__MSC__;FMODEX_SUPPORT;NEW_COLOUR_BLENDING;NETPLAY_SUPPORT"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				StructMemberAlignment="3"
@@ -253,7 +253,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(ProjectDir),$(ProjectDir)userconfig,$(ProjectDir)defaultconfig,$(ProjectDir)..\,$(ProjectDir)directx,$(ProjectDir)zlib,$(ProjectDir)..\unzip,$(ProjectDir)FMOD\api\inc,$(ProjectDir)FMODEx\api\inc,$(ProjectDir)libpng,$(ProjectDir)..\snes9x"
-				PreprocessorDefinitions="_DEBUG;HAVE_LIBPNG;SPC700_C;JMA_SUPPORT;SDD1_DECOMP;CORRECT_VRAM_READS;SPC700_SHUTDOWN;CPU_SHUTDOWN;ZLIB;VAR_CYCLES;UNZIP_SUPPORT;EXECUTE_SUPERFX_PER_LINE;__WIN32__;__MSC__;NEW_COLOUR_BLENDING;USE_OPENGL;NETPLAY_SUPPORT;USE_DIRECTX3D;FMODEX_SUPPORT"
+				PreprocessorDefinitions="DEBUGGER;_DEBUG;HAVE_LIBPNG;SPC700_C;JMA_SUPPORT;SDD1_DECOMP;CORRECT_VRAM_READS;SPC700_SHUTDOWN;CPU_SHUTDOWN;ZLIB;VAR_CYCLES;UNZIP_SUPPORT;EXECUTE_SUPERFX_PER_LINE;__WIN32__;__MSC__;NEW_COLOUR_BLENDING;USE_OPENGL;NETPLAY_SUPPORT;USE_DIRECTX3D;FMODEX_SUPPORT"
 				RuntimeLibrary="1"
 				StructMemberAlignment="3"
 				UsePrecompiledHeader="0"
@@ -351,7 +351,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(ProjectDir),$(ProjectDir)userconfig,$(ProjectDir)defaultconfig,$(ProjectDir)..\,$(ProjectDir)directx,$(ProjectDir)zlib,$(ProjectDir)..\unzip,$(ProjectDir)FMOD\api\inc,$(ProjectDir)FMODEx\api\inc,$(ProjectDir)libpng,$(ProjectDir)..\snes9x"
-				PreprocessorDefinitions="_DEBUG;HAVE_LIBPNG;SPC700_C;JMA_SUPPORT;SDD1_DECOMP;CORRECT_VRAM_READS;SPC700_SHUTDOWN;CPU_SHUTDOWN;ZLIB;VAR_CYCLES;UNZIP_SUPPORT;EXECUTE_SUPERFX_PER_LINE;__WIN32__;__MSC__;NEW_COLOUR_BLENDING;USE_OPENGL;NETPLAY_SUPPORT;USE_DIRECTX3D;FMODEX_SUPPORT;ZSNES_FX;ZSNES_C4"
+				PreprocessorDefinitions="DEBUGGER;_DEBUG;HAVE_LIBPNG;SPC700_C;JMA_SUPPORT;SDD1_DECOMP;CORRECT_VRAM_READS;SPC700_SHUTDOWN;CPU_SHUTDOWN;ZLIB;VAR_CYCLES;UNZIP_SUPPORT;EXECUTE_SUPERFX_PER_LINE;__WIN32__;__MSC__;NEW_COLOUR_BLENDING;USE_OPENGL;NETPLAY_SUPPORT;USE_DIRECTX3D;FMODEX_SUPPORT;ZSNES_FX;ZSNES_C4"
 				RuntimeLibrary="1"
 				StructMemberAlignment="3"
 				UsePrecompiledHeader="0"
@@ -452,7 +452,7 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="$(ProjectDir),$(ProjectDir)userconfig,$(ProjectDir)defaultconfig,$(ProjectDir)..\,$(ProjectDir)directx,$(ProjectDir)zlib,$(ProjectDir)..\unzip,$(ProjectDir)FMOD\api\inc,$(ProjectDir)FMODEx\api\inc,$(ProjectDir)libpng,$(ProjectDir)..\snes9x"
-				PreprocessorDefinitions="NDEBUG;HAVE_LIBPNG;SPC700_C;JMA_SUPPORT;SDD1_DECOMP;CORRECT_VRAM_READS;SPC700_SHUTDOWN;CPU_SHUTDOWN;ZLIB;VAR_CYCLES;UNZIP_SUPPORT;EXECUTE_SUPERFX_PER_LINE;__WIN32__;__MSC__;FMODEX_SUPPORT;NEW_COLOUR_BLENDING;USE_OPENGL;NETPLAY_SUPPORT;ZSNES_FX;ZSNES_C4"
+				PreprocessorDefinitions="DEBUGGER;NDEBUG;HAVE_LIBPNG;SPC700_C;JMA_SUPPORT;SDD1_DECOMP;CORRECT_VRAM_READS;SPC700_SHUTDOWN;CPU_SHUTDOWN;ZLIB;VAR_CYCLES;UNZIP_SUPPORT;EXECUTE_SUPERFX_PER_LINE;__WIN32__;__MSC__;FMODEX_SUPPORT;NEW_COLOUR_BLENDING;USE_OPENGL;NETPLAY_SUPPORT;ZSNES_FX;ZSNES_C4"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				StructMemberAlignment="3"
@@ -788,8 +788,14 @@
 				RelativePath="..\debug.cpp"
 				>
 				<FileConfiguration
+					Name="C core|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
-					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -797,7 +803,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
-					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -805,7 +810,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug+ASM|Win32"
-					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -813,7 +817,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release+ASM|Win32"
-					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -824,8 +827,14 @@
 				RelativePath="..\debug.h"
 				>
 				<FileConfiguration
+					Name="C core|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
-					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -833,7 +842,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32"
-					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -841,7 +849,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug+ASM|Win32"
-					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -849,7 +856,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release+ASM|Win32"
-					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
