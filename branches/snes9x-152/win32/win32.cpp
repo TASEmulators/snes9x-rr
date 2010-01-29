@@ -1004,8 +1004,8 @@ void InitSnes9X( void)
 //    extern FILE *trace;
 
 //    trace = fopen( "SNES9X.TRC", "wt");
-    freopen( "SNES9X.OUT", "wt", stdout);
-    freopen( "SNES9X.ERR", "wt", stderr);
+//    freopen( "SNES9X.OUT", "wt", stdout);
+//    freopen( "SNES9X.ERR", "wt", stderr);
 
 //    CPU.Flags |= TRACE_FLAG;
 //    APU.Flags |= TRACE_FLAG;
