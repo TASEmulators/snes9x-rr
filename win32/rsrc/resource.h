@@ -392,9 +392,6 @@
 #define ID_OPTIONS_EMULATION            40069
 #define ID_OPTIONS_SETTINGS             40070
 #define ID_DEBUG_TRACE                  40071
-#define ID_DEBUG_TRACE_SPC              40072
-#define ID_DEBUG_TRACE_SA1              40073
-#define ID_DEBUG_TRACE_DSP1             40074
 #define ID_DEBUG_FRAME_ADVANCE          40075
 #define ID_DEBUG_SNES_STATUS            40076
 #define ID_NETPLAY_SERVER               40077

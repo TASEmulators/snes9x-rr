@@ -2251,19 +2251,10 @@ LRESULT CALLBACK WinProc(
 							break;
 #ifdef DEBUGGER
 						case ID_DEBUG_TRACE:
-							S9xTrace ();
-							break;
-
-						case ID_DEBUG_TRACE_SPC:
-							MessageBox(GUI.hWnd, "Sorry, but this function is not implemented yet.", NULL, MB_OK | MB_ICONINFORMATION);
-							break;
-
-						case ID_DEBUG_TRACE_SA1:
-							MessageBox(GUI.hWnd, "Sorry, but this function is not implemented yet.", NULL, MB_OK | MB_ICONINFORMATION);
-							break;
-
-						case ID_DEBUG_TRACE_DSP1:
-							MessageBox(GUI.hWnd, "Sorry, but this function is not implemented yet.", NULL, MB_OK | MB_ICONINFORMATION);
+							if (CPU.Flags & TRACE_FLAG)
+								CPU.Flags &= ~TRACE_FLAG;
+							else
+								CPU.Flags |= TRACE_FLAG;
 							break;
 
 						case ID_DEBUG_FRAME_ADVANCE:
@@ -3896,15 +3887,17 @@ static void CheckMenuStates ()
 
 #ifndef DEBUGGER
     mii.fState = MFS_DISABLED;
-#else
-    mii.fState = MFS_UNCHECKED;
-#endif
     SetMenuItemInfo (GUI.hMenu, ID_DEBUG_TRACE, FALSE, &mii);
-    SetMenuItemInfo (GUI.hMenu, ID_DEBUG_TRACE_SPC, FALSE, &mii);
-    SetMenuItemInfo (GUI.hMenu, ID_DEBUG_TRACE_SA1, FALSE, &mii);
-    SetMenuItemInfo (GUI.hMenu, ID_DEBUG_TRACE_DSP1, FALSE, &mii);
     SetMenuItemInfo (GUI.hMenu, ID_DEBUG_FRAME_ADVANCE, FALSE, &mii);
     SetMenuItemInfo (GUI.hMenu, ID_DEBUG_SNES_STATUS, FALSE, &mii);
+#else
+    mii.fState = (CPU.Flags & TRACE_FLAG) ? MFS_CHECKED : MFS_UNCHECKED;
+    SetMenuItemInfo (GUI.hMenu, ID_DEBUG_TRACE, FALSE, &mii);
+    mii.fState = MFS_UNCHECKED;
+    SetMenuItemInfo (GUI.hMenu, ID_DEBUG_FRAME_ADVANCE, FALSE, &mii);
+    mii.fState = MFS_DISABLED;
+    SetMenuItemInfo (GUI.hMenu, ID_DEBUG_SNES_STATUS, FALSE, &mii);
+#endif
 
 	mii.fState = (!Settings.StopEmulation) ? MFS_ENABLED : MFS_DISABLED;
     SetMenuItemInfo (GUI.hMenu, ID_FILE_MOVIE_PLAY, FALSE, &mii);

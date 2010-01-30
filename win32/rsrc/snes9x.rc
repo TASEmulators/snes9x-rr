@@ -968,11 +968,8 @@ BEGIN
     POPUP "&Debug"
     BEGIN
         MENUITEM "&Trace",                      ID_DEBUG_TRACE
-        MENUITEM "Trace SPC",                   ID_DEBUG_TRACE_SPC
-        MENUITEM "Trace SA1",                   ID_DEBUG_TRACE_SA1
-        MENUITEM "Trace DSP1",                  ID_DEBUG_TRACE_DSP1
-        MENUITEM "Frame Advance",               ID_DEBUG_FRAME_ADVANCE
-        MENUITEM "View SNES Status",            ID_DEBUG_SNES_STATUS
+        MENUITEM "&Frame Advance",              ID_DEBUG_FRAME_ADVANCE
+        MENUITEM "View SNES &Status",           ID_DEBUG_SNES_STATUS
     END
     POPUP "&Help"
     BEGIN
