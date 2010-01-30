@@ -200,6 +200,7 @@
 #include "win32_sound.h"
 #include "win32_display.h"
 #include "../snes9x.h"
+#include "../version.h"
 #include "../memmap.h"
 #include "../cpuexec.h"
 #include "../display.h"

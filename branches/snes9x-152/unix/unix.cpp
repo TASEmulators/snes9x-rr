@@ -205,6 +205,7 @@
 #endif
 
 #include "snes9x.h"
+#include "version.h"
 #include "memmap.h"
 #include "apu/apu.h"
 #include "gfx.h"

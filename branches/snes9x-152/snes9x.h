@@ -178,15 +178,6 @@
 #ifndef _SNES9X_H_
 #define _SNES9X_H_
 
-#ifndef VERSION
-#ifdef __WIN32__
-#include "svnrev.h"
-#define VERSION	"1.52-rr (svn" SVN_REV_STR ")"
-#else
-#define VERSION	"1.52-rr"
-#endif
-#endif
-
 #include "port.h"
 #include "65c816.h"
 #include "messages.h"

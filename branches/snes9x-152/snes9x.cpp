@@ -182,6 +182,7 @@
 #endif
 
 #include "snes9x.h"
+#include "version.h"
 #include "memmap.h"
 #include "controls.h"
 #include "crosshairs.h"
