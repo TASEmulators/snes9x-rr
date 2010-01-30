@@ -329,6 +329,7 @@ static bool try_load_config_file (const char *fname, ConfigFile &conf)
 
 void S9xLoadConfigFiles (char **argv, int argc)
 {
+	char	path[PATH_MAX + 1], name[PATH_MAX + 1];
 	static ConfigFile	conf; // static because some of its functions return pointers
 	conf.Clear();
 
@@ -493,8 +494,13 @@ void S9xLoadConfigFiles (char **argv, int argc)
 
 	if (conf.GetBool("DEBUG::Trace", false))
 	{
-		if (!trace)
-			trace = fopen("trace.log", "wb");
+		if (!trace) {
+			strcpy(path, S9xGetDirectory(DEFAULT_DIR));
+			strcat(path, SLASH_STR);
+			strcpy(name, path);
+			strcat(name, "trace.log");
+			trace = fopen(name, "wb");
+		}
 		CPU.Flags |= TRACE_FLAG;
 	}
 #endif
@@ -613,6 +619,7 @@ void S9xUsage (void)
 
 char * S9xParseArgs (char **argv, int argc)
 {
+	char	path[PATH_MAX + 1], name[PATH_MAX + 1];
 	for (int i = 1; i < argc; i++)
 	{
 		if (*argv[i] == '-')
@@ -845,8 +852,13 @@ char * S9xParseArgs (char **argv, int argc)
 			else
 			if (!strcasecmp(argv[i], "-trace"))
 			{
-				if (!trace)
-					trace = fopen("trace.log", "wb");
+				if (!trace) {
+					strcpy(path, S9xGetDirectory(DEFAULT_DIR));
+					strcat(path, SLASH_STR);
+					strcpy(name, path);
+					strcat(name, "trace.log");
+					trace = fopen(name, "wb");
+				}
 				CPU.Flags |= TRACE_FLAG;
 			}
 			else

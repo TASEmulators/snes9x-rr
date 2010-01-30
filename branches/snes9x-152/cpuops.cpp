@@ -3638,7 +3638,13 @@ static void Op42 (void)
 				S9xMessage(S9X_DEBUG, S9X_DEBUG_OUTPUT, buf);
 				if (trace != NULL)
 					fclose(trace);
-				trace = fopen("WDMtrace.log", "ab");
+
+				char	path[PATH_MAX + 1], name[PATH_MAX + 1];
+				strcpy(path, S9xGetDirectory(DEFAULT_DIR));
+				strcat(path, SLASH_STR);
+				strcpy(name, path);
+				strcat(name, "WDMTrace.log");
+				trace = fopen(name, "ab");
 			}
 
 			break;
