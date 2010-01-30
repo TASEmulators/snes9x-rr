@@ -1261,6 +1261,7 @@ static void debug_process_command (char *Line)
 	uint16	Number;
 	short	ErrorCode;
 	char	string[512];
+	char	path[PATH_MAX + 1], name[PATH_MAX + 1];
 
 	if (strncasecmp(Line, "dump", 4) == 0)
 	{
@@ -1433,8 +1434,13 @@ static void debug_process_command (char *Line)
 			if (SA1.Flags & TRACE_FLAG)
 			{
 				printf("SA1 CPU instruction tracing enabled.\n");
-				if (trace2 == NULL)
-					trace2 = fopen("trace_sa1.log", "wb");
+				if (trace2 == NULL) {
+					strcpy(path, S9xGetDirectory(DEFAULT_DIR));
+					strcat(path, SLASH_STR);
+					strcpy(name, path);
+					strcat(name, "trace_sa1.log");
+					trace2 = fopen(name, "wb");
+				}
 			}
 			else
 			{
@@ -1450,8 +1456,13 @@ static void debug_process_command (char *Line)
 			if (CPU.Flags & TRACE_FLAG)
 			{
 				printf("CPU instruction tracing enabled.\n");
-				if (trace == NULL)
-					trace = fopen("trace.log", "wb");
+				if (trace == NULL) {
+					strcpy(path, S9xGetDirectory(DEFAULT_DIR));
+					strcat(path, SLASH_STR);
+					strcpy(name, path);
+					strcat(name, "trace.log");
+					trace = fopen(name, "wb");
+				}
 			}
 			else
 			{
@@ -1476,8 +1487,13 @@ static void debug_process_command (char *Line)
 		if (APU.Flags & TRACE_FLAG)
 		{
 			printf("APU tracing enabled.\n");
-			if (apu_trace == NULL)
-				apu_trace = fopen("aputrace.log", "wb");
+			if (apu_trace == NULL) {
+				strcpy(path, S9xGetDirectory(DEFAULT_DIR));
+				strcat(path, SLASH_STR);
+				strcpy(name, path);
+				strcat(name, "aputrace.log");
+				apu_trace = fopen(name, "wb");
+			}
 		}
 		else
 		{
@@ -2483,9 +2499,15 @@ void S9xDoDebug (void)
 void S9xTrace (void)
 {
 	char	msg[512];
+	char	path[PATH_MAX + 1], name[PATH_MAX + 1];
 
-	if (trace == NULL)
-		trace = fopen("trace.log", "a");
+	if (trace == NULL) {
+		strcpy(path, S9xGetDirectory(DEFAULT_DIR));
+		strcat(path, SLASH_STR);
+		strcpy(name, path);
+		strcat(name, "trace.log");
+		trace = fopen(name, "a");
+	}
 
 	debug_cpu_op_print(msg, Registers.PB, Registers.PCw);
 	fprintf(trace, "%s\n", msg);
@@ -2494,9 +2516,15 @@ void S9xTrace (void)
 void S9xSA1Trace (void)
 {
 	char	msg[512];
+	char	path[PATH_MAX + 1], name[PATH_MAX + 1];
 
-	if (trace2 == NULL)
-		trace2 = fopen("trace_sa1.log", "a");
+	if (trace2 == NULL) {
+		strcpy(path, S9xGetDirectory(DEFAULT_DIR));
+		strcat(path, SLASH_STR);
+		strcpy(name, path);
+		strcat(name, "trace_sa1.log");
+		trace2 = fopen(name, "a");
+	}
 
 	debug_sa1_op_print(msg, SA1Registers.PB, SA1Registers.PCw);
 	fprintf(trace2, "%s\n", msg);
