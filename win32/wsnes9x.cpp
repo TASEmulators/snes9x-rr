@@ -1426,6 +1426,11 @@ HWND cheatSearchHWND = NULL;
 
 #define MOVIE_LOCKED_SETTING	if(S9xMovieActive()) {MessageBox(GUI.hWnd,TEXT("That setting is locked while a movie is active."),TEXT("Notice"),MB_OK|MB_ICONEXCLAMATION); break;}
 
+HMENU S9xLoadMenu(void)
+{
+	return LoadMenu(GUI.hInstance, MAKEINTRESOURCE(Languages[GUI.Language].idMenu));
+}
+
 LRESULT CALLBACK WinProc(
 						 HWND hWnd,
 						 UINT uMsg,
@@ -1867,14 +1872,14 @@ LRESULT CALLBACK WinProc(
 		case ID_LANGUAGE_ENGLISH:
             GUI.Language = 0;
 
-            SetMenu( GUI.hWnd, LoadMenu( GUI.hInstance, MAKEINTRESOURCE( Languages[ GUI.Language].idMenu)));
+            SetMenu( GUI.hWnd, S9xLoadMenu());
             DestroyMenu( GUI.hMenu);
             GUI.hMenu = GetMenu( GUI.hWnd);
             break;
 		case ID_LANGUAGE_NEDERLANDS:
             GUI.Language = 1;
 
-            SetMenu( GUI.hWnd, LoadMenu( GUI.hInstance, MAKEINTRESOURCE( Languages[ GUI.Language].idMenu)));
+            SetMenu( GUI.hWnd, S9xLoadMenu());
             DestroyMenu( GUI.hMenu);
             GUI.hMenu = GetMenu( GUI.hWnd);
             break;
@@ -2246,14 +2251,29 @@ LRESULT CALLBACK WinProc(
 							break;
 #ifdef DEBUGGER
 						case ID_DEBUG_TRACE:
-							{
-								S9xTrace ();
-								break;
-							}
+							S9xTrace ();
+							break;
+
+						case ID_DEBUG_TRACE_SPC:
+							MessageBox(GUI.hWnd, "Sorry, but this function is not implemented yet.", NULL, MB_OK | MB_ICONINFORMATION);
+							break;
+
+						case ID_DEBUG_TRACE_SA1:
+							MessageBox(GUI.hWnd, "Sorry, but this function is not implemented yet.", NULL, MB_OK | MB_ICONINFORMATION);
+							break;
+
+						case ID_DEBUG_TRACE_DSP1:
+							MessageBox(GUI.hWnd, "Sorry, but this function is not implemented yet.", NULL, MB_OK | MB_ICONINFORMATION);
+							break;
+
 						case ID_DEBUG_FRAME_ADVANCE:
 							CPU.Flags |= FRAME_ADVANCE_FLAG;
 							ICPU.FrameAdvanceCount = 1;
 							Settings.Paused = FALSE;
+							break;
+
+						case ID_DEBUG_SNES_STATUS:
+							MessageBox(GUI.hWnd, "Sorry, but this function is not implemented yet.", NULL, MB_OK | MB_ICONINFORMATION);
 							break;
 #endif
 						case IDM_ROM_INFO:
@@ -2663,7 +2683,7 @@ BOOL WinInit( HINSTANCE hInstance)
         return FALSE;
 	}
 
-	GUI.hMenu = LoadMenu (hInstance, MAKEINTRESOURCE( Languages[ GUI.Language].idMenu));
+	GUI.hMenu = S9xLoadMenu();
     if (GUI.hMenu == NULL)
 	{
 		MessageBox (NULL, "Failed to initialize the menu.\nThis could indicate a failure of your operating system;\ntry closing some other windows or programs, or restart your computer, before opening Snes9x again.\nOr, if you compiled this program yourself, ensure that Snes9x was built with the proper resource files.", "Snes9X - Menu Initialization Failure", MB_OK | MB_ICONSTOP);
