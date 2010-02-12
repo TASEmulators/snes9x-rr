@@ -705,7 +705,7 @@ void S9xUpdateFrameCounter (int offset)
 			FrameCountToTime(tmpBuf, max(0,(int)(Movie.CurrentFrame)), Memory.ROMFramesPerSecond);
 		sprintf(GFX.FrameDisplayString, "%s%s", Settings.OldFashionedFrameCounter ? "Recording frame: " : "", tmpBuf);
 		if (!Settings.OldFashionedFrameCounter)
-			strcat(GFX.FrameDisplayString, " [Rec]");
+			strcat(GFX.FrameDisplayString, " [record]");
 	}
 	else if (Movie.State == MOVIE_STATE_PLAY) {
 		if (Settings.CounterInFrames)
@@ -714,7 +714,7 @@ void S9xUpdateFrameCounter (int offset)
 			FrameCountToTime(tmpBuf, max(0,(int)(Movie.CurrentFrame)), Memory.ROMFramesPerSecond);
 		sprintf(GFX.FrameDisplayString, "%s%s", Settings.OldFashionedFrameCounter ? "Playing frame: " : "", tmpBuf);
 		if (!Settings.OldFashionedFrameCounter)
-			strcat(GFX.FrameDisplayString, " [Play]");
+			strcat(GFX.FrameDisplayString, " [play]");
 	}
 #ifdef NETPLAY_SUPPORT
 	else if(Settings.NetPlay) {
@@ -723,9 +723,9 @@ void S9xUpdateFrameCounter (int offset)
 		else
 			FrameCountToTime(GFX.FrameDisplayString, max(0,(int)(NetPlay.FrameCount)), Memory.ROMFramesPerSecond);
 		if (Settings.NetPlayServer)
-			strcat(GFX.FrameDisplayString, " [Server]");
+			strcat(GFX.FrameDisplayString, " [server]");
 		else
-			strcat(GFX.FrameDisplayString, " [Client]");
+			strcat(GFX.FrameDisplayString, " [client]");
 	}
 #endif
 	else {
@@ -733,6 +733,8 @@ void S9xUpdateFrameCounter (int offset)
 			sprintf(GFX.FrameDisplayString, "%d", max(0,(int)(IPPU.TotalEmulatedFrames+offset)));
 		else
 			FrameCountToTime(GFX.FrameDisplayString, max(0,(int)(IPPU.TotalEmulatedFrames)), Memory.ROMFramesPerSecond);
+		if (!Settings.OldFashionedFrameCounter)
+			strcat(GFX.FrameDisplayString, " [no movie]");
 	}
 
 	if (!Settings.DisplayLagCounter)
