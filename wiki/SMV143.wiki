@@ -73,22 +73,22 @@ A gap between the savestate data and the controller data is allowed.
 
 Each value is determined by OR-ing together values for whichever of the following are pressed:
 {{{
-  0x0001 Right
-  0x0002 Left
-  0x0004 Down
-  0x0008 Up
-  0x0010 Start
-  0x0020 Select
-  0x0040 Y
-  0x0080 B
-  0x0100 (reserved)
-  0x0200 (reserved)
-  0x0400 (reserved)
-  0x0800 (reserved)
-  0x1000 R
-  0x2000 L
-  0x4000 X
-  0x8000 A
+  00 01 Right
+  00 02 Left
+  00 04 Down
+  00 08 Up
+  00 10 Start
+  00 20 Select
+  00 40 Y
+  00 80 B
+  01 00 (reserved)
+  02 00 (reserved)
+  04 00 (reserved)
+  08 00 (reserved)
+  10 00 R
+  20 00 L
+  40 00 X
+  80 00 A
 }}}
 
-In the reset-recording patch, a frame that contains the value FFFF for every controller simultaneously denotes a reset. The reset is done through the S9xSoftReset routine.
+In the reset-recording patch, a frame that contains the value FF FF for every controller denotes a reset. The reset is done through the S9xSoftReset routine.
