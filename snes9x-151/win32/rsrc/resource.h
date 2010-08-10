@@ -235,12 +235,8 @@
 #define IDC_GREATER_THAN_EQUAL          1180
 #define IDC_EQUAL                       1181
 #define IDC_NOT_EQUAL                   1182
-//#define IDC_UNSIGNED                    1183
-//#define IDC_SIGNED                      1184
-//#define IDC_HEX                         1185
 #define IDC_ENTER_LABEL                 1186
 #define IDC_DIAGTOGGLE                  1187
-//#define IDC_C_WATCH                     1188
 #define IDC_UNDO                        1189
 #define IDC_C_CLEARWATCH                1190
 #define IDC_COMBO1                      1191
@@ -483,6 +479,7 @@
 #define IDC_C_WATCH_DUPLICATE           1428
 #define ID_WATCHES_UPDOWN               1429
 #define IDC_C_WATCH_UP                  1430
+#define IDC_C_WATCH_SEPARATE            9999
 #define IDC_C_WATCH_DOWN                1431
 #define IDC_PROMPT_TEXT                 1432
 #define IDC_PROMPT_TEXT2                1433
@@ -768,7 +765,7 @@
 #define ID_TRACE_LOGGER                 42301
 
 // Next default values for new objects
-//
+// 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        151
