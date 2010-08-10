@@ -61,6 +61,8 @@ extern "C" {
 #include "win32/rsrc/resource.h"
 #endif
 
+extern void S9xReRefresh();
+
 static void(*info_print)(int uid, const char* str);
 static void(*info_onstart)(int uid);
 static void(*info_onstop)(int uid);
@@ -102,7 +104,7 @@ static const char *guiCallbackTable = "S9X.GUI";
 static bool8 frameAdvanceWaiting = FALSE;
 
 // We save our pause status in the case of a natural death.
-static bool8 wasPaused = FALSE;
+//static bool8 wasPaused = FALSE;
 
 // Transparency strength. 255=opaque, 0=so transparent it's invisible
 static int transparencyModifier = 255;
@@ -233,8 +235,8 @@ static void S9xLuaOnStop() {
 	lua_joypads_used = 0;
 	ClearCommandTransforms();
 	gui_used = false;
-	if (wasPaused)
-		Settings.Paused = TRUE;
+	//if (wasPaused)
+	//	Settings.Paused = TRUE;
 }
 
 /**
@@ -4516,11 +4518,9 @@ int S9xLoadLuaCode(const char *filename) {
 	lua_joypads_used = 0; // not used
 	ClearCommandTransforms();
 
-	wasPaused = Settings.Paused;
-	Settings.Paused = FALSE;
-
-	// And run it right now. :)
-	//S9xLuaFrameBoundary();
+	//wasPaused = Settings.Paused;
+	//Settings.Paused = FALSE;
+	speedmode = SPEED_NORMAL;
 
 	// Set up our protection hook to be executed once every 10,000 bytecode instructions.
 	lua_sethook(thread, S9xLuaHookFunction, LUA_MASKCOUNT, 10000);
@@ -4539,6 +4539,10 @@ int S9xLoadLuaCode(const char *filename) {
 #endif
 	if (info_onstart)
 		info_onstart(info_uid);
+
+	// And run it right now. :)
+	S9xLuaFrameBoundary();
+	S9xReRefresh();
 
 	// We're done.
 	return 1;
