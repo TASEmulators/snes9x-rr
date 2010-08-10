@@ -336,11 +336,11 @@ void UpdateRegionT(const MemoryRegion& region, const MemoryRegion* nextRegionPtr
 					if(i >= indexEnd+k)
 						continue;
 					int m = (j-k+sizeof(compareType)) & (sizeof(compareType)-1);
-					if(nextValidChange[m]+sizeof(compareType) <= i+sizeof(compareType)) // if we didn't already increase the change count for this entry
+					if(nextValidChange[m] <= i) // if we didn't already increase the change count for this entry
 					{
 						//if(s_numChanges[i-k] != 0xFFFF)
 							s_numChanges[i-k]++; // increase the change count for this entry
-						nextValidChange[m] = i+sizeof(compareType); // and remember not to increase it again
+						nextValidChange[m] = i-k+sizeof(compareType); // and remember not to increase it again
 					}
 				}
 			}
@@ -1006,8 +1006,13 @@ void CompactAddrs()
 		ListView_SetItemCount(GetDlgItem(RamSearchHWnd,IDC_RAMLIST),ResultCount);
 }
 
-void soft_reset_address_info ()
+void soft_reset_address_info (bool resetPrevValues = false)
 {
+	if (resetPrevValues) {
+		if(s_prevValues)
+			memcpy(s_prevValues, s_curValues, (sizeof(*s_prevValues)*(MAX_RAM_SIZE)));
+		s_prevValuesNeedUpdate = false;
+	}
 	ResetMemoryRegions();
 	if(s_numChanges)
 		memset(s_numChanges, 0, (sizeof(*s_numChanges)*(MAX_RAM_SIZE)));
@@ -1224,6 +1229,7 @@ void signal_new_size ()
 	{
 		ListView_Update(lv, -1);
 	}
+	InvalidateRect(lv, NULL, TRUE);
 }
 
 
@@ -1783,7 +1789,7 @@ LRESULT CALLBACK RamSearchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 					RamSearchSaveUndoStateIfNotTooBig(RamSearchHWnd);
 					int prevNumItems = last_rs_possible;
 
-					soft_reset_address_info();
+					soft_reset_address_info(true);
 
 					if(prevNumItems == last_rs_possible)
 						SetRamSearchUndoType(RamSearchHWnd, 0); // nothing to undo
