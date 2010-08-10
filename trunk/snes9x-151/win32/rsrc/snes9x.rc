@@ -1,7 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
-//#include "commctrl.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -9,7 +8,7 @@
 // Generated from the TEXTINCLUDE 2 resource.
 //
 #include "afxres.h"
-
+#include "../wlanguage.h"
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
@@ -17,12 +16,10 @@
 // English (U.S.) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef WIN32
+#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //WIN32
-
-//#define LVS_OWNERDATA 4096
+#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -41,7 +38,7 @@ BEGIN
     VK_RETURN,      ID_WINDOW_FULLSCREEN,   VIRTKEY, ALT, NOINVERT
 END
 
-IDR_RWACCELERATOR ACCELERATORS
+IDR_RWACCELERATOR ACCELERATORS 
 BEGIN
     "N",            RAMMENU_FILE_NEW,       VIRTKEY, CONTROL
     "O",            RAMMENU_FILE_OPEN,      VIRTKEY, CONTROL
@@ -395,7 +392,7 @@ BEGIN
     RTEXT           "DN RIGHT",IDC_LABEL_DOWNRIGHT,122,120,36,8
     RTEXT           "UP RIGHT",IDC_LABEL_UPRIGHT,122,107,36,8
     RTEXT           "DN LEFT",IDC_LABEL_DOWNLEFT,127,132,31,8
-    CONTROL         IDB_PAD,IDC_STATIC,"Static",SS_BITMAP,243,39,80,74
+    CONTROL         128,IDC_STATIC,"Static",SS_BITMAP,243,39,80,74
     CONTROL         "Allow Left+Rt/Up+Dn",IDC_ALLOWLEFTRIGHT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,115,80,11
     GROUPBOX        "Controller",IDC_STATIC,5,1,142,28,0,WS_EX_TRANSPARENT
     GROUPBOX        "Buttons",IDC_STATIC,5,30,234,117,0,WS_EX_TRANSPARENT
@@ -717,7 +714,7 @@ BEGIN
 END
 
 IDD_RAMWATCH DIALOGEX 0, 0, 269, 274
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CLIPCHILDREN | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CLIPCHILDREN | WS_CAPTION | WS_SYSMENU
 CAPTION " RAM Watch"
 MENU RAMWATCH_MENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -727,9 +724,10 @@ BEGIN
     PUSHBUTTON      "Remove",IDC_C_WATCH_REMOVE,226,83,34,14
     PUSHBUTTON      "New",IDC_C_WATCH,226,100,34,14
     PUSHBUTTON      "Duplicate",IDC_C_WATCH_DUPLICATE,226,117,34,14
-    PUSHBUTTON      "Add Cheat",IDC_C_ADDCHEAT,222,140,42,16,WS_DISABLED
-    GROUPBOX        "Watches",IDC_WATCHES_GROUP,222,11,42,125,0,WS_EX_TRANSPARENT
+    PUSHBUTTON      "Add Cheat",IDC_C_ADDCHEAT,221,157,42,16,WS_DISABLED
+    GROUPBOX        "Watches",IDC_WATCHES_GROUP,222,11,42,144,0,WS_EX_TRANSPARENT
     CONTROL         "",ID_WATCHES_UPDOWN,"msctls_updown32",WS_TABSTOP,232,23,19,36
+    PUSHBUTTON      "Separator",IDC_C_WATCH_SEPARATE,225,137,36,14
 END
 
 IDD_EDITWATCH DIALOGEX 0, 0, 181, 95
@@ -753,7 +751,7 @@ BEGIN
     PUSHBUTTON      "&Cancel",IDCANCEL,120,80,50,14
 END
 
-IDD_PROMPT DIALOG 0, 0, 186, 68
+IDD_PROMPT DIALOG  0, 0, 186, 68
 STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Input Prompt"
 FONT 8, "Ms Shell Dlg 2"
@@ -761,6 +759,20 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,100,43,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,37,42,50,14
     EDITTEXT        IDC_PROMPT_EDIT,10,15,167,14,ES_AUTOHSCROLL
+END
+
+IDD_NETCONNECT DIALOGEX 0, 0, 227, 61
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_CLIPCHILDREN | WS_CAPTION
+CAPTION "Connect to Server"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "&OK",IDOK,120,45,50,14
+    PUSHBUTTON      "Canccel",IDCANCEL,175,45,50,14
+    RTEXT           "Server Address",IDC_LABEL_SERVERADDY,5,5,50,14,SS_CENTERIMAGE
+    PUSHBUTTON      "Clear History",IDC_CLEARHISTORY,175,5,50,14
+    RTEXT           "Port Number",IDC_LABEL_PORTNUM,5,25,50,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_PORTNUMBER,60,25,25,14,ES_AUTOHSCROLL
+    COMBOBOX        IDC_HOSTNAME,60,5,110,40,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
 END
 
 
@@ -967,18 +979,6 @@ IDR_RT_MANIFEST2        RT_MANIFEST             "rt_manif.bin"
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_ICON1               ICON                    "icon1.ico"
-#endif    // English (U.S.) resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
-// Dutch (Netherlands) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
-#ifdef WIN32
-LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
-#pragma code_page(1252)
-#endif //WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1101,44 +1101,6 @@ BEGIN
     END
 END
 
-#endif    // Dutch (Netherlands) resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
-// English (U.K.) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
-#ifdef WIN32
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
-#pragma code_page(1252)
-#endif //WIN32
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog
-//
-
-IDD_NETCONNECT DIALOGEX 0, 0, 227, 61
-STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_CLIPCHILDREN | WS_CAPTION
-CAPTION "Connect to Server"
-FONT 8, "MS Sans Serif", 0, 0, 0x0
-BEGIN
-    DEFPUSHBUTTON   "&OK",IDOK,120,45,50,14
-    PUSHBUTTON      "Canccel",IDCANCEL,175,45,50,14
-    RTEXT           "Server Address",IDC_LABEL_SERVERADDY,5,5,50,14,SS_CENTERIMAGE
-    PUSHBUTTON      "Clear History",IDC_CLEARHISTORY,175,5,50,14
-    RTEXT           "Port Number",IDC_LABEL_PORTNUM,5,25,50,14,SS_CENTERIMAGE
-    EDITTEXT        IDC_PORTNUMBER,60,25,25,14,ES_AUTOHSCROLL
-    COMBOBOX        IDC_HOSTNAME,60,5,110,40,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Menu
-//
-
 IDR_MENU_US MENU 
 BEGIN
     POPUP "&File"
@@ -1193,7 +1155,6 @@ BEGIN
         POPUP "&Movie"
         BEGIN
             MENUITEM "Play Movie...",               ID_FILE_MOVIE_PLAY, GRAYED
-            //MENUITEM "Watch From Beginning",        ID_MOVIE_RESTART, GRAYED
             MENUITEM SEPARATOR
             MENUITEM "Record New Movie...",         ID_FILE_MOVIE_RECORD, GRAYED
             MENUITEM "Resume Record from Now",      ID_MOVIE_CONTINUE, GRAYED
@@ -1295,7 +1256,7 @@ BEGIN
                 MENUITEM "Direct3D",                    ID_RENDERMETHOD_DIRECT3D
                 MENUITEM SEPARATOR
                 MENUITEM "DDraw Use &Video Memory",     ID_RENDEROPTIONS_DDRAWUSEVIDEOMEMORY
-                MENUITEM "DDraw Use Local Video Memory",ID_RENDEROPTIONS_DDRAWUSELOCALVIDEOMEM
+                MENUITEM "DDraw Use Local Video Memory", ID_RENDEROPTIONS_DDRAWUSELOCALVIDEOMEM
                 MENUITEM SEPARATOR
                 MENUITEM "DDraw/D3D Triple Buffering",  ID_RENDEROPTIONS_TRIPLEBUFFERING
                 MENUITEM SEPARATOR
@@ -1337,31 +1298,31 @@ BEGIN
                 MENUITEM SEPARATOR
                 POPUP "&Buffer Length"
                 BEGIN
-                    MENUITEM "Mix Interval * &1",       ID_SOUND_25MS
-                    MENUITEM "Mix Interval * &2",       ID_SOUND_50MS
-                    MENUITEM "Mix Interval * &4",       ID_SOUND_100MS
-                    MENUITEM "Mix Interval * &8",       ID_SOUND_200MS
-                    MENUITEM "Mix Interval * 1&6",      ID_SOUND_500MS
-                    MENUITEM "Mix Interval * &32",      ID_SOUND_1S
-                    MENUITEM "Mix Interva&l * 64",      ID_SOUND_2S
+                    MENUITEM "Mix Interval * &1",           ID_SOUND_25MS
+                    MENUITEM "Mix Interval * &2",           ID_SOUND_50MS
+                    MENUITEM "Mix Interval * &4",           ID_SOUND_100MS
+                    MENUITEM "Mix Interval * &8",           ID_SOUND_200MS
+                    MENUITEM "Mix Interval * 1&6",          ID_SOUND_500MS
+                    MENUITEM "Mix Interval * &32",          ID_SOUND_1S
+                    MENUITEM "Mix Interva&l * 64",          ID_SOUND_2S
                 END
                 POPUP "Mix Interval"
                 BEGIN
-                    MENUITEM "10ms (recommended)",      ID_SOUND_MIXINTERVAL_10MS
-                    MENUITEM "20ms",                    ID_SOUND_MIXINTERVAL_20MS
-                    MENUITEM "30ms",                    ID_SOUND_MIXINTERVAL_30MS
-                    MENUITEM "40ms",                    ID_SOUND_MIXINTERVAL_40MS
-                    MENUITEM "50ms",                    ID_SOUND_MIXINTERVAL_50MS
-                    MENUITEM "60ms",                    ID_SOUND_MIXINTERVAL_60MS
-                    MENUITEM "70ms",                    ID_SOUND_MIXINTERVAL_70MS
-                    MENUITEM "80ms",                    ID_SOUND_MIXINTERVAL_80MS
-                    MENUITEM "90ms",                    ID_SOUND_MIXINTERVAL_90MS
-                    MENUITEM "100ms",                   ID_SOUND_MIXINTERVAL_100MS
-                    MENUITEM "110ms",                   ID_SOUND_MIXINTERVAL_110MS
-                    MENUITEM "120ms",                   ID_SOUND_MIXINTERVAL_120MS
-                    MENUITEM "130ms",                   ID_SOUND_MIXINTERVAL_130MS
-                    MENUITEM "140ms",                   ID_SOUND_MIXINTERVAL_140MS
-                    MENUITEM "150ms",                   ID_SOUND_MIXINTERVAL_150MS
+                    MENUITEM "10ms (recommended)",          ID_SOUND_MIXINTERVAL_10MS
+                    MENUITEM "20ms",                        ID_SOUND_MIXINTERVAL_20MS
+                    MENUITEM "30ms",                        ID_SOUND_MIXINTERVAL_30MS
+                    MENUITEM "40ms",                        ID_SOUND_MIXINTERVAL_40MS
+                    MENUITEM "50ms",                        ID_SOUND_MIXINTERVAL_50MS
+                    MENUITEM "60ms",                        ID_SOUND_MIXINTERVAL_60MS
+                    MENUITEM "70ms",                        ID_SOUND_MIXINTERVAL_70MS
+                    MENUITEM "80ms",                        ID_SOUND_MIXINTERVAL_80MS
+                    MENUITEM "90ms",                        ID_SOUND_MIXINTERVAL_90MS
+                    MENUITEM "100ms",                       ID_SOUND_MIXINTERVAL_100MS
+                    MENUITEM "110ms",                       ID_SOUND_MIXINTERVAL_110MS
+                    MENUITEM "120ms",                       ID_SOUND_MIXINTERVAL_120MS
+                    MENUITEM "130ms",                       ID_SOUND_MIXINTERVAL_130MS
+                    MENUITEM "140ms",                       ID_SOUND_MIXINTERVAL_140MS
+                    MENUITEM "150ms",                       ID_SOUND_MIXINTERVAL_150MS
                 END
             END
             MENUITEM SEPARATOR
@@ -1431,16 +1392,16 @@ BEGIN
             MENUITEM SEPARATOR
             POPUP "Savestate Compression Level"
             BEGIN
-                MENUITEM "1 (Fastest) (Low Compression)",          ID_EMULATOR_SAVECOMPRESS1
-                MENUITEM "2 (Fast)",                               ID_EMULATOR_SAVECOMPRESS2
-                MENUITEM "3 (Fast)",                               ID_EMULATOR_SAVECOMPRESS3
-                MENUITEM "0 (Slow) (Uncompressed)",                ID_EMULATOR_SAVECOMPRESS0
-                MENUITEM "4 (Slow)",                               ID_EMULATOR_SAVECOMPRESS4
-                MENUITEM "5 (Slow)",                               ID_EMULATOR_SAVECOMPRESS5
-                MENUITEM "6 (Slow) (High Compression)",            ID_EMULATOR_SAVECOMPRESS6
-                MENUITEM "7 (Slow)",                               ID_EMULATOR_SAVECOMPRESS7
-                MENUITEM "8 (Slow)",                               ID_EMULATOR_SAVECOMPRESS8
-                MENUITEM "9 (Slowest) (Maximum Compression)",      ID_EMULATOR_SAVECOMPRESS9
+                MENUITEM "1 (Fastest) (Low Compression)", ID_EMULATOR_SAVECOMPRESS1
+                MENUITEM "2 (Fast)",                    ID_EMULATOR_SAVECOMPRESS2
+                MENUITEM "3 (Fast)",                    ID_EMULATOR_SAVECOMPRESS3
+                MENUITEM "0 (Slow) (Uncompressed)",     ID_EMULATOR_SAVECOMPRESS0
+                MENUITEM "4 (Slow)",                    ID_EMULATOR_SAVECOMPRESS4
+                MENUITEM "5 (Slow)",                    ID_EMULATOR_SAVECOMPRESS5
+                MENUITEM "6 (Slow) (High Compression)", ID_EMULATOR_SAVECOMPRESS6
+                MENUITEM "7 (Slow)",                    ID_EMULATOR_SAVECOMPRESS7
+                MENUITEM "8 (Slow)",                    ID_EMULATOR_SAVECOMPRESS8
+                MENUITEM "9 (Slowest) (Maximum Compression)", ID_EMULATOR_SAVECOMPRESS9
             END
             MENUITEM SEPARATOR
             MENUITEM "SPC7110 Cache Settings...",   IDM_7110_CACHE
@@ -1504,7 +1465,7 @@ BEGIN
     END
 END
 
-RAMWATCH_MENU MENU
+RAMWATCH_MENU MENU 
 BEGIN
     POPUP "File"
     BEGIN
@@ -1532,7 +1493,7 @@ BEGIN
     END
 END
 
-LUAWINDOW_MENU MENU
+LUAWINDOW_MENU MENU 
 BEGIN
     POPUP "Console"
     BEGIN
@@ -1541,7 +1502,7 @@ BEGIN
     END
 END
 
-#endif    // English (U.K.) resources
+#endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
