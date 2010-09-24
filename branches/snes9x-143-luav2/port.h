@@ -93,6 +93,7 @@
 #ifndef _PORT_H_
 #define _PORT_H_
 
+#include "types.h"
 #include <limits.h>
 
 #ifndef STORM
@@ -153,14 +154,14 @@ typedef unsigned char bool8;
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
 
-typedef int8_t int8;
-typedef uint8_t uint8;
-typedef int16_t int16;
-typedef uint16_t uint16;
-typedef int32_t int32;
-typedef uint32_t uint32;
-typedef int64_t int64;
-typedef uint64_t uint64;
+//typedef int8_t int8;
+//typedef uint8_t uint8;
+//typedef int16_t int16;
+//typedef uint16_t uint16;
+//typedef int32_t int32;
+//typedef uint32_t uint32;
+//typedef int64_t int64;
+//typedef uint64_t uint64;
 typedef intptr_t pint;
 
 #else /* Don't have stdint.h */
@@ -173,18 +174,18 @@ typedef int pint;
 
 /* FIXME: Refactor this by moving out the BORLAND part and unifying typedefs */
 #ifndef WIN32
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef signed char int8;
-typedef short int16;
-typedef int int32;
-typedef unsigned int uint32;
+//typedef unsigned char uint8;
+//typedef unsigned short uint16;
+//typedef signed char int8;
+//typedef short int16;
+//typedef int int32;
+//typedef unsigned int uint32;
 # ifdef __GNUC__  /* long long is not part of ISO C++ */
-__extension__ typedef long long int64;
-__extension__ typedef unsigned long long uint64;
+//__extension__ typedef long long int64;
+//__extension__ typedef unsigned long long uint64;
 # else
-typedef long long int64;
-typedef unsigned long long uint64;
+//typedef long long int64;
+//typedef unsigned long long uint64;
 # endif
 #else /* WIN32 */
 
@@ -196,14 +197,14 @@ typedef unsigned long long uint64;
 #   include <systypes.h>
 # else
 
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef signed char int8;
-typedef short int16;
+//typedef unsigned char uint8;
+//typedef unsigned short uint16;
+//typedef signed char int8;
+//typedef short int16;
 
 # ifndef WSAAPI
 /* winsock2.h typedefs int32 as well. */
-typedef long int32;
+//typedef long int32;
 
 #   define PLAT_SOUND_BUFFER SoundBuffer
 #   define RIGHTSHIFT_IS_SAR
@@ -219,12 +220,12 @@ typedef long int32;
 #   define RIGHTSHIFT_INT32_IS_SAR
 # endif /* VC8.0 || VC9.0 */
 
-typedef unsigned int uint32;
+//typedef unsigned int uint32;
 
 # endif /* __BORLANDC__ */
 
-typedef __int64 int64;
-typedef unsigned __int64 uint64;
+//typedef __int64 int64;
+//typedef unsigned __int64 uint64;
 
 #endif /* WIN32 */
 #endif /* HAVE_STDINT_H */
@@ -274,8 +275,8 @@ void _makepath (char *path, const char *drive, const char *dir,
 void _splitpath (const char *path, char *drive, char *dir, char *fname,
 		 char *ext);
 #else /* WIN32 */
-#define strcasecmp stricmp
-#define strncasecmp strnicmp
+//#define strcasecmp stricmp
+//#define strncasecmp strnicmp
 #endif
 
 EXTERN_C void S9xGenerateSound ();

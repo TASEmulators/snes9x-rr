@@ -53,7 +53,7 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories=".;..;zlib;directx;libpng;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
+				AdditionalIncludeDirectories=".;..;zlib;directx;libpng;../lua;../agg/include;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
 				PreprocessorDefinitions="NDEBUG;HAVE_LIBPNG;SDD1_DECOMP;CORRECT_VRAM_READS;JP_FIX;SPC700_SHUTDOWN;CPU_SHUTDOWN;ZLIB;VAR_CYCLES;UNZIP_SUPPORT;ZSNES_FX;EXECUTE_SUPERFX_PER_LINE;NEW_COLOUR_BLENDING;WIN32;__MSC__;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;FMOD_SUPPORT"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -85,11 +85,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/ignore:4199"
-				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib directx/ddraw.lib directx/dsound.lib directx/dxguid.lib vfw32.lib shlwapi.lib delayimp.lib fmodvc.lib fmodexp_vc.lib zlib-2008-x32.lib libpng-2008-x32.lib"
+				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib directx/ddraw.lib directx/dsound.lib directx/dxguid.lib vfw32.lib shlwapi.lib delayimp.lib fmodvc.lib fmodexp_vc.lib zlib-2008-x32.lib libpng-2008-x32.lib agg-2.5.lib lua-5.1.4-x86.lib"
 				OutputFile="$(OutDir)\snes9x-ccore.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="directx;FMOD/api/lib;FMODEx/api/lib;zlib;libpng"
+				AdditionalLibraryDirectories="directx;FMOD/api/lib;FMODEx/api/lib;zlib;libpng;../lua;../agg"
 				GenerateManifest="true"
 				ManifestFile="$(IntDir)\$(TargetFileName).intermediate.manifest"
 				DelayLoadDLLs="fmod.dll;fmodexp.dll"
@@ -167,7 +167,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories=".;..;zlib;directx;libpng;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
+				AdditionalIncludeDirectories=".;..;zlib;directx;libpng;../lua;../agg/include;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
 				PreprocessorDefinitions="ZSNES_C4;ZSNES_FX;NDEBUG;HAVE_LIBPNG;SPC700_C;JMA_SUPPORT;SDD1_DECOMP;CORRECT_VRAM_READS;JP_FIX;SPC700_SHUTDOWN;CPU_SHUTDOWN;ZLIB;VAR_CYCLES;UNZIP_SUPPORT;EXECUTE_SUPERFX_PER_LINE;NEW_COLOUR_BLENDING;WIN32;__MSC__;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NOUNCRYPT;FMOD_SUPPORT"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -198,11 +198,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/ignore:4199"
-				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib directx/ddraw.lib directx/dsound.lib directx/dxguid.lib vfw32.lib shlwapi.lib delayimp.lib fmodvc.lib fmodexp_vc.lib zlib-2008-x32.lib libpng-2008-x32.lib"
+				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib directx/ddraw.lib directx/dsound.lib directx/dxguid.lib vfw32.lib shlwapi.lib delayimp.lib fmodvc.lib fmodexp_vc.lib zlib-2008-x32.lib libpng-2008-x32.lib agg-2.5.lib lua-5.1.4-x86.lib"
 				OutputFile="$(OutDir)\snes9x.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="directx;FMOD/api/lib;FMODEx/api/lib;zlib;libpng"
+				AdditionalLibraryDirectories="directx;FMOD/api/lib;FMODEx/api/lib;zlib;libpng;../lua;../agg"
 				GenerateManifest="true"
 				ManifestFile="$(IntDir)\$(TargetFileName).intermediate.manifest"
 				DelayLoadDLLs="fmod.dll;fmodexp.dll"
@@ -273,7 +273,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;..;zlib;directx;libpng;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
+				AdditionalIncludeDirectories=".;..;zlib;directx;libpng;../lua;../agg/include;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
 				PreprocessorDefinitions="ZSNES_C4;ZSNES_FX;DEBUG;_DEBUG;HAVE_LIBPNG;SPC700_C;JMA_SUPPORT;SDD1_DECOMP;CORRECT_VRAM_READS;JP_FIX;SPC700_SHUTDOWN;CPU_SHUTDOWN;ZLIB;VAR_CYCLES;UNZIP_SUPPORT;EXECUTE_SUPERFX_PER_LINE;NEW_COLOUR_BLENDING;WIN32;__MSC__;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NOUNCRYPT;FMOD_SUPPORT"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -304,11 +304,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/ignore:4199"
-				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib directx/ddraw.lib directx/dsound.lib directx/dxguid.lib vfw32.lib shlwapi.lib delayimp.lib fmodvc.lib fmodexp_vc.lib zlib-2008-x32.lib libpng-2008-x32.lib"
+				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib directx/ddraw.lib directx/dsound.lib directx/dxguid.lib vfw32.lib shlwapi.lib delayimp.lib fmodvc.lib fmodexp_vc.lib zlib-2008-x32.lib libpng-2008-x32.lib agg-2.5.lib lua-5.1.4-x86.lib"
 				OutputFile="$(OutDir)\snes9x-debug.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="directx;FMOD/api/lib;FMODEx/api/lib;zlib;libpng"
+				AdditionalLibraryDirectories="directx;FMOD/api/lib;FMODEx/api/lib;zlib;libpng;../lua;../agg"
 				GenerateManifest="true"
 				ManifestFile="$(IntDir)\$(TargetFileName).intermediate.manifest"
 				DelayLoadDLLs="fmod.dll;fmodexp.dll"
@@ -383,7 +383,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories=".;..;zlib;directx;libpng;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
+				AdditionalIncludeDirectories=".;..;zlib;directx;libpng;../lua;../agg/include;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
 				PreprocessorDefinitions="ZSNES_C4;ZSNES_FX;NDEBUG;HAVE_LIBPNG;SPC700_C;JMA_SUPPORT;SDD1_DECOMP;CORRECT_VRAM_READS;JP_FIX;SPC700_SHUTDOWN;CPU_SHUTDOWN;ZLIB;VAR_CYCLES;UNZIP_SUPPORT;EXECUTE_SUPERFX_PER_LINE;NEW_COLOUR_BLENDING;WIN32;__MSC__;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NOUNCRYPT;FMOD_SUPPORT"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -414,11 +414,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/ignore:4199"
-				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib directx/ddraw.lib directx/dsound.lib directx/dxguid.lib vfw32.lib shlwapi.lib delayimp.lib fmodvc.lib fmodexp_vc.lib zlib-2008-x32.lib libpng-2008-x32.lib"
+				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib directx/ddraw.lib directx/dsound.lib directx/dxguid.lib vfw32.lib shlwapi.lib delayimp.lib fmodvc.lib fmodexp_vc.lib zlib-2008-x32.lib libpng-2008-x32.lib agg-2.5.lib lua-5.1.4-x86.lib"
 				OutputFile="$(OutDir)\snes9x-releaseFastBuild.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="directx;FMOD/api/lib;FMODEx/api/lib;zlib;libpng"
+				AdditionalLibraryDirectories="directx;FMOD/api/lib;FMODEx/api/lib;zlib;libpng;../lua;../agg"
 				GenerateManifest="true"
 				ManifestFile="$(IntDir)\$(TargetFileName).intermediate.manifest"
 				DelayLoadDLLs="fmod.dll;fmodexp.dll"
@@ -547,6 +547,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\luaconsole.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\oldramsearch.cpp"
 				>
 			</File>
@@ -656,6 +660,18 @@
 			</File>
 			<File
 				RelativePath="..\65c816.h"
+				>
+			</File>
+			<File
+				RelativePath="..\agg2d.h"
+				>
+			</File>
+			<File
+				RelativePath="..\aggdraw.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\aggdraw.h"
 				>
 			</File>
 			<File
@@ -1163,6 +1179,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\GPU_osd.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\GPU_osd.h"
+				>
+			</File>
+			<File
 				RelativePath="..\language.h"
 				>
 			</File>
@@ -1176,6 +1200,14 @@
 			</File>
 			<File
 				RelativePath="..\logger.h"
+				>
+			</File>
+			<File
+				RelativePath="..\lua-engine.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\lua-engine.h"
 				>
 			</File>
 			<File
@@ -1372,6 +1404,10 @@
 			</File>
 			<File
 				RelativePath="..\tile.h"
+				>
+			</File>
+			<File
+				RelativePath="..\types.h"
 				>
 			</File>
 			<File

@@ -483,6 +483,7 @@
 #define IDC_BUTTON_LUASTOP              1427
 #define IDC_LUACONSOLE                  1428
 #define IDC_BUTTON_LUAEDIT              1429
+#define IDC_NOTIFY_SUBSERVIENT          1430
 #define ID_FILE_EXIT                    40001
 #define ID_LANGUAGE_ENGLISH             40002
 #define ID_LANGUAGE_NEDERLANDS          40003
@@ -759,7 +760,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        152
 #define _APS_NEXT_COMMAND_VALUE         40292
-#define _APS_NEXT_CONTROL_VALUE         1430
+#define _APS_NEXT_CONTROL_VALUE         1431
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

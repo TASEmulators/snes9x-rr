@@ -297,6 +297,7 @@ extern "C"{
 extern uint8 OpenBus;
 }
 #else
+#undef INLINE
 #define INLINE inline
 #include "getset.h"
 #endif // NO_INLINE_SET_GET
