@@ -38,6 +38,11 @@
 #define IDB_LOCKEDFOLDER                148
 #define IDB_HIDDENFOLDER                149
 #define IDD_MULTICART                   150
+#define IDD_RAMSEARCH                   151
+#define IDD_RAMWATCH                    152
+#define IDD_EDITWATCH                   153
+#define IDD_PROMPT                      154
+#define IDR_RWACCELERATOR               155
 #define IDC_DRIVER                      1001
 #define IDC_BUFLEN                      1002
 #define IDC_RATE                        1003
@@ -157,11 +162,9 @@
 #define IDC_PICTURE                     1132
 #define IDC_ADDYS                       1133
 #define IDC_OK                          1134
-#define IDC_C_SEARCH                    1134
 #define IDC_RED                         1135
 #define IDC_C_ADD                       1135
 #define IDC_BLUE                        1136
-#define IDC_C_RESET                     1136
 #define IDC_LABEL_BLUE                  1136
 #define IDC_1_BYTE                      1137
 #define IDC_2_BYTE                      1138
@@ -178,7 +181,6 @@
 #define IDC_HEX                         1151
 #define IDC_ENTER_LABEL                 1152
 #define IDC_DIAGTOGGLE                  1153
-#define IDC_C_WATCH                     1153
 #define IDC_UNDO                        1154
 #define IDC_C_CLEARWATCH                1154
 #define IDC_COMBO1                      1155
@@ -355,6 +357,46 @@
 #define IDC_BUTTON_LUABROWSE            3021
 #define IDC_NEW_LUA_SCRIPT              3022
 #define IDC_CLOSE_LUA_SCRIPTS           3023
+#define IDC_RAMLIST                     3024
+#define IDC_C_SEARCH                    3025
+#define IDC_C_ADDCHEAT                  3026
+#define IDC_C_WATCH                     3027
+#define IDC_C_RESET                     3028
+#define IDC_C_ELIMINATE                 3029
+#define IDC_LESSTHAN                    3030
+#define IDC_MORETHAN                    3031
+#define IDC_NOMORETHAN                  3032
+#define IDC_NOLESSTHAN                  3033
+#define IDC_EQUALTO                     3034
+#define IDC_DIFFERENTFROM               3035
+#define IDC_DIFFERENTBY                 3036
+#define IDC_MODULO                      3037
+#define IDC_EDIT_DIFFBY                 3038
+#define IDC_EDIT_MODBY                  3039
+#define IDC_PREVIOUSVALUE               3040
+#define IDC_SPECIFICVALUE               3041
+#define IDC_SPECIFICADDRESS             3042
+#define IDC_NUMBEROFCHANGES             3043
+#define IDC_EDIT_COMPAREVALUE           3044
+#define IDC_EDIT_COMPAREADDRESS         3045
+#define IDC_EDIT_COMPARECHANGES         3046
+#define IDC_C_AUTOSEARCH                3050
+#define IDC_2_BYTES                     3052
+#define IDC_4_BYTES                     3053
+#define IDC_MISALIGN                    3054
+#define IDC_C_RESET_CHANGES             3055
+#define IDC_C_UNDO                      3056
+#define IDC_WATCHLIST                   3057
+#define IDC_C_WATCH_EDIT                3058
+#define IDC_C_WATCH_REMOVE              3059
+#define IDC_C_WATCH_DUPLICATE           3060
+#define ID_WATCHES_UPDOWN               3061
+#define IDC_C_WATCH_UP                  3062
+#define IDC_C_WATCH_DOWN                3063
+#define IDC_PROMPT_TEXT                 3064
+#define IDC_PROMPT_TEXT2                3065
+#define IDC_PROMPT_EDIT                 3066
+#define IDC_WATCHES_GROUP               3067
 #define ID_FILE_EXIT                    40001
 #define ID_LANGUAGE_ENGLISH             40002
 #define ID_LANGUAGE_NEDERLANDS          40003
@@ -395,7 +437,6 @@
 #define ID_FILE_LOAD8                   40061
 #define ID_FILE_LOAD9                   40062
 #define ID_CHEAT_ENTER                  40063
-#define ID_CHEAT_SEARCH                 40064
 #define ID_CHEAT_APPLY                  40065
 #define ID_HELP_ABOUT                   40067
 #define ID_SOUND_OPTIONS                40068
@@ -463,7 +504,6 @@
 #define ID_CHANNELS_CHANNEL7            40145
 #define ID_CHANNELS_CHANNEL8            40146
 #define ID_CHANNELS_ENABLEALL           40147
-#define ID_CHEAT_SEARCH_MODAL           40148
 #define ID_SAVESCREENSHOT               40151
 #define ID_FILE_LOAD_GAME               40152
 #define ID_FILE_LOADMULTICART           40153
@@ -480,14 +520,26 @@
 #define ID_SOUND_176MS                  40164
 #define ID_SOUND_194MS                  40165
 #define ID_SOUND_210MS                  40166
+#define RAMMENU_FILE_AUTOLOAD           40167
+#define RAMMENU_FILE_SAVEWINDOW         40168
+#define RAMMENU_FILE_SAVE               40169
+#define RAMMENU_FILE_SAVEAS             40170
+#define RAMMENU_FILE_OPEN               40171
+#define RAMMENU_FILE_APPEND             40172
+#define RAMMENU_FILE_NEW                40173
+#define RAMMENU_FILE_RECENT             40174
+#define ID_RAM_SEARCH                   40175
+#define ID_RAM_WATCH                    40176
+#define RW_MENU_FIRST_RECENT_FILE       40180
+#define RW_MENU_LAST_RECENT_FILE        40200
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        151
-#define _APS_NEXT_COMMAND_VALUE         40154
-#define _APS_NEXT_CONTROL_VALUE         3024
+#define _APS_NEXT_RESOURCE_VALUE        156
+#define _APS_NEXT_COMMAND_VALUE         40201
+#define _APS_NEXT_CONTROL_VALUE         3068
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

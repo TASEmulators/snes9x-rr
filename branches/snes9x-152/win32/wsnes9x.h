@@ -204,6 +204,8 @@
 #endif
 #include "rsrc/resource.h"
 
+#include "../port.h"
+
 #define COUNT(a) (sizeof (a) / sizeof (a[0]))
 #define GUI_VERSION 1008
 
@@ -568,5 +570,21 @@ void S9xSetWinPixelFormat ();
 const char* GetFilterName(RenderFilter filterID);
 int GetFilterScale(RenderFilter filterID);
 bool GetFilterHiResSupport(RenderFilter filterID);
+
+/*****************************************************************************/
+
+struct ICheat
+{
+    uint32  address;
+    uint32  new_val;
+    uint32  saved_val;
+	int		size;
+    bool8   enabled;
+    bool8   saved;
+    char    name [22];
+	int format;
+};
+
+const char *S9xGetFilenameRel (const char *ex);
 
 #endif // !defined(SNES9X_H_INCLUDED)
