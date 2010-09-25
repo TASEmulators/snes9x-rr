@@ -79,7 +79,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib ddraw.lib dsound.lib dxguid.lib delayimp.lib vfw32.lib xapobase.lib zlib-2008-x32.lib libpng-2008-x32.lib agg-2.5.lib lua-5.1.4-x86.lib"
+				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib ddraw.lib dsound.lib dxguid.lib shlwapi.lib delayimp.lib vfw32.lib xapobase.lib zlib-2008-x32.lib libpng-2008-x32.lib agg-2.5.lib lua-5.1.4-x86.lib"
 				OutputFile=".\Snes9X___Win32_C_core/snes9xw.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -183,7 +183,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib ddraw.lib dsound.lib dxguid.lib delayimp.lib vfw32.lib xapobase.lib zlib-2008-x32.lib libpng-2008-x32.lib agg-2.5.lib lua-5.1.4-x86.lib"
+				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib ddraw.lib dsound.lib dxguid.lib shlwapi.lib delayimp.lib vfw32.lib xapobase.lib zlib-2008-x32.lib libpng-2008-x32.lib agg-2.5.lib lua-5.1.4-x86.lib"
 				OutputFile="snes9x.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -280,7 +280,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib ddraw.lib dsound.lib dxguid.lib delayimp.lib vfw32.lib xapobase.lib zlib-2008-x32.lib libpng-2008-x32.lib agg-2.5.lib lua-5.1.4-x86.lib"
+				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib ddraw.lib dsound.lib dxguid.lib shlwapi.lib delayimp.lib vfw32.lib xapobase.lib zlib-2008-x32.lib libpng-2008-x32.lib agg-2.5.lib lua-5.1.4-x86.lib"
 				OutputFile="Snes9x-debug.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -378,7 +378,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib ddraw.lib dsound.lib dxguid.lib delayimp.lib vfw32.lib xapobase.lib zlib-2008-x32.lib libpng-2008-x32.lib agg-2.5.lib lua-5.1.4-x86.lib"
+				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib ddraw.lib dsound.lib dxguid.lib shlwapi.lib delayimp.lib vfw32.lib xapobase.lib zlib-2008-x32.lib libpng-2008-x32.lib agg-2.5.lib lua-5.1.4-x86.lib"
 				OutputFile="Snes9x-debug.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -480,7 +480,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib ddraw.lib dsound.lib dxguid.lib delayimp.lib vfw32.lib xapobase.lib zlib-2008-x32.lib libpng-2008-x32.lib agg-2.5.lib lua-5.1.4-x86.lib"
+				AdditionalDependencies="comctl32.lib winmm.lib opengl32.lib glu32.lib wsock32.lib ddraw.lib dsound.lib dxguid.lib shlwapi.lib delayimp.lib vfw32.lib xapobase.lib zlib-2008-x32.lib libpng-2008-x32.lib agg-2.5.lib lua-5.1.4-x86.lib"
 				OutputFile="snes9x.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
