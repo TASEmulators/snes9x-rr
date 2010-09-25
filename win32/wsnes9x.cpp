@@ -214,6 +214,8 @@
 #include "../GPU_osd.h"
 #include "AVIOutput.h"
 #include "InputCustom.h"
+#include "ram_search.h"
+#include "ramwatch.h"
 #include <vector>
 
 #include <tchar.h>
@@ -275,7 +277,6 @@ int CALLBACK DlgFunky(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 int CALLBACK DlgInputConfig(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 int CALLBACK DlgHotkeyConfig(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 int CALLBACK DlgCheater(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
-int CALLBACK DlgCheatSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 int CALLBACK DlgCheatSearchAdd(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 int CALLBACK DlgCreateMovie(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 int CALLBACK DlgOpenMovie(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -283,6 +284,9 @@ HRESULT CALLBACK EnumModesCallback( LPDDSURFACEDESC lpDDSurfaceDesc, LPVOID lpCo
 
 LRESULT CALLBACK LuaScriptProc(HWND, UINT, WPARAM, LPARAM);
 std::vector<HWND> LuaScriptHWnds;
+
+extern HWND RamSearchHWnd;
+extern LRESULT CALLBACK RamSearchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 int CALLBACK test(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -1427,8 +1431,6 @@ char multiRomB [MAX_PATH] = {0};
 
 static bool startingMovie = false;
 
-HWND cheatSearchHWND = NULL;
-
 
 #define MOVIE_LOCKED_SETTING	if(S9xMovieActive()) {MessageBox(GUI.hWnd,TEXT("That setting is locked while a movie is active."),TEXT("Notice"),MB_OK|MB_ICONEXCLAMATION); break;}
 
@@ -2225,24 +2227,22 @@ LRESULT CALLBACK WinProc(
 							S9xApplyCheats ();
 							RestoreSNESDisplay ();
 							break;
-						case ID_CHEAT_SEARCH:
-							RestoreGUIDisplay ();
-							if(!cheatSearchHWND) // create and show non-modal cheat search window
+						case ID_RAM_SEARCH:
+							if(!RamSearchHWnd)
 							{
-								cheatSearchHWND = CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_CHEAT_SEARCH), hWnd, DlgCheatSearch); // non-modal/modeless
-								ShowWindow(cheatSearchHWND, SW_SHOW);
+								reset_address_info();
+								RamSearchHWnd = CreateDialog(GUI.hInstance, MAKEINTRESOURCE(IDD_RAMSEARCH), hWnd, (DLGPROC) RamSearchProc);
 							}
-							else // already open so just reactivate the window
-							{
-								SetActiveWindow(cheatSearchHWND);
-							}
-							RestoreSNESDisplay ();
+							else
+								SetForegroundWindow(RamSearchHWnd);
 							break;
-						case ID_CHEAT_SEARCH_MODAL:
-							RestoreGUIDisplay ();
-							DialogBox(g_hInst, MAKEINTRESOURCE(IDD_CHEAT_SEARCH), hWnd, DlgCheatSearch); // modal
-							S9xSaveCheatFile (S9xGetFilename (".cht", CHEAT_DIR));
-							RestoreSNESDisplay ();
+						case ID_RAM_WATCH:
+							if(!RamWatchHWnd)
+							{
+								RamWatchHWnd = CreateDialog(GUI.hInstance, MAKEINTRESOURCE(IDD_RAMWATCH), hWnd, (DLGPROC) RamWatchProc);
+							}
+							else
+								SetForegroundWindow(RamWatchHWnd);
 							break;
 						case ID_CHEAT_APPLY:
 							Settings.ApplyCheats = !Settings.ApplyCheats;
@@ -3464,6 +3464,16 @@ int WINAPI WinMain(
             if (!GetMessage (&msg, NULL, 0, 0))
                 goto loop_exit; // got WM_QUIT
 
+			// do not process non-modal dialog messages
+			if (RamSearchHWnd && IsDialogMessage(RamSearchHWnd, &msg))
+				continue;
+
+			if (RamWatchHWnd && IsDialogMessage(RamWatchHWnd, &msg)) {
+				if(msg.message == WM_KEYDOWN) // send keydown messages to the dialog (for accelerators, and also needed for the Alt key to work)
+					SendMessage(RamWatchHWnd, msg.message, msg.wParam, msg.lParam);
+				continue;
+			}
+
             if (!TranslateAccelerator (GUI.hWnd, GUI.Accelerators, &msg))
             {
                 TranslateMessage (&msg);
@@ -3502,14 +3512,6 @@ int WINAPI WinMain(
 
 						CopyMemory(Cheat.CWatchRAM + address, source, watches[i].size);
 					}
-				}
-			}
-			if(cheatSearchHWND)
-			{
-				if(timeGetTime() - lastTime >= 100)
-				{
-					SendMessage(cheatSearchHWND, WM_COMMAND, (WPARAM)(IDC_REFRESHLIST),(LPARAM)(NULL));
-					lastTime = timeGetTime();
 				}
 			}
 
@@ -3577,6 +3579,7 @@ int WINAPI WinMain(
 				}
 
 				S9xMainLoop();
+				Update_RAM_Search(); // Update_RAM_Watch() is also called.
 				GUI.FrameCount++;
 			}
 
@@ -3788,12 +3791,16 @@ static void CheckMenuStates ()
     SetMenuItemInfo (GUI.hMenu, ID_FILE_LOAD9, FALSE, &mii);
     SetMenuItemInfo (GUI.hMenu, ID_FILE_RESET, FALSE, &mii);
     SetMenuItemInfo (GUI.hMenu, ID_CHEAT_ENTER, FALSE, &mii);
-    SetMenuItemInfo (GUI.hMenu, ID_CHEAT_SEARCH_MODAL, FALSE, &mii);
 	SetMenuItemInfo (GUI.hMenu, IDM_ROM_INFO, FALSE, &mii);
 
-	if (GUI.FullScreen)
-        mii.fState |= MFS_DISABLED;
-    SetMenuItemInfo (GUI.hMenu, ID_CHEAT_SEARCH, FALSE, &mii);
+	mii.fState = RamWatchHWnd ? MFS_CHECKED : MFS_UNCHECKED;
+	if (Settings.StopEmulation || GUI.FullScreen)
+		mii.fState |= MFS_DISABLED;
+	SetMenuItemInfo (GUI.hMenu, ID_RAM_WATCH, FALSE, &mii);
+	mii.fState = RamSearchHWnd ? MFS_CHECKED : MFS_UNCHECKED;
+	if (Settings.StopEmulation || GUI.FullScreen)
+		mii.fState |= MFS_DISABLED;
+	SetMenuItemInfo (GUI.hMenu, ID_RAM_SEARCH, FALSE, &mii);
 
 #ifdef NETPLAY_SUPPORT
     if (Settings.NetPlay && !Settings.NetPlayServer)
@@ -8824,18 +8831,6 @@ static inline int CheatCount(int byteSub)
 }
 
 
-struct ICheat
-{
-    uint32  address;
-    uint32  new_val;
-    uint32  saved_val;
-	int		size;
-    bool8   enabled;
-    bool8   saved;
-    char    name [22];
-	int format;
-};
-
 bool TestRange(int val_type, S9xCheatDataSize bytes,  uint32 value)
 {
 	if(val_type!=2)
@@ -8884,896 +8879,6 @@ bool TestRange(int val_type, S9xCheatDataSize bytes,  uint32 value)
 		//should be handled by sscanf
 		return true;
 	}
-}
-
-
-int CALLBACK DlgCheatSearch(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-	static S9xCheatDataSize bytes;
-	static int val_type;
-	static int use_entered;
-	static S9xCheatComparisonType comp_type;
-	switch(msg)
-	{
-	case WM_INITDIALOG:
-		{
-		WinRefreshDisplay();
-			if(val_type==0)
-				val_type=1;
-			ListView_SetExtendedListViewStyle(GetDlgItem(hDlg, IDC_ADDYS), LVS_EX_FULLROWSELECT);
-
-			//defaults
-			SendDlgItemMessage(hDlg, IDC_LESS_THAN, BM_SETCHECK, BST_CHECKED, 0);
-			if(!use_entered)
-				SendDlgItemMessage(hDlg, IDC_PREV, BM_SETCHECK, BST_CHECKED, 0);
-			else if(use_entered==1)
-			{
-				SendDlgItemMessage(hDlg, IDC_ENTERED, BM_SETCHECK, BST_CHECKED, 0);
-				EnableWindow(GetDlgItem(hDlg, IDC_VALUE_ENTER), true);
-				EnableWindow(GetDlgItem(hDlg, IDC_ENTER_LABEL), true);
-			}
-			else if(use_entered==2)
-			{
-				SendDlgItemMessage(hDlg, IDC_ENTEREDADDRESS, BM_SETCHECK, BST_CHECKED, 0);
-				EnableWindow(GetDlgItem(hDlg, IDC_VALUE_ENTER), true);
-				EnableWindow(GetDlgItem(hDlg, IDC_ENTER_LABEL), true);
-			}
-			SendDlgItemMessage(hDlg, IDC_UNSIGNED, BM_SETCHECK, BST_CHECKED, 0);
-			SendDlgItemMessage(hDlg, IDC_1_BYTE, BM_SETCHECK, BST_CHECKED, 0);
-
-			if(comp_type==S9X_GREATER_THAN)
-			{
-				SendDlgItemMessage(hDlg, IDC_LESS_THAN, BM_SETCHECK, BST_UNCHECKED, 0);
-				SendDlgItemMessage(hDlg, IDC_GREATER_THAN, BM_SETCHECK, BST_CHECKED, 0);
-			}
-			else if(comp_type==S9X_LESS_THAN_OR_EQUAL)
-			{
-				SendDlgItemMessage(hDlg, IDC_LESS_THAN, BM_SETCHECK, BST_UNCHECKED, 0);
-				SendDlgItemMessage(hDlg, IDC_LESS_THAN_EQUAL, BM_SETCHECK, BST_CHECKED, 0);
-
-			}
-			else if(comp_type==S9X_GREATER_THAN_OR_EQUAL)
-			{
-				SendDlgItemMessage(hDlg, IDC_LESS_THAN, BM_SETCHECK, BST_UNCHECKED, 0);
-				SendDlgItemMessage(hDlg, IDC_GREATER_THAN_EQUAL, BM_SETCHECK, BST_CHECKED, 0);
-
-			}
-			else if(comp_type==S9X_EQUAL)
-			{
-				SendDlgItemMessage(hDlg, IDC_LESS_THAN, BM_SETCHECK, BST_UNCHECKED, 0);
-				SendDlgItemMessage(hDlg, IDC_EQUAL, BM_SETCHECK, BST_CHECKED, 0);
-
-			}
-			else if(comp_type==S9X_NOT_EQUAL)
-			{
-				SendDlgItemMessage(hDlg, IDC_LESS_THAN, BM_SETCHECK, BST_UNCHECKED, 0);
-				SendDlgItemMessage(hDlg, IDC_NOT_EQUAL, BM_SETCHECK, BST_CHECKED, 0);
-
-			}
-
-			if(val_type==2)
-			{
-				SendDlgItemMessage(hDlg, IDC_UNSIGNED, BM_SETCHECK, BST_UNCHECKED, 0);
-				SendDlgItemMessage(hDlg, IDC_SIGNED, BM_SETCHECK, BST_CHECKED, 0);
-
-			}
-			else if(val_type==3)
-			{
-				SendDlgItemMessage(hDlg, IDC_UNSIGNED, BM_SETCHECK, BST_UNCHECKED, 0);
-				SendDlgItemMessage(hDlg, IDC_HEX, BM_SETCHECK, BST_CHECKED, 0);
-			}
-
-			if(bytes==S9X_16_BITS)
-			{
-				SendDlgItemMessage(hDlg, IDC_1_BYTE, BM_SETCHECK, BST_UNCHECKED, 0);
-				SendDlgItemMessage(hDlg, IDC_2_BYTE, BM_SETCHECK, BST_CHECKED, 0);
-			}
-			else if(bytes==S9X_24_BITS)
-			{
-				SendDlgItemMessage(hDlg, IDC_1_BYTE, BM_SETCHECK, BST_UNCHECKED, 0);
-				SendDlgItemMessage(hDlg, IDC_3_BYTE, BM_SETCHECK, BST_CHECKED, 0);
-			}
-			else if(bytes==S9X_32_BITS)
-			{
-				SendDlgItemMessage(hDlg, IDC_1_BYTE, BM_SETCHECK, BST_UNCHECKED, 0);
-				SendDlgItemMessage(hDlg, IDC_4_BYTE, BM_SETCHECK, BST_CHECKED, 0);
-			}
-
-			LVCOLUMN col;
-			char temp[32];
-			strcpy(temp,"Address");
-			ZeroMemory(&col, sizeof(LVCOLUMN));
-			col.mask=LVCF_FMT|LVCF_ORDER|LVCF_TEXT|LVCF_WIDTH;
-			col.fmt=LVCFMT_LEFT;
-			col.iOrder=0;
-			col.cx=70;
-			col.cchTextMax=7;
-			col.pszText=temp;
-
-			ListView_InsertColumn(GetDlgItem(hDlg,IDC_ADDYS),   0,   &col);
-
-			strcpy(temp,"Curr. Value");
-			ZeroMemory(&col, sizeof(LVCOLUMN));
-			col.mask=LVCF_FMT|LVCF_ORDER|LVCF_TEXT|LVCF_WIDTH|LVCF_SUBITEM;
-			col.fmt=LVCFMT_LEFT;
-			col.iOrder=1;
-			col.cx=104;
-			col.cchTextMax=3;
-			col.pszText=temp;
-			col.iSubItem=1;
-
-			ListView_InsertColumn(GetDlgItem(hDlg,IDC_ADDYS),    1,   &col);
-
-			strcpy(temp,"Prev. Value");
-			ZeroMemory(&col, sizeof(LVCOLUMN));
-			col.mask=LVCF_FMT|LVCF_ORDER|LVCF_TEXT|LVCF_WIDTH|LVCF_SUBITEM;
-			col.fmt=LVCFMT_LEFT;
-			col.iOrder=2;
-			col.cx=104;
-			col.cchTextMax=32;
-			col.pszText=temp;
-			col.iSubItem=2;
-
-			ListView_InsertColumn(GetDlgItem(hDlg,IDC_ADDYS),    2,   &col);
-
-			{
-					int l = CheatCount(bytes);
-					ListView_SetItemCount (GetDlgItem(hDlg, IDC_ADDYS), l);
-			}
-
-		}
-		return true;
-
-		case WM_DESTROY:
-			{
-				cheatSearchHWND = NULL;
-				S9xSaveCheatFile (S9xGetFilename (".cht", CHEAT_DIR));
-				break;
-			}
-
-		case WM_PAINT:
-		{
-		PAINTSTRUCT ps;
-		BeginPaint (hDlg, &ps);
-
-		EndPaint (hDlg, &ps);
-		}
-		return true;
-	case WM_NOTIFY:
-		{
-			static int selectionMarkOverride = -1;
-			static int foundItemOverride = -1;
-			if(wParam == IDC_ADDYS)
-			{
-				NMHDR * nmh=(NMHDR*)lParam;
-				if(nmh->hwndFrom == GetDlgItem(hDlg, IDC_ADDYS) && nmh->code == LVN_GETDISPINFO)
-				{
-					static TCHAR buf[12]; // the following code assumes this variable is static
-					int i, j;
-					NMLVDISPINFO * nmlvdi=(NMLVDISPINFO*)lParam;
-					j=nmlvdi->item.iItem;
-					j++;
-					for(i=0;i<(0x32000-bytes)&& j>0;i++)
-					{
-						if(TEST_BIT(Cheat.ALL_BITS, i))
-							j--;
-					}
-					if (i>=0x32000 && j!=0)
-					{
-						return false;
-					}
-					i--;
-					if(j=nmlvdi->item.iSubItem==0)
-					{
-						if(i < 0x20000)
-							sprintf(buf, "%06X", i+0x7E0000);
-						else if(i < 0x30000)
-							sprintf(buf, "s%05X", i-0x20000);
-						else
-							sprintf(buf, "i%05X", i-0x30000);
-						nmlvdi->item.pszText=buf;
-						nmlvdi->item.cchTextMax=8;
-					}
-					if(j=nmlvdi->item.iSubItem==1)
-					{
-						int q=0, r=0;
-						if(i < 0x20000)
-							for(r=0;r<=bytes;r++)
-								q+=(Cheat.RAM[i+r])<<(8*r);
-						else if(i < 0x30000)
-							for(r=0;r<=bytes;r++)
-								q+=(Cheat.SRAM[(i-0x20000)+r])<<(8*r);
-						else
-							for(r=0;r<=bytes;r++)
-								q+=(Cheat.FillRAM[(i-0x30000)+r])<<(8*r);
-						//needs to account for size
-						switch(val_type)
-						{
-						case 1:
-							sprintf(buf, "%u", q);
-							break;
-						case 3:
-							{
-								switch(bytes)
-								{
-									default:
-									case S9X_8_BITS:sprintf(buf, "%02X", q&0xFF);break;
-									case S9X_16_BITS: sprintf(buf, "%04X", q&0xFFFF); break;
-									case S9X_24_BITS: sprintf(buf, "%06X", q&0xFFFFFF);break;
-									case S9X_32_BITS: sprintf(buf, "%08X", q);break;
-								}
-							}
-							break;
-						case 2:
-							default:
-								switch(bytes)
-								{
-									default:
-									case S9X_8_BITS:
-										if((q-128)<0)
-											sprintf(buf, "%d", q&0xFF);
-										else sprintf(buf, "%d", q-256);
-										break;
-									case S9X_16_BITS:
-										if((q-32768)<0)
-											sprintf(buf, "%d", q&0xFFFF);
-										else sprintf(buf, "%d", q-65536);
-										break;
-									case S9X_24_BITS:
-										if((q-0x800000)<0)
-											sprintf(buf, "%d", q&0xFFFFFF);
-										else sprintf(buf, "%d", q-0x1000000);
-										break;
-
-									case S9X_32_BITS: sprintf(buf, "%d", q);break;
-								}
-								break;
-						}
-						nmlvdi->item.pszText=buf;
-						nmlvdi->item.cchTextMax=4;
-					}
-					if(j=nmlvdi->item.iSubItem==2)
-					{
-						int q=0, r=0;
-						if(i < 0x20000)
-							for(r=0;r<=bytes;r++)
-								q+=(Cheat.CWRAM[i+r])<<(8*r);
-						else if(i < 0x30000)
-							for(r=0;r<=bytes;r++)
-								q+=(Cheat.CSRAM[(i-0x20000)+r])<<(8*r);
-						else
-							for(r=0;r<=bytes;r++)
-								q+=(Cheat.CIRAM[(i-0x30000)+r])<<(8*r);
-						//needs to account for size
-						switch(val_type)
-						{
-						case 1:
-							sprintf(buf, "%u", q);
-							break;
-						case 3:
-							{
-								switch(bytes)
-								{
-									default:
-									case S9X_8_BITS:sprintf(buf, "%02X", q&0xFF);break;
-									case S9X_16_BITS: sprintf(buf, "%04X", q&0xFFFF); break;
-									case S9X_24_BITS: sprintf(buf, "%06X", q&0xFFFFFF);break;
-									case S9X_32_BITS: sprintf(buf, "%08X", q);break;
-								}
-								break;
-							}
-						case 2:
-							default:
-								switch(bytes)
-								{
-									default:
-									case S9X_8_BITS:
-										if((q-128)<0)
-											sprintf(buf, "%d", q&0xFF);
-										else sprintf(buf, "%d", q-256);
-										break;
-									case S9X_16_BITS:
-										if((q-32768)<0)
-											sprintf(buf, "%d", q&0xFFFF);
-										else sprintf(buf, "%d", q-65536);
-										break;
-									case S9X_24_BITS:
-										if((q-0x800000)<0)
-											sprintf(buf, "%d", q&0xFFFFFF);
-										else sprintf(buf, "%d", q-0x1000000);
-										break;
-
-									case S9X_32_BITS: sprintf(buf, "%d", q);break;
-								}
-								break;
-						}
-						nmlvdi->item.pszText=buf;
-						nmlvdi->item.cchTextMax=4;
-					}
-					// nmlvdi->item.mask=LVIF_TEXT; // This is bad as wine relies on this to not change.
-
-				}
-				else if(nmh->hwndFrom == GetDlgItem(hDlg, IDC_ADDYS) && (nmh->code == (UINT)LVN_ITEMACTIVATE||nmh->code == (UINT)NM_CLICK))
-				{
-					bool enable=true;
-					if(-1==ListView_GetSelectionMark(nmh->hwndFrom))
-					{
-						enable=false;
-					}
-					EnableWindow(GetDlgItem(hDlg, IDC_C_ADD), enable);
-				}
-				// allow typing in an address to jump to it
-				else if(nmh->hwndFrom == GetDlgItem(hDlg, IDC_ADDYS) && nmh->code == (UINT)LVN_ODFINDITEM)
-				{
-					LRESULT pResult;
-
-					// pNMHDR has information about the item we should find
-					// In pResult we should save which item that should be selected
-					NMLVFINDITEM* pFindInfo = (NMLVFINDITEM*)lParam;
-
-					/* pFindInfo->iStart is from which item we should search.
-					We search to bottom, and then restart at top and will stop
-					at pFindInfo->iStart, unless we find an item that match
-					*/
-
-					// Set the default return value to -1
-					// That means we didn't find any match.
-					pResult = -1;
-
-					//Is search NOT based on string?
-					if( (pFindInfo->lvfi.flags & LVFI_STRING) == 0 )
-					{
-						//This will probably never happend...
-						return pResult;
-					}
-
-					//This is the string we search for
-					LPCSTR searchstr = pFindInfo->lvfi.psz;
-
-					int startPos = pFindInfo->iStart;
-					//Is startPos outside the list (happens if last item is selected)
-					if(startPos >= ListView_GetItemCount(GetDlgItem(hDlg,IDC_ADDYS)))
-						startPos = 0;
-
-					int currentPos, addrPos;
-					for(addrPos=0,currentPos=0;addrPos<(0x32000-bytes)&&currentPos<startPos;addrPos++)
-					{
-						if(TEST_BIT(Cheat.ALL_BITS, addrPos))
-							currentPos++;
-					}
-
-					pResult=currentPos;
-
-					if (addrPos>=0x32000 && addrPos!=0)
-						break;
-
-					// ignore leading 0's
-					while(searchstr[0] == '0' && searchstr[1] != '\0')
-						searchstr++;
-
-					int searchNum = 0;
-
-					ScanAddress(searchstr, searchNum);
-
-
-//					if (searchstr[0] != '7')
-//						break; // all searchable addresses begin with a 7
-
-					bool looped = false;
-
-					// perform search
-					do
-					{
-
-						if(addrPos == searchNum)
-						{
-							// select this item and stop search
-							pResult = currentPos;
-							break;
-						}
-						else if(addrPos > searchNum)
-						{
-							if(looped)
-							{
-								pResult = currentPos;
-								break;
-							}
-
-							// optimization: the items are ordered alphabetically, so go back to the top since we know it can't be anything further down
-							currentPos = 0;
-							addrPos = 0;
-							while(!TEST_BIT(Cheat.ALL_BITS, addrPos))
-								addrPos++;
-							looped = true;
-							continue;
-						}
-
-						//Go to next item
-						addrPos++;
-						while(!TEST_BIT(Cheat.ALL_BITS, addrPos))
-							addrPos++;
-						currentPos++;
-
-						//Need to restart at top?
-						if(currentPos >= ListView_GetItemCount(GetDlgItem(hDlg,IDC_ADDYS)))
-						{
-							currentPos = 0;
-							addrPos = 0;
-							while(!TEST_BIT(Cheat.ALL_BITS, addrPos))
-								addrPos++;
-						}
-
-					//Stop if back to start
-					}while(currentPos != startPos);
-
-					foundItemOverride = pResult;
-
-					// in case previously-selected item is 0
-					ListView_SetItemState (GetDlgItem(hDlg,IDC_ADDYS), 1, LVIS_SELECTED|LVIS_FOCUSED,LVIS_SELECTED|LVIS_FOCUSED);
-
-					return pResult; // HACK: for some reason this selects the first item instead of what it's returning... current workaround is to manually re-select this return value upon the next changed event
-				}
-				else if(nmh->hwndFrom == GetDlgItem(hDlg, IDC_ADDYS) && nmh->code == LVN_ITEMCHANGED)
-				{
-					// hack - see note directly above
-					LPNMLISTVIEW lpnmlv = (LPNMLISTVIEW)lParam;
-					if(lpnmlv->uNewState & (LVIS_SELECTED|LVIS_FOCUSED))
-					{
-						if(foundItemOverride != -1 && lpnmlv->iItem == 0)
-						{
-							ListView_SetItemState (GetDlgItem(hDlg,IDC_ADDYS), foundItemOverride, LVIS_SELECTED|LVIS_FOCUSED,LVIS_SELECTED|LVIS_FOCUSED);
-							ListView_EnsureVisible (GetDlgItem(hDlg,IDC_ADDYS), foundItemOverride, FALSE);
-							selectionMarkOverride = foundItemOverride;
-							foundItemOverride = -1;
-						}
-						else
-						{
-							selectionMarkOverride = lpnmlv->iItem;
-						}
-					}
-				}
-			}
-		}
-		break;
-	case WM_ACTIVATE:
-		ListView_RedrawItems(GetDlgItem(hDlg, IDC_ADDYS),0, 0x32000);
-		break;
-	case WM_COMMAND:
-		{
-			switch(LOWORD(wParam))
-			{
-			case IDC_LESS_THAN:
-			case IDC_GREATER_THAN:
-			case IDC_LESS_THAN_EQUAL:
-			case IDC_GREATER_THAN_EQUAL:
-			case IDC_EQUAL:
-			case IDC_NOT_EQUAL:
-				if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_LESS_THAN))
-					comp_type=S9X_LESS_THAN;
-				else if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_GREATER_THAN))
-					comp_type=S9X_GREATER_THAN;
-				else if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_LESS_THAN_EQUAL))
-					comp_type=S9X_LESS_THAN_OR_EQUAL;
-				else if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_GREATER_THAN_EQUAL))
-					comp_type=S9X_GREATER_THAN_OR_EQUAL;
-				else if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_EQUAL))
-					comp_type=S9X_EQUAL;
-				else if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_NOT_EQUAL))
-					comp_type=S9X_NOT_EQUAL;
-
-				break;
-			case IDC_1_BYTE:
-			case IDC_2_BYTE:
-			case IDC_3_BYTE:
-			case IDC_4_BYTE:
-				if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_1_BYTE))
-					bytes=S9X_8_BITS;
-				else if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_2_BYTE))
-					bytes=S9X_16_BITS;
-				else if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_3_BYTE))
-					bytes=S9X_24_BITS;
-				else bytes=S9X_32_BITS;
-				{
-					int l = CheatCount(bytes);
-					ListView_SetItemCount (GetDlgItem(hDlg, IDC_ADDYS), l);
-				}
-
-				break;
-
-			case IDC_SIGNED:
-			case IDC_UNSIGNED:
-			case IDC_HEX:
-				if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_UNSIGNED))
-					val_type=1;
-				else if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_SIGNED))
-					val_type=2;
-				else val_type=3;
-				ListView_RedrawItems(GetDlgItem(hDlg, IDC_ADDYS),0, 0x32000);
-				break;
-			case IDC_C_ADD:
-				{
-					// account for size
-					struct ICheat cht;
-//					int idx=-1;
-					LVITEM lvi;
-					static TCHAR buf[12]; // the following code assumes this variable is static, I think
-					ZeroMemory(&cht, sizeof(struct SCheat));
-
-					//retrieve and convert to SCheat
-
-					if(bytes==S9X_8_BITS)
-						cht.size=1;
-					else if (bytes==S9X_16_BITS)
-						cht.size=2;
-					else if (bytes==S9X_24_BITS)
-						cht.size=3;
-					else if (bytes==S9X_32_BITS)
-						cht.size=4;
-
-
-					ITEM_QUERY(lvi, IDC_ADDYS, 0, buf, 7);
-
-
-					ScanAddress(buf, cht.address);
-
-					memset(buf, 0, 7);
-					if(val_type==1)
-					{
-						ITEM_QUERY(lvi, IDC_ADDYS, 1, buf, 12);
-						sscanf(buf, "%u", &cht.new_val);
-						memset(buf, 0, 7);
-						ITEM_QUERY(lvi, IDC_ADDYS, 2, buf, 12);
-						sscanf(buf, "%u", &cht.saved_val);
-					}
-					else if(val_type==3)
-					{
-						ITEM_QUERY(lvi, IDC_ADDYS, 1, buf, 12);
-						sscanf(buf, "%x", &cht.new_val);
-						memset(buf, 0, 7);
-						ITEM_QUERY(lvi, IDC_ADDYS, 2, buf, 12);
-						sscanf(buf, "%x", &cht.saved_val);
-					}
-					else
-					{
-						ITEM_QUERY(lvi, IDC_ADDYS, 1, buf, 12);
-						sscanf(buf, "%d", &cht.new_val);
-						memset(buf, 0, 7);
-						ITEM_QUERY(lvi, IDC_ADDYS, 2, buf, 12);
-						sscanf(buf, "%d", &cht.saved_val);
-					}
-					cht.format=val_type;
-					//invoke dialog
-					if(!DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_CHEAT_FROM_SEARCH), hDlg, DlgCheatSearchAdd, (LPARAM)&cht))
-					{
-						int p;
-						for(p=0; p<cht.size; p++)
-						{
-							S9xAddCheat(TRUE, cht.saved, cht.address +p, ((cht.new_val>>(8*p))&0xFF));
-							//add cheat
-							strcpy(Cheat.c[Cheat.num_cheats-1].name, cht.name);
-						}
-					}
-				}
-				break;
-			case IDC_C_RESET:
-				S9xStartCheatSearch(&Cheat);
-				{
-					int l = CheatCount(bytes);
-					ListView_SetItemCount (GetDlgItem(hDlg, IDC_ADDYS), l);
-				}
-				ListView_RedrawItems(GetDlgItem(hDlg, IDC_ADDYS),0, 0x32000);
-				//val_type=1;
-				//SendDlgItemMessage(hDlg, IDC_UNSIGNED, BM_SETCHECK, BST_CHECKED, 0);
-				//SendDlgItemMessage(hDlg, IDC_SIGNED, BM_SETCHECK, BST_UNCHECKED, 0);
-				//SendDlgItemMessage(hDlg, IDC_HEX, BM_SETCHECK, BST_UNCHECKED, 0);
-
-				//bytes=S9X_8_BITS;
-				//SendDlgItemMessage(hDlg, IDC_1_BYTE, BM_SETCHECK, BST_CHECKED, 0);
-				//SendDlgItemMessage(hDlg, IDC_2_BYTE, BM_SETCHECK, BST_UNCHECKED, 0);
-				//SendDlgItemMessage(hDlg, IDC_3_BYTE, BM_SETCHECK, BST_UNCHECKED, 0);
-				//SendDlgItemMessage(hDlg, IDC_4_BYTE, BM_SETCHECK, BST_UNCHECKED, 0);
-
-
-				//use_entered=0;
-				//SendDlgItemMessage(hDlg, IDC_PREV, BM_SETCHECK, BST_CHECKED, 0);
-				//SendDlgItemMessage(hDlg, IDC_ENTERED, BM_SETCHECK, BST_UNCHECKED, 0);
-				//SendDlgItemMessage(hDlg, IDC_ENTEREDADDRESS, BM_SETCHECK, BST_UNCHECKED, 0);
-				//EnableWindow(GetDlgItem(hDlg, IDC_VALUE_ENTER), false);
-				//EnableWindow(GetDlgItem(hDlg, IDC_ENTER_LABEL), false);
-
-				//comp_type=S9X_LESS_THAN;
-				//SendDlgItemMessage(hDlg, IDC_LESS_THAN, BM_SETCHECK, BST_CHECKED, 0);
-				//SendDlgItemMessage(hDlg, IDC_GREATER_THAN, BM_SETCHECK, BST_UNCHECKED, 0);
-				//SendDlgItemMessage(hDlg, IDC_LESS_THAN_EQUAL, BM_SETCHECK, BST_UNCHECKED, 0);
-				//SendDlgItemMessage(hDlg, IDC_GREATER_THAN_EQUAL, BM_SETCHECK, BST_UNCHECKED, 0);
-				//SendDlgItemMessage(hDlg, IDC_EQUAL, BM_SETCHECK, BST_UNCHECKED, 0);
-				//SendDlgItemMessage(hDlg, IDC_NOT_EQUAL, BM_SETCHECK, BST_UNCHECKED, 0);
-				return true;
-			case IDC_C_WATCH:
-				{
-					uint32 address = (uint32)-1;
-					char buf [12];
-					LVITEM lvi;
-					ITEM_QUERY(lvi, IDC_ADDYS, 0, buf, 7);
-					ScanAddress(buf, address);
-					{
-						memset(buf, 0, 7);
-
-						unsigned int i;
-						for(i = 0 ; i < sizeof(watches)/sizeof(*watches) ; i++)
-							if(!watches[i].on || watches[i].address == address)
-								break;
-						if(i >= sizeof(watches)/sizeof(*watches))
-							i = (unsigned int)(sizeof(watches)/sizeof(*watches)-1);
-
-						watches[i].on = true;
-
-						// account for size
-						if(bytes==S9X_8_BITS)
-							watches[i].size=1;
-						else if (bytes==S9X_16_BITS)
-							watches[i].size=2;
-						else if (bytes==S9X_24_BITS)
-							watches[i].size=3;
-						else if (bytes==S9X_32_BITS)
-							watches[i].size=4;
-
-						watches[i].format=val_type;
-						watches[i].address=address;
-						strncpy(watches[i].buf,buf,12);
-						if(address < 0x7E0000 + 0x20000)
-							sprintf(watches[i].desc, "%6X", address);
-						else if(address < 0x7E0000 + 0x30000)
-							sprintf(watches[i].desc, "s%05X", address - 0x7E0000 - 0x20000);
-						else
-							sprintf(watches[i].desc, "i%05X", address - 0x7E0000 - 0x30000);
-					}
-					{
-						RECT rect;
-						GetClientRect (GUI.hWnd, &rect);
-						InvalidateRect (GUI.hWnd, &rect, true);
-					}
-				}
-				break;
-			case IDC_C_CLEARWATCH:
-				{
-					for(unsigned int i = 0 ; i < sizeof(watches)/sizeof(*watches) ; i++)
-						watches[i].on = false;
-					{
-						RECT rect;
-						GetClientRect (GUI.hWnd, &rect);
-						InvalidateRect (GUI.hWnd, &rect, true);
-					}
-				}
-				break;
-			case IDC_C_LOADWATCH:
-				{
-					OPENFILENAME  ofn;
-					char  szFileName[MAX_PATH];
-					char  szPathName[MAX_PATH];
-					strcpy(szFileName, "watches");
-					_fullpath(szPathName, S9xGetDirectory(CHEAT_DIR), MAX_PATH);
-
-					ZeroMemory( (LPVOID)&ofn, sizeof(OPENFILENAME) );
-					ofn.lStructSize = sizeof(OPENFILENAME);
-					ofn.hwndOwner = GUI.hWnd;
-					ofn.lpstrFilter = FILE_INFO_TXT_FILE_TYPE "\0*.txt\0" FILE_INFO_ANY_FILE_TYPE "\0*.*\0\0";
-					ofn.lpstrFile = szFileName;
-					ofn.lpstrDefExt = "txt";
-					ofn.nMaxFile = MAX_PATH;
-					ofn.Flags = OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
-					ofn.lpstrInitialDir = szPathName;
-					if(GetOpenFileName( &ofn ))
-					{
-						FILE *file = fopen(szFileName, "r");
-						if(file)
-						{
-							unsigned int i;
-							for(i = 0 ; i < sizeof(watches)/sizeof(*watches) ; i++)
-								watches[i].on = false;
-							for(i = 0 ; i < sizeof(watches)/sizeof(*watches) ; i++)
-							{
-								char nameStr [32];
-								nameStr[0]='?'; nameStr[1]='\0';
-								fscanf(file, " address = 0x%x, name = \"%31[^\"]\", size = %d, format = %d\n", &watches[i].address, nameStr, &watches[i].size, &watches[i].format);
-								if(nameStr[0] == '\0' || nameStr[0] == '?')
-								{
-									if(watches[i].address < 0x7E0000 + 0x20000)
-										sprintf(nameStr, "%06X", watches[i].address);
-									else if(watches[i].address < 0x7E0000 + 0x30000)
-										sprintf(nameStr, "s%05X", watches[i].address - 0x7E0000 - 0x20000);
-									else
-										sprintf(nameStr, "i%05X", watches[i].address - 0x7E0000 - 0x30000);
-								}
-								nameStr[31] = '\0';
-								if(!ferror(file))
-								{
-									watches[i].on = true;
-									watches[i].buf[0] = '\0';
-									strncpy(watches[i].desc, nameStr, sizeof(watches[i].desc)); watches[i].desc[sizeof(watches[i].desc)-1]='\0';
-								}
-								if(ferror(file) || feof(file))
-									break;
-							}
-							fclose(file);
-						}
-					}
-					{
-						RECT rect;
-						GetClientRect (GUI.hWnd, &rect);
-						InvalidateRect (GUI.hWnd, &rect, true);
-					}
-				}
-				break;
-			case IDC_C_SAVEWATCH:
-				{
-					OPENFILENAME  ofn;
-					char  szFileName[MAX_PATH];
-					char  szPathName[MAX_PATH];
-					strcpy(szFileName, "watches");
-					_fullpath(szPathName, S9xGetDirectory(CHEAT_DIR), MAX_PATH);
-
-					ZeroMemory( (LPVOID)&ofn, sizeof(OPENFILENAME) );
-					ofn.lStructSize = sizeof(OPENFILENAME);
-					ofn.hwndOwner = GUI.hWnd;
-					ofn.lpstrFilter = FILE_INFO_TXT_FILE_TYPE "\0*.txt\0" FILE_INFO_ANY_FILE_TYPE "\0*.*\0\0";
-					ofn.lpstrFile = szFileName;
-					ofn.lpstrDefExt = "txt";
-					ofn.nMaxFile = MAX_PATH;
-					ofn.Flags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
-					ofn.lpstrInitialDir = szPathName;
-					if(GetSaveFileName( &ofn ))
-					{
-						FILE *file = fopen(szFileName, "w");
-						if(file)
-						{
-							for(unsigned int i = 0 ; i < sizeof(watches)/sizeof(*watches) ; i++)
-								if(watches[i].on)
-//									fprintf(file, "address = 0x%x, name = \"%6X\", size = %d, format = %d\n", watches[i].address, watches[i].address, watches[i].size, watches[i].format);
-									fprintf(file, "address = 0x%x, name = \"?\", size = %d, format = %d\n", watches[i].address, watches[i].size, watches[i].format);
-							fclose(file);
-						}
-					}
-					{
-						RECT rect;
-						GetClientRect (GUI.hWnd, &rect);
-						InvalidateRect (GUI.hWnd, &rect, true);
-					}
-				}
-				break;
-
-			case IDC_REFRESHLIST:
-				ListView_RedrawItems(GetDlgItem(hDlg, IDC_ADDYS),0, 0x32000);
-				break;
-
-			case IDC_ENTERED:
-			case IDC_ENTEREDADDRESS:
-			case IDC_PREV:
-				if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_ENTERED))
-				{
-					use_entered=1;
-					EnableWindow(GetDlgItem(hDlg, IDC_VALUE_ENTER), true);
-					EnableWindow(GetDlgItem(hDlg, IDC_ENTER_LABEL), true);
-				}
-				else if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_ENTEREDADDRESS))
-				{
-					use_entered=2;
-					EnableWindow(GetDlgItem(hDlg, IDC_VALUE_ENTER), true);
-					EnableWindow(GetDlgItem(hDlg, IDC_ENTER_LABEL), true);
-				}
-				else
-				{
-					use_entered=0;
-					EnableWindow(GetDlgItem(hDlg, IDC_VALUE_ENTER), false);
-					EnableWindow(GetDlgItem(hDlg, IDC_ENTER_LABEL), false);
-				}
-				return true;
-				break;
-			case IDC_C_SEARCH:
-				{
-				val_type=0;
-
-				if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_LESS_THAN))
-					comp_type=S9X_LESS_THAN;
-				else if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_GREATER_THAN))
-					comp_type=S9X_GREATER_THAN;
-				else if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_LESS_THAN_EQUAL))
-					comp_type=S9X_LESS_THAN_OR_EQUAL;
-				else if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_GREATER_THAN_EQUAL))
-					comp_type=S9X_GREATER_THAN_OR_EQUAL;
-				else if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_EQUAL))
-					comp_type=S9X_EQUAL;
-				else comp_type=S9X_NOT_EQUAL;
-
-				if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_UNSIGNED))
-					val_type=1;
-				else if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_SIGNED))
-					val_type=2;
-				else val_type=3;
-
-
-
-				if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_1_BYTE))
-					bytes=S9X_8_BITS;
-				else if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_2_BYTE))
-					bytes=S9X_16_BITS;
-				else if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_3_BYTE))
-					bytes=S9X_24_BITS;
-				else bytes=S9X_32_BITS;
-
-
-				if(BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_ENTERED) ||
-				   BST_CHECKED==IsDlgButtonChecked(hDlg, IDC_ENTEREDADDRESS))
-				{
-					TCHAR buf[20];
-					GetDlgItemText(hDlg, IDC_VALUE_ENTER, buf, 20);
-					uint32 value;
-					int ret;
-					if(use_entered==2)
-					{
-						ret = ScanAddress(buf, value);
-						value -= 0x7E0000;
-						S9xSearchForAddress (&Cheat, comp_type, bytes, value, FALSE);
-					}
-					else
-					{
-						if(val_type==1)
-							ret=_stscanf(buf, "%ul", &value);
-						else if (val_type==2)
-							ret=_stscanf(buf, "%d", &value);
-						else ret=_stscanf(buf, "%x", &value);
-
-
-						if(ret!=1||!TestRange(val_type, bytes, value))
-						{
-							MessageBox(hDlg, TEXT(SEARCH_ERR_INVALIDSEARCHVALUE), TEXT(SEARCH_TITLE_CHEATERROR), MB_OK);
-							return true;
-						}
-
-						S9xSearchForValue (&Cheat, comp_type,
-							bytes, value,
-							(val_type==2), FALSE);
-					}
-
-				}
-				else
-				{
-					S9xSearchForChange (&Cheat, comp_type,
-                         bytes, (val_type==2), FALSE);
-				}
-				int l = CheatCount(bytes);
-				ListView_SetItemCount (GetDlgItem(hDlg, IDC_ADDYS), l);
-				}
-
-				// if non-modal, update "Prev. Value" column after Search
-				if(cheatSearchHWND)
-				{
-					CopyMemory(Cheat.CWRAM, Cheat.RAM, 0x20000);
-					CopyMemory(Cheat.CSRAM, Cheat.SRAM, 0x10000);
-					CopyMemory(Cheat.CIRAM, Cheat.FillRAM, 0x2000);
-				}
-
-
-				ListView_RedrawItems(GetDlgItem(hDlg, IDC_ADDYS),0, 0x32000);
-				return true;
-				break;
-			case IDOK:
-				CopyMemory(Cheat.CWRAM, Cheat.RAM, 0x20000);
-				CopyMemory(Cheat.CSRAM, Cheat.SRAM, 0x10000);
-				CopyMemory(Cheat.CIRAM, Cheat.FillRAM, 0x2000);
-				/* fall through */
-			case IDCANCEL:
-                if(cheatSearchHWND)
-					DestroyWindow(hDlg);
-				else
-					EndDialog(hDlg, 0);
-				return true;
-			default: break;
-			}
-		}
-	default: return false;
-	}
-	return false;
 }
 
 int CALLBACK DlgCheatSearchAdd(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
