@@ -438,9 +438,9 @@ typedef union {
 		SCustomKey ToggleMacro [8];
 		SCustomKey EditMacro;
 		SCustomKey ToggleCheats;
-		SCustomKey LoadLuaScript;
-		SCustomKey ReloadLuaScript;
-		SCustomKey StopLuaScript;
+		SCustomKey NewLuaScript;
+		SCustomKey CloseLuaScripts;
+		SCustomKey MostRecentLuaScript;
 		SCustomKey LastItem; // dummy, must be last
 	};
 	SCustomKey key[1]; // array of all the keys above (the size is not really 1)

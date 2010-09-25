@@ -206,7 +206,8 @@ INT_PTR CALLBACK DlgOpenMovie(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 HRESULT CALLBACK EnumModesCallback( LPDDSURFACEDESC lpDDSurfaceDesc, LPVOID lpContext);
 INT_PTR CALLBACK DlgSeekProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
-extern INT_PTR CALLBACK DlgLuaScriptDialog(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK LuaScriptProc(HWND, UINT, WPARAM, LPARAM);
+std::vector<HWND> LuaScriptHWnds;
 
 INT_PTR CALLBACK test(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -604,9 +605,9 @@ void HotkeyToggleMacro6 (bool justPressed);
 void HotkeyToggleMacro7 (bool justPressed);
 void HotkeyEditMacro (bool justPressed);
 void HotkeyToggleCheats (bool justPressed);
-void HotkeyLoadLuaScript(bool justPressed);
-void HotkeyReloadLuaScript(bool justPressed);
-void HotkeyStopLuaScript(bool justPressed);
+void HotkeyNewLuaScript(bool justPressed);
+void HotkeyCloseLuaScripts(bool justPressed);
+void HotkeyMostRecentLuaScript(bool justPressed);
 
 bool IsLastCustomKey (const SCustomKey *key)
 {
@@ -768,9 +769,9 @@ void InitCustomKeys (SCustomKeys *keys)
 	keys->ToggleMacro[7].handleKeyDown = HotkeyToggleMacro7;
 	keys->EditMacro.handleKeyDown = HotkeyEditMacro;
 	keys->ToggleCheats.handleKeyDown = HotkeyToggleCheats;
-	keys->LoadLuaScript.handleKeyDown = HotkeyLoadLuaScript;
-	keys->ReloadLuaScript.handleKeyDown = HotkeyReloadLuaScript;
-	keys->StopLuaScript.handleKeyDown = HotkeyStopLuaScript;
+	keys->NewLuaScript.handleKeyDown = HotkeyNewLuaScript;
+	keys->CloseLuaScripts.handleKeyDown = HotkeyCloseLuaScripts;
+	keys->MostRecentLuaScript.handleKeyDown = HotkeyMostRecentLuaScript;
 
 	// name
 	keys->RecentROM[0].name = _T("Recent ROM 1");
@@ -894,9 +895,9 @@ void InitCustomKeys (SCustomKeys *keys)
 	keys->ToggleMacro[7].name = _T("Macro 7");
 	keys->EditMacro.name = _T("Edit Macro");
 	keys->ToggleCheats.name = _T("Toggle Cheats");
-	keys->LoadLuaScript.name = _T("Load Lua Script");
-	keys->ReloadLuaScript.name = _T("Reload Lua Script");
-	keys->StopLuaScript.name = _T("Stop Lua Script");
+	keys->NewLuaScript.name = _T("New Lua Script");
+	keys->CloseLuaScripts.name = _T("Close Lua Scripts");
+	keys->MostRecentLuaScript.name = _T("Most Recent Lua Script");
 
 	// category
 	keys->RecentROM[0].page = HOTKEY_PAGE_FILE;
@@ -1017,9 +1018,9 @@ void InitCustomKeys (SCustomKeys *keys)
 	keys->ToggleMacro[4].page = HOTKEY_PAGE_TOOLS;
 	keys->ToggleCheats.page = HOTKEY_PAGE_TOOLS;
 	keys->EditMacro.page = HOTKEY_PAGE_TOOLS;
-	keys->LoadLuaScript.page = HOTKEY_PAGE_TOOLS;
-	keys->ReloadLuaScript.page = HOTKEY_PAGE_TOOLS;
-	keys->StopLuaScript.page = HOTKEY_PAGE_TOOLS;
+	keys->NewLuaScript.page = HOTKEY_PAGE_TOOLS;
+	keys->CloseLuaScripts.page = HOTKEY_PAGE_TOOLS;
+	keys->MostRecentLuaScript.page = HOTKEY_PAGE_TOOLS;
 
 	// default keys
 	keys->RecentROM[0].key = VK_F1; keys->RecentROM[0].modifiers = CUSTKEY_CTRL_MASK;
@@ -2227,6 +2228,7 @@ LRESULT CALLBACK WinProc(
 		fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
 		if (fileCount > 0) {
 			DragQueryFile(hDrop, 0, filename, COUNT(filename));
+			std::string fileDropped = filename;
 
 			SetActiveWindow(hWnd);
 
@@ -2235,11 +2237,17 @@ LRESULT CALLBACK WinProc(
 				WinMoviePlay(filename);
 			}
 			else if (lstrcmpi(ext, ".lua") == 0) {
-				//if (S9xLoadLuaCode(filename)) {
-				//	// success, there is nothing to do
-				//} else {
-				//	// MessageBox(hDlg, "Oops", "Script not loaded", MB_OK); // Errors are displayed by the Lua code.
-				//}
+				if(LuaScriptHWnds.size() < 16)
+				{
+					char temp [1024];
+					strcpy(temp, fileDropped.c_str());
+					HWND IsScriptFileOpen(const char* Path);
+					if(!IsScriptFileOpen(temp))
+					{
+						HWND hDlg = CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_LUA), hWnd, (DLGPROC) LuaScriptProc);
+						SendDlgItemMessage(hDlg,IDC_EDIT_LUAPATH,WM_SETTEXT,0,(LPARAM)temp);
+					}
+				}
 			}
 			else if (lstrcmpi(ext, ".wch") == 0) {
 				if (!Settings.StopEmulation) {
@@ -2417,18 +2425,18 @@ LRESULT CALLBACK WinProc(
 				RestoreSNESDisplay ();// re-enter after dialog
 			}
 			break;
-		case IDD_FILE_LUA_OPEN: 
+		case IDC_NEW_LUA_SCRIPT: 
 			{
-				//if(!LuaConsoleHWnd)
-				//	LuaConsoleHWnd = CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_LUA), hWnd, (DLGPROC) DlgLuaScriptDialog);
-				//else
-				//	SetForegroundWindow(LuaConsoleHWnd);
+				if(LuaScriptHWnds.size() < 16)
+				{
+					CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_LUA), GUI.hWnd, (DLGPROC) LuaScriptProc);
+				}
 			}
 			break;
-		case IDD_FILE_LUA_CLOSE_ALL:
+		case IDC_CLOSE_LUA_SCRIPTS:
 			{
-				//if(LuaConsoleHWnd)
-				//	PostMessage(LuaConsoleHWnd, WM_CLOSE, 0, 0);
+				for(int i=(int)LuaScriptHWnds.size()-1; i>=0; i--)
+					SendMessage(LuaScriptHWnds[i], WM_CLOSE, 0,0);
 			}
 			break;
 		case ID_FILE_MOVIE_RECORD:
@@ -4342,9 +4350,9 @@ void HotkeyToggleMacro6 (bool justPressed) { HotkeyToggleMacro(6); }
 void HotkeyToggleMacro7 (bool justPressed) { HotkeyToggleMacro(7); }
 void HotkeyEditMacro (bool justPressed) { PostMenuCommand(ID_OPTIONS_INPUT_MACRO); }
 void HotkeyToggleCheats (bool justPressed) { PostMenuCommand(ID_CHEAT_DISABLE); }
-void HotkeyLoadLuaScript (bool justPressed) { PostMenuCommand(IDD_FILE_LUA_OPEN); }
-void HotkeyReloadLuaScript (bool justPressed) { /*S9xReloadLuaCode();*/ }
-void HotkeyStopLuaScript (bool justPressed) { /*S9xLuaStop();*/ }
+void HotkeyNewLuaScript (bool justPressed) { PostMenuCommand(IDC_NEW_LUA_SCRIPT); }
+void HotkeyCloseLuaScripts (bool justPressed) { PostMenuCommand(IDC_CLOSE_LUA_SCRIPTS); }
+void HotkeyMostRecentLuaScript (bool justPressed) {} // TODO: HotkeyMostRecentLuaScript
 
 /*****************************************************************************/
 /* WinInit                                                                   */
@@ -5377,10 +5385,10 @@ static void CheckMenuStates ()
 		mii.fState |= MFS_DISABLED;
 	SetMenuItemInfo (GUI.hMenu, ID_OPTIONS_INPUT_MACRO, FALSE, &mii);
 
-	//mii.fState = (LuaConsoleHWnd ? MFS_CHECKED : MFS_UNCHECKED);
-	//SetMenuItemInfo (GUI.hMenu, IDD_FILE_LUA_OPEN, FALSE, &mii);
-	//mii.fState = (LuaConsoleHWnd ? 0 : MFS_DISABLED);
-	//SetMenuItemInfo (GUI.hMenu, IDD_FILE_LUA_CLOSE_ALL, FALSE, &mii);
+	mii.fState = 0;
+	SetMenuItemInfo (GUI.hMenu, IDC_NEW_LUA_SCRIPT, FALSE, &mii);
+	mii.fState = (LuaScriptHWnds.size() > 0 ? 0 : MFS_DISABLED);
+	SetMenuItemInfo (GUI.hMenu, IDC_CLOSE_LUA_SCRIPTS, FALSE, &mii);
 
 	for (i = 0; i < COUNT(idJoypad); i++) {
 		mii.fState = Joypad[i].Enabled ? MFS_CHECKED : MFS_UNCHECKED;

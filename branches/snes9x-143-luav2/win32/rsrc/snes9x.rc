@@ -640,7 +640,6 @@ END
 IDD_LUA DIALOGEX 0, 0, 270, 150
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_POPUP | WS_CLIPCHILDREN | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "Lua Script"
-MENU LUAWINDOW_MENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     PUSHBUTTON      "Browse...",IDC_BUTTON_LUABROWSE,7,31,48,16
@@ -1184,8 +1183,8 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Lua Scripting"
         BEGIN
-            MENUITEM "New Lua Script Window...",    IDD_FILE_LUA_OPEN, GRAYED
-            MENUITEM "Close All Script Windows",    IDD_FILE_LUA_CLOSE_ALL, GRAYED
+            MENUITEM "New Lua Script Window...",    IDC_NEW_LUA_SCRIPT, GRAYED
+            MENUITEM "Close All Script Windows",    IDC_CLOSE_LUA_SCRIPTS, GRAYED
         END
         MENUITEM SEPARATOR
         MENUITEM "E&xit\tAlt+F4",               ID_FILE_EXIT
@@ -1499,15 +1498,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Move Up\tU",                  IDC_C_WATCH_UP
         MENUITEM "Move Down\tD",                IDC_C_WATCH_DOWN
-    END
-END
-
-LUAWINDOW_MENU MENU
-BEGIN
-    POPUP "Console"
-    BEGIN
-        MENUITEM "&Font...",                    IDC_LUACONSOLE_CHOOSEFONT
-        MENUITEM "Clear",                       IDC_LUACONSOLE_CLEAR
     END
 END
 

@@ -56,7 +56,7 @@ static ControlLayoutInfo controlLayoutInfos [] = {
 static const int numControlLayoutInfos = sizeof(controlLayoutInfos)/sizeof(*controlLayoutInfos);
 
 
-std::vector<HWND> LuaScriptHWnds;
+extern std::vector<HWND> LuaScriptHWnds;
 struct LuaPerWindowInfo {
 	std::string filename;
 	HANDLE fileWatcherThread;

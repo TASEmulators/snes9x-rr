@@ -1175,7 +1175,7 @@ void WinRegisterConfigItems()
 	ADDN(ToggleSound[0],ToggleSound0); ADDN(ToggleSound[1],ToggleSound1); ADDN(ToggleSound[2],ToggleSound2); ADDN(ToggleSound[3],ToggleSound3); ADDN(ToggleSound[4],ToggleSound4); ADDN(ToggleSound[5],ToggleSound5); ADDN(ToggleSound[6],ToggleSound6); ADDN(ToggleSound[7],ToggleSound7);
 	ADD(MoviePlay); ADD(MovieRecord);  ADD(MovieStop); ADD(ShowPressed); ADD(FrameCount); ADD(FrameCountOnly); ADD(LagCountOnly); ADD(ReadOnly);
 	ADDN(ToggleMacro[0],ToggleMacro0); ADDN(ToggleMacro[1],ToggleMacro1); ADDN(ToggleMacro[2],ToggleMacro2); ADDN(ToggleMacro[3],ToggleMacro3); ADDN(ToggleMacro[4],ToggleMacro4); ADDN(ToggleMacro[5],ToggleMacro5); ADDN(ToggleMacro[6],ToggleMacro6); ADDN(ToggleMacro[7],ToggleMacro7); ADD(EditMacro); ADD(ResetLagCounter);
-	ADD(ToggleCheats); ADD(LoadLuaScript); ADD(ReloadLuaScript); ADD(StopLuaScript);
+	ADD(ToggleCheats); ADD(NewLuaScript); ADD(CloseLuaScripts); ADD(MostRecentLuaScript);
 
 #undef ADD
 #undef ADDN

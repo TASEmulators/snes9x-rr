@@ -45,10 +45,9 @@
 #define IDD_MACRO_SETTINGS              140
 #define IDD_LUA                         141
 #define IDD_STRING_INPUT                142
-#define IDD_FILE_LUA_OPEN               143
-#define IDD_FILE_LUA_CLOSE_ALL          144
+#define IDC_NEW_LUA_SCRIPT              143
+#define IDC_CLOSE_LUA_SCRIPTS           144
 #define IDD_FRAMESKIP_SETTINGS          145
-#define IDD_FILE_LUA_RELOAD             146
 #define IDD_RAMSEARCH                   147
 #define IDD_RAMWATCH                    148
 #define IDD_EDITWATCH                   149
@@ -223,9 +222,7 @@
 #define IDC_RED                         1168
 #define IDC_C_ADD                       1169
 #define IDC_BLUE                        1170
-#define IDC_LUACONSOLE_CLEAR            1171
 #define IDC_LABEL_BLUE                  1172
-#define IDC_LUACONSOLE_CHOOSEFONT       1173
 #define IDC_2_BYTE                      1174
 #define IDC_3_BYTE                      1175
 #define IDC_4_BYTE                      1176
