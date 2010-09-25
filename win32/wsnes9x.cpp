@@ -210,6 +210,8 @@
 #include "../movie.h"
 #include "../controls.h"
 #include "../conffile.h"
+#include "../aggdraw.h"
+#include "../GPU_osd.h"
 #include "AVIOutput.h"
 #include "InputCustom.h"
 #include <vector>
@@ -278,6 +280,9 @@ int CALLBACK DlgCheatSearchAdd(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam
 int CALLBACK DlgCreateMovie(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 int CALLBACK DlgOpenMovie(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 HRESULT CALLBACK EnumModesCallback( LPDDSURFACEDESC lpDDSurfaceDesc, LPVOID lpContext);
+
+LRESULT CALLBACK LuaScriptProc(HWND, UINT, WPARAM, LPARAM);
+std::vector<HWND> LuaScriptHWnds;
 
 int CALLBACK test(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -1552,6 +1557,20 @@ LRESULT CALLBACK WinProc(
 					}
 				}
 				RestoreSNESDisplay ();// re-enter after dialog
+			}
+			break;
+		case IDC_NEW_LUA_SCRIPT: 
+			{
+				if(LuaScriptHWnds.size() < 16)
+				{
+					CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_LUA), GUI.hWnd, (DLGPROC) LuaScriptProc);
+				}
+			}
+			break;
+		case IDC_CLOSE_LUA_SCRIPTS:
+			{
+				for(int i=(int)LuaScriptHWnds.size()-1; i>=0; i--)
+					SendMessage(LuaScriptHWnds[i], WM_CLOSE, 0,0);
 			}
 			break;
 		case ID_FILE_MOVIE_RECORD:
@@ -3318,6 +3337,12 @@ int WINAPI WinMain(
 
 	InitLUTsWin32(); // init win hq2x
 
+	extern void Agg_init();
+	Agg_init();
+
+	if (osd)  {delete osd; osd =NULL; }
+	osd  = new OSDCLASS(-1);
+
 	WinDisplayReset();
 
     MoveWindow (GUI.hWnd, GUI.window_size.left,
@@ -3912,6 +3937,11 @@ static void CheckMenuStates ()
 
 	mii.fState = (!Settings.StopEmulation && (GUI.AVIOut)) ? MFS_ENABLED : MFS_DISABLED;
     SetMenuItemInfo (GUI.hMenu, ID_FILE_STOP_AVI, FALSE, &mii);
+
+	mii.fState = 0;
+	SetMenuItemInfo (GUI.hMenu, IDC_NEW_LUA_SCRIPT, FALSE, &mii);
+	mii.fState = (LuaScriptHWnds.size() > 0 ? 0 : MFS_DISABLED);
+	SetMenuItemInfo (GUI.hMenu, IDC_CLOSE_LUA_SCRIPTS, FALSE, &mii);
 
 	mii.fState = (GUI.SoundChannelEnable & (1 << 0)) ? MFS_CHECKED : MFS_UNCHECKED;
     SetMenuItemInfo (GUI.hMenu, ID_CHANNELS_CHANNEL1, FALSE, &mii);
