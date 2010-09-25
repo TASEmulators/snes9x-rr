@@ -1,14 +1,15 @@
 #include "types.h"
 #include "lua-engine.h"
-//#include "movie.h"
 #include <assert.h>
 #include <vector>
 #include <map>
 #include <string>
 #include <algorithm>
 #include "zlib.h"
-//#include "movie.h"
 #include "GPU_osd.h"
+#include "snes9x.h"
+#include "ppu.h"
+//#include "movie.h"
 //#include "main.h"
 //#include "pcejin.h"
 //#include "debug.h"
@@ -3345,23 +3346,16 @@ DEFINE_LUA_FUNCTION(input_getcurrentinputstatus, "")
 	}
 	// mouse position in game screen pixel coordinates
 	{
-/*		POINT point;
-		RECT rect, srcRectUnused;
-		float xRatioUnused, yRatioUnused;
-		int depUnused;
-		GetCursorPos(&point);
-		ScreenToClient(MainWindow->getHWnd(), &point);
-		GetClientRect(MainWindow->getHWnd(), &rect);
-		void CalculateDrawArea(int Render_Mode, RECT& RectDest, RECT& RectSrc, float& Ratio_X, float& Ratio_Y, int& Dep);
-		CalculateDrawArea(Full_Screen ? Render_FS : Render_W, rect, srcRectUnused, xRatioUnused, yRatioUnused, depUnused);
-		int xres = ((VDP_Reg.Set4 & 0x1) || Debug || !Game || !FrameCount) ? 320 : 256;
-		int yres = ((VDP_Reg.Set2 & 0x8) && !(Debug || !Game || !FrameCount)) ? 240 : 224;
-		int x = ((point.x - rect.left) * xres) / max(1, rect.right - rect.left);
-		int y = ((point.y - rect.top) * yres) / max(1, rect.bottom - rect.top);*/
-		int x = 0, y = 0;
-		lua_pushinteger(L, x);
+		extern BOOL GetCursorPosSNES(LPPOINT lpPoint, bool clip);
+
+		POINT mouse;
+		GetCursorPosSNES(&mouse, false);
+		if (IPPU.RenderedScreenWidth > SNES_WIDTH)
+			mouse.x /= 2;
+
+		lua_pushinteger(L, mouse.x);
 		lua_setfield(L, -2, "xmouse");
-		lua_pushinteger(L, y);
+		lua_pushinteger(L, mouse.y);
 		lua_setfield(L, -2, "ymouse");
 	}
 #else

@@ -336,6 +336,34 @@ int GetFilterScale(RenderFilter filterID)
 	}
 }
 
+void GetFilterRect(RenderFilter filterID, LPRECT filterRect)
+{
+	filterRect->left = 0;
+	filterRect->top = 0;
+	switch(filterID)
+	{
+		case FILTER_NONE:
+			filterRect->right = IPPU.RenderedScreenWidth;
+			filterRect->bottom = GUI.HeightExtend ? SNES_HEIGHT_EXTENDED : SNES_HEIGHT;
+			break;
+
+		default:
+		{
+			int scale = GetFilterScale(filterID);
+			filterRect->right = SNES_WIDTH * scale;
+			filterRect->bottom = (GUI.HeightExtend ? SNES_HEIGHT_EXTENDED : SNES_HEIGHT) * scale;
+			break;
+		}
+
+		case FILTER_BLARGGCOMP:
+		case FILTER_BLARGGSVID:
+		case FILTER_BLARGGRGB:
+			filterRect->right = 600;
+			filterRect->bottom = (LONG)(450 * (GUI.HeightExtend ? (239.0/224.0) : 1.0));
+			break;
+	}
+}
+
 bool GetFilterHiResSupport(RenderFilter filterID)
 {
 	switch(filterID)
