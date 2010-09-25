@@ -252,7 +252,8 @@ bool CDirect3D::Initialize(HWND hWnd)
 	HRESULT hr = pD3D->CreateDevice(D3DADAPTER_DEFAULT,
                       D3DDEVTYPE_HAL,
                       hWnd,
-                      D3DCREATE_MIXED_VERTEXPROCESSING,
+                      D3DCREATE_MIXED_VERTEXPROCESSING
+                        | D3DCREATE_FPU_PRESERVE, // mainly for lua modules
 					  &dPresentParams,
                       &pDevice);
 	if(FAILED(hr)) {

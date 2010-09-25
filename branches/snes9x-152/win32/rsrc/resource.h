@@ -20,6 +20,7 @@
 #define IDB_CDDRIVE                     113
 #define IDB_NETDRIVE                    114
 #define IDB_HARDDRIVE                   115
+#define IDD_LUA                         116
 #define IDD_NEWDISPLAY                  123
 #define IDD_NETPLAYPROGRESS             124
 #define IDD_INPUTCONFIG                 125
@@ -345,6 +346,15 @@
 #define IDC_INRATETEXT                  3012
 #define IDC_SPIN_MAX_SKIP_DISP          3013
 #define IDC_SPIN_MAX_SKIP_DISP_FIXED    3014
+#define IDC_BUTTON_LUARUN               3015
+#define IDC_BUTTON_LUASTOP              3016
+#define IDC_LUACONSOLE                  3017
+#define IDC_BUTTON_LUAEDIT              3018
+#define IDC_NOTIFY_SUBSERVIENT          3019
+#define IDC_EDIT_LUAPATH                3020
+#define IDC_BUTTON_LUABROWSE            3021
+#define IDC_NEW_LUA_SCRIPT              3022
+#define IDC_CLOSE_LUA_SCRIPTS           3023
 #define ID_FILE_EXIT                    40001
 #define ID_LANGUAGE_ENGLISH             40002
 #define ID_LANGUAGE_NEDERLANDS          40003
@@ -477,7 +487,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        151
 #define _APS_NEXT_COMMAND_VALUE         40154
-#define _APS_NEXT_CONTROL_VALUE         3014
+#define _APS_NEXT_CONTROL_VALUE         3024
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
