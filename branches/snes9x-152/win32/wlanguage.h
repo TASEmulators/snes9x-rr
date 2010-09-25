@@ -497,7 +497,6 @@
 #define MOVIE_ERR_WRONG_FORMAT "The movie file is corrupt or in the wrong format."
 #define MOVIE_ERR_WRONG_VERSION_SHORT "Unsupported movie version."
 #define MOVIE_ERR_WRONG_VERSION MOVIE_ERR_WRONG_VERSION_SHORT " You need a different version of Snes9x to play this movie."
-#define MOVIE_ERR_NOFRAMETOGGLE "No movie; can't toggle frame count"
 #define MOVIE_ERR_NOREADONLYTOGGLE "No movie; can't toggle read-only"
 #define MOVIE_LABEL_AUTHORINFO "Author Info:"
 #define MOVIE_LABEL_ERRORINFO "Error Info:"

@@ -220,7 +220,7 @@ int S9xMovieCreate (const char *, uint8, uint8, const wchar_t *, int);
 int S9xMovieGetInfo (const char *, struct MovieInfo *);
 void S9xMovieStop (bool8);
 void S9xMovieToggleRecState (void);
-void S9xMovieToggleFrameDisplay (void);
+void S9xToggleFrameDisplay (void);
 const char * S9xChooseMovieFilename (bool8);
 
 // methods used by the emulation

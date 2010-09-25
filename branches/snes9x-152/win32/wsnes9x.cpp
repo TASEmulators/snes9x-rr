@@ -1046,14 +1046,7 @@ int HandleKeyMessage(WPARAM wParam, LPARAM lParam)
 		if(wParam == CustomKeys.FrameCount.key
 		&& modifiers == CustomKeys.FrameCount.modifiers)
 		{
-			if (S9xMovieActive()
-#ifdef NETPLAY_SUPPORT
-			|| Settings.NetPlay
-#endif
-			)
-				S9xMovieToggleFrameDisplay ();
-			else
-				S9xMessage(S9X_INFO, S9X_MOVIE_INFO, MOVIE_ERR_NOFRAMETOGGLE);
+			S9xToggleFrameDisplay ();
 			hitHotKey = true;
 		}
 		if(wParam == CustomKeys.Pause.key

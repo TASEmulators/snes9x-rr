@@ -1170,9 +1170,9 @@ void S9xMovieToggleRecState (void)
 	   S9xMessage(S9X_INFO, S9X_MOVIE_INFO, "Movie is now read+write.");
 }
 
-void S9xMovieToggleFrameDisplay (void)
+void S9xToggleFrameDisplay (void)
 {
-	Settings.DisplayMovieFrame = !Settings.DisplayMovieFrame;
+	Settings.DisplayFrame = !Settings.DisplayFrame;
 	S9xReRefresh();
 }
 
@@ -1182,7 +1182,7 @@ void S9xUpdateFrameCounter (int offset)
 
 	offset++;
 
-	if (!Settings.DisplayMovieFrame)
+	if (!Settings.DisplayFrame)
 		*GFX.FrameDisplayString = 0;
 	else
 	if (Movie.State == MOVIE_STATE_RECORD)
@@ -1198,4 +1198,7 @@ void S9xUpdateFrameCounter (int offset)
 		sprintf(GFX.FrameDisplayString, "%s frame: %d", Settings.NetPlayServer ? "Server" : "Client",
 			max(0, (int) (NetPlay.FrameCount + offset)));
 #endif
+	else
+		sprintf(GFX.FrameDisplayString, "Frame: %d%s",
+			max(0, (int) (IPPU.TotalEmulatedFrames + offset)), pad_read || !Settings.MovieNotifyIgnored ? "" : " (ignored)");
 }
