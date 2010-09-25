@@ -388,7 +388,7 @@ struct SSettings
 	bool8	DisplayFrameRate;
 	bool8	DisplayWatchedAddresses;
 	bool8	DisplayPressedKeys;
-	bool8	DisplayMovieFrame;
+	bool8	DisplayFrame;
 	bool8	AutoDisplayMessages;
 	uint32	InitialInfoStringTimeout;
 	uint16	DisplayColor;
