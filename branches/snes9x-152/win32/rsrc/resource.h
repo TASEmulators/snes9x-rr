@@ -401,6 +401,7 @@
 #define ID_LANGUAGE_ENGLISH             40002
 #define ID_LANGUAGE_NEDERLANDS          40003
 #define ID_WINDOW_HIDEMENUBAR           40004
+#define ID_FILE_AVI_RECORDING           40005
 #define ID_SOUND_NOSOUND                40021
 #define ID_OPTIONS_JOYPAD               40022
 #define ID_WINDOW_SHOWFPS               40023
