@@ -614,7 +614,90 @@ struct OpenMovieParams
 };
 
 
+BOOL ClientToSNESScreen(PPOINT ppt, bool clip) {
+	POINT cur = { ppt->x, ppt->y };
+	POINT snespt;
 
+	int screenWidth = IPPU.RenderedScreenWidth;
+	int screenHeight = GUI.HeightExtend ? SNES_HEIGHT_EXTENDED : SNES_HEIGHT;
+	if (IPPU.RenderedScreenWidth > SNES_WIDTH) screenHeight *= 2;
+	RECT clientRect;
+	GetClientRect(GUI.hWnd, &clientRect);
+	int clientWidth = clientRect.right - clientRect.left;
+	int clientHeight = clientRect.bottom - clientRect.top;
+
+	if (!GUI.Stretch) {
+		POINT start;
+		RECT filterRect;
+		int filterWidth, filterHeight;
+
+		GetFilterRect(GUI.Scale, &filterRect);
+		filterWidth = filterRect.right - filterRect.left;
+		filterHeight = filterRect.bottom - filterRect.top;
+
+		start.x = (clientWidth - filterWidth) / 2;
+		start.y = (clientHeight - filterHeight) / 2;
+		snespt.x = (LONG)((cur.x - start.x) * ((float) screenWidth / filterWidth));
+		snespt.y = (LONG)((cur.y - start.y) * ((float) screenHeight / filterHeight));
+	}
+	else {
+		if (GUI.AspectRatio) {
+			float snesAspect = (float) GUI.AspectWidth / (GUI.HeightExtend ? SNES_HEIGHT_EXTENDED : SNES_HEIGHT);
+			float renderedWidth = (float) clientWidth, renderedHeight = renderedWidth / snesAspect;
+			int xOffset = 0, yOffset = 0;
+			if (renderedHeight <= clientHeight) {
+				yOffset = (clientHeight - (int) renderedHeight) / 2;
+			}
+			else {
+				renderedHeight = (float) clientHeight;
+				renderedWidth = renderedHeight * snesAspect;
+				xOffset = (clientWidth - (int) renderedWidth) / 2;
+			}
+			snespt.x = (LONG)((cur.x - xOffset) * ((float) screenWidth / (int) renderedWidth));
+			snespt.y = (LONG)((cur.y - yOffset) * ((float) screenHeight / (int) renderedHeight));
+		}
+		else {
+			snespt.x = (LONG)(cur.x * ((float) screenWidth / clientWidth));
+			snespt.y = (LONG)(cur.y * ((float) screenHeight / clientHeight));
+		}
+	}
+
+	if (IPPU.RenderedScreenWidth > SNES_WIDTH)
+		snespt.y /= 2;
+	if (clip) {
+		if (snespt.x < 0)
+			snespt.x = 0;
+		if (snespt.y < 0)
+			snespt.y = 0;
+		if (snespt.x >= IPPU.RenderedScreenWidth)
+			snespt.x = IPPU.RenderedScreenWidth - 1;
+		if (snespt.y >= IPPU.RenderedScreenHeight)
+			snespt.y = IPPU.RenderedScreenHeight - 1;
+	}
+
+	if (ppt) {
+		ppt->x = snespt.x;
+		ppt->y = snespt.y;
+		return TRUE;
+	}
+	else
+		return FALSE;
+}
+
+BOOL GetCursorPosSNES(LPPOINT lpPoint, bool clip) {
+	POINT cur;
+
+	GetCursorPos(&cur);
+	ScreenToClient(GUI.hWnd, &cur);
+	ClientToSNESScreen(&cur, clip);
+	if (lpPoint) {
+		lpPoint->x = cur.x;
+		lpPoint->y = cur.y;
+		return TRUE;
+	}
+	else
+		return FALSE;
+}
 
 
 std::vector<dMode> dm;
@@ -2633,92 +2716,10 @@ LRESULT CALLBACK WinProc(
 			}
 			else if (GUI.ControllerOption==SNES_SUPERSCOPE || GUI.ControllerOption==SNES_JUSTIFIER || GUI.ControllerOption==SNES_JUSTIFIER_2)
 			{
-				RECT size;
-				GetClientRect (GUI.hWnd, &size);
-				if(!(GUI.Scale)&&!(GUI.Stretch))
-				{
-					int x,y, startx, starty;
-					x=GET_X_LPARAM(lParam);
-					y=GET_Y_LPARAM(lParam);
-
-//					int theight;
-//					(IPPU.RenderedScreenHeight> 256)? theight= SNES_HEIGHT_EXTENDED<<1: theight = SNES_HEIGHT_EXTENDED;
-					int theight = GUI.HeightExtend ? SNES_HEIGHT_EXTENDED : SNES_HEIGHT;
-					if(IPPU.RenderedScreenHeight > SNES_HEIGHT_EXTENDED) theight <<= 1;
-
-					startx= size.right-IPPU.RenderedScreenWidth;
-					startx/=2;
-					starty= size.bottom-theight;
-					starty/=2;
-
-					if(x<startx)
-						GUI.MouseX=0;
-					else if(x>(startx+IPPU.RenderedScreenWidth))
-						GUI.MouseX=IPPU.RenderedScreenWidth;
-					else GUI.MouseX=x-startx;
-
-					if(y<starty)
-						GUI.MouseY=0;
-					else if(y>(starty+theight))
-						GUI.MouseY=theight;
-					else GUI.MouseY=y-starty;
-				}
-				else if(!(GUI.Stretch))
-				{
-					int x,y, startx, starty, sizex, sizey;
-					x=GET_X_LPARAM(lParam);
-					y=GET_Y_LPARAM(lParam);
-
-					if (IPPU.RenderedScreenWidth>256)
-						sizex=IPPU.RenderedScreenWidth;
-					else sizex=IPPU.RenderedScreenWidth*2;
-
-					int theight = GUI.HeightExtend ? SNES_HEIGHT_EXTENDED : SNES_HEIGHT;
-					sizey = (IPPU.RenderedScreenHeight > SNES_HEIGHT_EXTENDED) ? theight : (theight << 1);
-
-					startx= size.right-sizex;
-					startx/=2;
-					starty= size.bottom-sizey;
-					starty/=2;
-					if(x<startx)
-						GUI.MouseX=0;
-					else if(x>(startx+sizex))
-						GUI.MouseX=sizex;
-					else GUI.MouseX=x-startx;
-
-					if(y<starty)
-						GUI.MouseY=0;
-					else if(y>(starty+sizey))
-						GUI.MouseY=sizey;
-					else GUI.MouseY=y-starty;
-
-					GUI.MouseX=(GUI.MouseX*IPPU.RenderedScreenWidth)/sizex;
-					GUI.MouseY=(GUI.MouseY*IPPU.RenderedScreenHeight)/sizey;
-				}
-				else
-				{
-					int sizex = IPPU.RenderedScreenWidth;
-					int sizey = GUI.HeightExtend ? SNES_HEIGHT_EXTENDED : SNES_HEIGHT;
-					sizey = (IPPU.RenderedScreenHeight > SNES_HEIGHT_EXTENDED) ? (sizey << 1) : sizey;
-					int width = size.right, height = size.bottom, xdiff = 0, ydiff = 0;
-					if(GUI.AspectRatio)
-					{
-						if(width > sizex*height/sizey)
-						{
-							xdiff = width - sizex*height/sizey;
-							width -= xdiff;
-							xdiff >>= 1;
-						}
-						else if(height > sizey*width/sizex)
-						{
-							ydiff = height - sizey*width/sizex;
-							height -= ydiff;
-							ydiff >>= 1;
-						}
-					}
-					GUI.MouseX=(GET_X_LPARAM(lParam)-xdiff)*sizex/width;
-					GUI.MouseY=(GET_Y_LPARAM(lParam)-ydiff)*sizey/height;
-				}
+				POINT mouse = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+				ClientToSNESScreen(&mouse, true);
+				GUI.MouseX = mouse.x;
+				GUI.MouseY = mouse.y;
 			}
 			else
 			{
@@ -3606,8 +3607,8 @@ int WINAPI WinMain(
 	S9xSetupDefaultKeymap();
 	ChangeInputDevice();
 
-	DWORD lastTime = timeGetTime();
 	DWORD sSyncTime,sSyncWaited;
+	DWORD lastPaintTime = 0;
 
     MSG msg;
 
@@ -3638,6 +3639,15 @@ int WINAPI WinMain(
                 TranslateMessage (&msg);
                 DispatchMessage (&msg);
             }
+
+			if (Settings.Paused || Settings.ForcedPause)
+			{
+				DWORD lastTime = timeGetTime();
+				if (lastTime - lastPaintTime >= 500) {
+					InvalidateRect(GUI.hWnd, NULL, FALSE);
+					lastPaintTime = lastTime;
+				}
+			}
 
 			S9xSetSoundMute(GUI.Mute || Settings.ForcedPause || (Settings.Paused && (!Settings.FrameAdvance || GUI.FAMute)));
         }
