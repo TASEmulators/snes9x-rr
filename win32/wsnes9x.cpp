@@ -1727,6 +1727,12 @@ LRESULT CALLBACK WinProc(
 	case WM_COMMAND:
 		switch (wParam & 0xffff)
 		{
+		case ID_FILE_AVI_RECORDING:
+			if (!GUI.AVIOut)
+				PostMessage(GUI.hWnd, WM_COMMAND, ID_FILE_WRITE_AVI, NULL);
+			else
+				PostMessage(GUI.hWnd, WM_COMMAND, ID_FILE_STOP_AVI, NULL);
+			break;
 		case ID_FILE_WRITE_AVI:
 			{
 				RestoreGUIDisplay ();  //exit DirectX
@@ -4099,11 +4105,19 @@ static void CheckMenuStates ()
 	mii.fState = (S9xMovieActive () && !Settings.StopEmulation) ? MFS_ENABLED : MFS_DISABLED;
     SetMenuItemInfo (GUI.hMenu, ID_FILE_MOVIE_STOP, FALSE, &mii);
 
-	mii.fState = (!Settings.StopEmulation) ? MFS_ENABLED : MFS_DISABLED;
-    SetMenuItemInfo (GUI.hMenu, ID_FILE_WRITE_AVI, FALSE, &mii);
+	mii.fState = !Settings.StopEmulation ? MFS_ENABLED : MFS_DISABLED;
+	SetMenuItemInfo (GUI.hMenu, ID_FILE_AVI_RECORDING, FALSE, &mii);
 
-	mii.fState = (!Settings.StopEmulation && (GUI.AVIOut)) ? MFS_ENABLED : MFS_DISABLED;
-    SetMenuItemInfo (GUI.hMenu, ID_FILE_STOP_AVI, FALSE, &mii);
+	ZeroMemory(&mii, sizeof(mii));
+	mii.cbSize = sizeof(mii);
+	mii.fMask = MIIM_STRING;
+
+	mii.dwTypeData = !GUI.AVIOut ? "Start AVI Recording..." : "Stop AVI Recording";
+	SetMenuItemInfo (GUI.hMenu, ID_FILE_AVI_RECORDING, FALSE, &mii);
+
+	ZeroMemory( &mii, sizeof( mii));
+	mii.cbSize = sizeof( mii);
+	mii.fMask = MIIM_STATE;
 
 	mii.fState = 0;
 	SetMenuItemInfo (GUI.hMenu, IDC_NEW_LUA_SCRIPT, FALSE, &mii);
