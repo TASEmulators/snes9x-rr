@@ -9480,7 +9480,25 @@ int CALLBACK DlgOpenMovie(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			SetDlgItemText(hDlg,IDC_LABEL_CONTROLLERSETTINGS, MOVIE_LABEL_CONTSETTINGS);
 			SetDlgItemText(hDlg,IDC_LABEL_SYNCSETTINGS, MOVIE_LABEL_SYNCSETTINGS);
 		}
+		DragAcceptFiles(hDlg, true);
 		return true;
+
+	case WM_DROPFILES: {
+		HDROP hDrop;
+		//UINT fileNo;
+		UINT fileCount;
+		char filename[PATH_MAX];
+
+		hDrop = (HDROP)wParam;
+		fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
+		if (fileCount > 0) {
+			DragQueryFile(hDrop, 0, filename, COUNT(filename));
+			SetWindowText(GetDlgItem(hDlg, IDC_MOVIE_PATH), filename);
+		}
+		DragFinish(hDrop);
+		SetCurrentDirectory(movieDirectory);
+		return true;
+	}
 
 	case WM_COMMAND:
 		{
@@ -9638,7 +9656,25 @@ int CALLBACK DlgCreateMovie(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			SetDlgItemText(hDlg,IDC_LABEL_CONTROLLERSETTINGS, MOVIE_LABEL_CONTSETTINGS);
 			SetDlgItemText(hDlg,IDC_LABEL_SYNCSETTINGS, MOVIE_LABEL_SYNCSETTINGS);
 		}
+		DragAcceptFiles(hDlg, true);
 		return true;
+
+	case WM_DROPFILES: {
+		HDROP hDrop;
+		//UINT fileNo;
+		UINT fileCount;
+		char filename[PATH_MAX];
+
+		hDrop = (HDROP)wParam;
+		fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
+		if (fileCount > 0) {
+			DragQueryFile(hDrop, 0, filename, COUNT(filename));
+			SetWindowText(GetDlgItem(hDlg, IDC_MOVIE_PATH), filename);
+		}
+		DragFinish(hDrop);
+		SetCurrentDirectory(movieDirectory);
+		return true;
+	}
 
 	case WM_COMMAND:
 		{
