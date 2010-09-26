@@ -182,6 +182,7 @@
 #include "apu/apu.h"
 #include "fxemu.h"
 #include "snapshot.h"
+#include "movie.h"
 #ifdef DEBUGGER
 #include "debug.h"
 #include "missing.h"
@@ -190,6 +191,12 @@
 
 void S9xMainLoop (void)
 {
+	if(S9xMovieRequiresReset())
+	{
+		S9xMovieUpdateOnReset();
+		S9xSoftReset();
+	}
+
 	for (;;)
 	{
 		if (CPU.Flags)

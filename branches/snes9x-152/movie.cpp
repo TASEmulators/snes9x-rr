@@ -241,6 +241,8 @@ struct SMovie
 	uint8	*InputBuffer;
 	uint8	*InputBufferPtr;
 	uint32	InputBufferSize;
+
+	bool8	RequiresReset;
 };
 
 static struct SMovie	Movie;
@@ -426,6 +428,32 @@ static void reset_controllers (void)
 		MovieSetScope(p, clearedScope);
 		MovieSetJustifier(p, clearedJustifier);
 	}
+}
+
+static bool does_frame_data_mean_reset ()
+{
+	bool reset = false;
+	int i;
+
+	if (Movie.State == MOVIE_STATE_PLAY)
+	{
+		// one sample of all 1 bits = reset code
+		// (the SNES controller doesn't have enough buttons to possibly generate this sequence)
+		// (a single bit indicator was not used, to avoid having to special-case peripheral recording here)
+		if(Movie.InputBufferPtr[0] == 0xFF)
+		{
+			reset = true;
+			for(i=1; i<(int)Movie.BytesPerSample; i++)
+			{
+				if(Movie.InputBufferPtr[i] != 0xFF)
+				{
+					reset = false;
+					break;
+				}
+			}
+		}
+	}
+	return reset;
 }
 
 static void read_frame_controller_data (bool addFrame)
@@ -669,6 +697,8 @@ static void change_state (MovieState new_state)
 
 		if (S9xMoviePlaying() || S9xMovieRecording())
 			restore_previous_settings();
+
+		Movie.RequiresReset = false;
 	}
 
 	Movie.State = new_state;
@@ -755,6 +785,7 @@ int S9xMovieUnfreeze (uint8 *buf, uint32 size)
 	}
 
 	Movie.InputBufferPtr = Movie.InputBuffer + (Movie.BytesPerSample * Movie.CurrentSample);
+	Movie.RequiresReset = false;
 	read_frame_controller_data(true);
 
 	return (SUCCESS);
@@ -844,6 +875,8 @@ int S9xMovieOpen (const char *filename, bool8 read_only)
 	change_state(MOVIE_STATE_PLAY);
 
 	S9xUpdateFrameCounter(-1);
+
+	Movie.RequiresReset = false;
 
 	S9xMessage(S9X_INFO, S9X_MOVIE_INFO, MOVIE_INFO_REPLAY);
 
@@ -950,6 +983,8 @@ int S9xMovieCreate (const char *filename, uint8 controllers_mask, uint8 opts, co
 	change_state(MOVIE_STATE_RECORD);
 
 	S9xUpdateFrameCounter(-1);
+
+	Movie.RequiresReset = false;
 
 	S9xMessage(S9X_INFO, S9X_MOVIE_INFO, MOVIE_INFO_RECORD);
 
@@ -1076,6 +1111,41 @@ void S9xMovieUpdate (bool addFrame)
 	}
 }
 
+void S9xMovieRecordReset ()
+{
+	switch(Movie.State)
+	{
+		case MOVIE_STATE_RECORD:
+		{
+			Movie.RequiresReset = true;
+		}
+		break;
+		default: break;
+	}
+}
+
+// do not refer to Movie.RequiresReset directly
+// because it is used only with movie recording
+bool S9xMovieRequiresReset ()
+{
+	switch(Movie.State)
+	{
+		case MOVIE_STATE_NONE:
+		{
+			Movie.RequiresReset = false;
+		}
+		break;
+
+		case MOVIE_STATE_PLAY:
+		{
+			Movie.RequiresReset = does_frame_data_mean_reset();
+		}
+		break;
+		default: break;
+	}
+	return Movie.RequiresReset!=0;
+}
+
 void S9xMovieUpdateOnReset (void)
 {
 	if (Movie.State == MOVIE_STATE_RECORD)
@@ -1089,6 +1159,7 @@ void S9xMovieUpdateOnReset (void)
 		size_t	ignore;
 		ignore = fwrite((Movie.InputBufferPtr - Movie.BytesPerSample), 1, Movie.BytesPerSample, Movie.File);
 	}
+	Movie.RequiresReset = false;
 }
 
 void S9xMovieInit (void)
