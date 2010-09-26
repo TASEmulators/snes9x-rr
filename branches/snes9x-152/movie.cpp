@@ -1183,7 +1183,7 @@ void S9xUpdateFrameCounter (int offset)
 	offset++;
 
 	if (!Settings.DisplayFrame)
-		*GFX.FrameDisplayString = 0;
+		strcpy(GFX.FrameDisplayString, "");
 	else
 	if (Movie.State == MOVIE_STATE_RECORD)
 		sprintf(GFX.FrameDisplayString, "Recording frame: %d%s",
@@ -1201,4 +1201,15 @@ void S9xUpdateFrameCounter (int offset)
 	else
 		sprintf(GFX.FrameDisplayString, "Frame: %d%s",
 			max(0, (int) (IPPU.TotalEmulatedFrames + offset)), pad_read || !Settings.MovieNotifyIgnored ? "" : " (ignored)");
+
+	if (Settings.DisplayLagCounter)
+	{
+		char temp[32];
+		if (GFX.FrameDisplayString != NULL && strcmp(GFX.FrameDisplayString, ""))
+		{
+			strcat(GFX.FrameDisplayString, " | ");
+		}
+		sprintf(temp, "%d", IPPU.LagCounter);
+		strcat(GFX.FrameDisplayString, temp);
+	}
 }

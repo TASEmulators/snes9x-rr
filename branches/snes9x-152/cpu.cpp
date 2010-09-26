@@ -185,6 +185,8 @@
 #include "snapshot.h"
 #include "cheats.h"
 #include "logger.h"
+#include "movie.h"
+#include "ppu.h"
 #ifdef DEBUGGER
 #include "debug.h"
 #endif
@@ -268,6 +270,11 @@ static void S9xSoftResetCPU (void)
 
 void S9xReset (void)
 {
+	IPPU.TotalEmulatedFrames = 0;
+	IPPU.LagCounter = 0;
+	extern bool8 pad_read, pad_read_last;
+	pad_read = pad_read_last = 0;
+
 	S9xResetSaveTimer(FALSE);
 	S9xResetLogger();
 

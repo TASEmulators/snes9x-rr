@@ -2614,8 +2614,6 @@ void CMemory::InitROM (void)
 	CPU.FastROMSpeed = 0;
 	ResetSpeedMap();
 
-	IPPU.TotalEmulatedFrames = 0;
-
 	//// Hack games
 
 	ApplyROMFixes();
