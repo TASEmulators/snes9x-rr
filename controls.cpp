@@ -3325,6 +3325,9 @@ void S9xControlEOF (void)
 
 	S9xMovieUpdate();
 
+	if(!pad_read)
+		++IPPU.LagCounter;
+
 	pad_read_last = pad_read;
 	pad_read      = false;
 }

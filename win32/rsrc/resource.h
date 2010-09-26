@@ -533,13 +533,17 @@
 #define ID_RAM_WATCH                    40176
 #define RW_MENU_FIRST_RECENT_FILE       40180
 #define RW_MENU_LAST_RECENT_FILE        40200
+#define ID_VIEW_FRAMECOUNTER            40201
+#define ID_VIEW_DISPLAYFPS              40202
+#define ID_VIEW_DISPLAYINPUT            40203
+#define ID_VIEW_DISPLAYLAG              40204
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        156
-#define _APS_NEXT_COMMAND_VALUE         40201
+#define _APS_NEXT_COMMAND_VALUE         40205
 #define _APS_NEXT_CONTROL_VALUE         3068
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

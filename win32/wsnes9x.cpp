@@ -2083,6 +2083,26 @@ LRESULT CALLBACK WinProc(
             RestoreSNESDisplay ();
             break;
 
+		case ID_VIEW_FRAMECOUNTER:
+			Settings.DisplayFrame = !Settings.DisplayFrame;
+			WinSaveConfigFile();
+			break;
+
+		case ID_VIEW_DISPLAYFPS:
+			Settings.DisplayFrameRate = !Settings.DisplayFrameRate;
+			WinSaveConfigFile();
+			break;
+
+		case ID_VIEW_DISPLAYINPUT:
+			Settings.DisplayPressedKeys = !Settings.DisplayPressedKeys;
+			WinSaveConfigFile();
+			break;
+
+		case ID_VIEW_DISPLAYLAG:
+			Settings.DisplayLagCounter = !Settings.DisplayLagCounter;
+			WinSaveConfigFile();
+			break;
+
 		case ID_FILE_LOADMULTICART:
 			{
 #ifdef NETPLAY_SUPPORT
@@ -3935,6 +3955,15 @@ static void CheckMenuStates ()
 
 	mii.fState = (Settings.Paused && !Settings.StopEmulation) ? MFS_CHECKED : MFS_UNCHECKED;
     SetMenuItemInfo (GUI.hMenu, ID_FILE_PAUSE, FALSE, &mii);
+
+	mii.fState = Settings.DisplayFrame ? MFS_CHECKED : MFS_UNCHECKED;
+    SetMenuItemInfo (GUI.hMenu, ID_VIEW_FRAMECOUNTER, FALSE, &mii);
+	mii.fState = Settings.DisplayFrameRate ? MFS_CHECKED : MFS_UNCHECKED;
+    SetMenuItemInfo (GUI.hMenu, ID_VIEW_DISPLAYFPS, FALSE, &mii);
+	mii.fState = Settings.DisplayPressedKeys ? MFS_CHECKED : MFS_UNCHECKED;
+    SetMenuItemInfo (GUI.hMenu, ID_VIEW_DISPLAYINPUT, FALSE, &mii);
+	mii.fState = Settings.DisplayLagCounter ? MFS_CHECKED : MFS_UNCHECKED;
+    SetMenuItemInfo (GUI.hMenu, ID_VIEW_DISPLAYLAG, FALSE, &mii);
 
     mii.fState = MFS_UNCHECKED;
     if (Settings.StopEmulation)

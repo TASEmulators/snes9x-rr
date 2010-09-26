@@ -984,6 +984,14 @@ BEGIN
     BEGIN
         MENUITEM "&Display Configuration...\tAlt+F5", ID_OPTIONS_DISPLAY
         MENUITEM "&Settings...\tAlt+F8",        ID_OPTIONS_SETTINGS
+        MENUITEM SEPARATOR
+        POPUP "HUD"
+        BEGIN
+            MENUITEM "Display Frame Counter",       ID_VIEW_FRAMECOUNTER
+            MENUITEM "Display FPS",                 ID_VIEW_DISPLAYFPS
+            MENUITEM "Display Input",               ID_VIEW_DISPLAYINPUT
+            MENUITEM "Display Lag Counter",         ID_VIEW_DISPLAYLAG
+        END
     END
     POPUP "&Input"
     BEGIN

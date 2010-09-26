@@ -2180,7 +2180,7 @@ void S9xDisplayMessages (uint16 *screen, int ppl, int width, int height, int sca
 	if (Settings.DisplayPressedKeys)
 		DisplayPressedKeys();
 
-	if (Settings.DisplayFrame)
+	if (Settings.DisplayFrame || Settings.DisplayLagCounter)
 		S9xDisplayString(GFX.FrameDisplayString, 1, 1, false);
 
 	if (GFX.InfoString && *GFX.InfoString)
