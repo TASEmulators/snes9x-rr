@@ -799,7 +799,8 @@ int S9xMovieOpen (const char *filename, bool8 read_only)
 
 	if (Movie.Opts & MOVIE_OPT_FROM_RESET)
 	{
-		S9xReset();
+		if(!Memory.LoadLastROM()) // TODO: remove Memory.LoadLastROM function. This is just a workaround for desyncs.
+			S9xReset();
 		reset_controllers();
 		result = (READ_STREAM(Memory.SRAM, 0x20000, stream) == 0x20000) ? SUCCESS : WRONG_FORMAT;
 	}
@@ -911,7 +912,8 @@ int S9xMovieCreate (const char *filename, uint8 controllers_mask, uint8 opts, co
 
 	if (opts & MOVIE_OPT_FROM_RESET)
 	{
-		S9xReset();
+		if(!Memory.LoadLastROM())
+			S9xReset();
 		reset_controllers();
 		WRITE_STREAM(Memory.SRAM, 0x20000, stream);
 	}
