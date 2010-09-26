@@ -2444,10 +2444,12 @@ LRESULT CALLBACK WinProc(
 								if (!Settings.NetPlay)
 #endif
 								{
-									S9xMovieUpdateOnReset ();
 									if(S9xMoviePlaying())
 										S9xMovieStop (TRUE);
-									S9xSoftReset ();
+									if(S9xMovieActive())
+										S9xMovieRecordReset();
+									else
+										S9xSoftReset();
 									ReInitSound();
 								}
 								if(!S9xMovieRecording())

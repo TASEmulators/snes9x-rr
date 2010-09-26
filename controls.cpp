@@ -2205,10 +2205,12 @@ void S9xApplyCommand (s9xcommand_t cmd, int16 data1, int16 data2)
 						break;
 
 					case SoftReset:
-						S9xMovieUpdateOnReset();
-						if (S9xMoviePlaying())
-							S9xMovieStop(TRUE);
-						S9xSoftReset();
+						if(S9xMoviePlaying())
+							S9xMovieStop (TRUE);
+						if(S9xMovieActive())
+							S9xMovieRecordReset();
+						else
+							S9xSoftReset();
 						break;
 
 					case EmuTurbo:

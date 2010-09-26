@@ -226,6 +226,8 @@ const char * S9xChooseMovieFilename (bool8);
 // methods used by the emulation
 void S9xMovieInit (void);
 void S9xMovieShutdown (void);
+void S9xMovieRecordReset ();
+bool S9xMovieRequiresReset ();
 void S9xMovieUpdate (bool a = true);
 void S9xMovieUpdateOnReset (void);
 void S9xUpdateFrameCounter (int o = 0);
