@@ -2085,22 +2085,22 @@ LRESULT CALLBACK WinProc(
 
 		case ID_VIEW_FRAMECOUNTER:
 			Settings.DisplayFrame = !Settings.DisplayFrame;
-			WinSaveConfigFile();
+			//WinSaveConfigFile();
 			break;
 
 		case ID_VIEW_DISPLAYFPS:
 			Settings.DisplayFrameRate = !Settings.DisplayFrameRate;
-			WinSaveConfigFile();
+			//WinSaveConfigFile();
 			break;
 
 		case ID_VIEW_DISPLAYINPUT:
 			Settings.DisplayPressedKeys = !Settings.DisplayPressedKeys;
-			WinSaveConfigFile();
+			//WinSaveConfigFile();
 			break;
 
 		case ID_VIEW_DISPLAYLAG:
 			Settings.DisplayLagCounter = !Settings.DisplayLagCounter;
-			WinSaveConfigFile();
+			//WinSaveConfigFile();
 			break;
 
 		case ID_FILE_LOADMULTICART:
