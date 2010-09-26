@@ -1954,6 +1954,17 @@ bool8 CMemory::SaveSRTC (void)
 	return (TRUE);
 }
 
+bool8 CMemory::LoadLastROM (void)
+{
+	bool8	r;
+
+	stopMovie = FALSE;
+	r = LoadROM(LastRomFilename);
+	stopMovie = TRUE;
+
+	return (r);
+}
+
 void CMemory::ClearSRAM (bool8 onlyNonSavedSRAM)
 {
 	if (onlyNonSavedSRAM)

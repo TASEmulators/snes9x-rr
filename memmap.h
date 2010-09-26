@@ -274,6 +274,7 @@ struct CMemory
 	uint32	HeaderRemove (uint32, int32 &, uint8 *);
 	uint32	FileLoader (uint8 *, const char *, int32);
 	bool8	LoadROM (const char *);
+	bool8	LoadLastROM (void);
 	bool8	LoadMultiCart (const char *, const char *);
 	bool8	LoadSufamiTurbo (const char *, const char *);
 	bool8	LoadSameGame (const char *, const char *);
