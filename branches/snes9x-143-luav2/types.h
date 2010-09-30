@@ -29,7 +29,7 @@ typedef uint32_t uint32;
 #define strcasecmp _stricmp
 #define strncasecmp _strnicmp
 #define snprintf _snprintf
-#define fstat _fstat
+//#define fstat _fstat
 #define close _close
 #define open _open
 #define lseek _lseek
@@ -56,7 +56,7 @@ typedef struct
 
 #define dup _dup
 #define lseek _lseek
-#define stat _stat
+//#define stat _stat
 #define strtoull _strtoui64
 #define strtoll _strtoi64
 #define S_ISREG(x) 0
