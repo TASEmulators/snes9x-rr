@@ -21,7 +21,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include "GPU_osd.h"
+//#include "GPU_osd.h"
 //#include "GPU.h"
 //#include "mem.h"
 #include <vector>
@@ -32,7 +32,7 @@
 //#include "main.h"
 //#include "debug.h"
 
-#include "aggdraw.h"
+//#include "aggdraw.h"
 //#include "movie.h"
 //#include "NDSSystem.h"
 //#include "mic.h"

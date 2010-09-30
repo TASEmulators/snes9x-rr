@@ -8,7 +8,7 @@
 #include <algorithm>
 #include "zlib.h"
 //#include "movie.h"
-#include "GPU_osd.h"
+//#include "GPU_osd.h"
 //#include "main.h"
 //#include "pcejin.h"
 //#include "debug.h"
@@ -1007,12 +1007,12 @@ DEFINE_LUA_FUNCTION(print, "...")
 }
 
 
-DEFINE_LUA_FUNCTION(emu_message, "str")
+/*DEFINE_LUA_FUNCTION(emu_message, "str")
 {
 	const char* str = toCString(L);
 	osd->addLine(str);
 	return 0;
-}
+}*/
 
 // provides an easy way to copy a table from Lua
 // (simple assignment only makes an alias, but sometimes an independent table is desired)
@@ -3387,9 +3387,9 @@ int dontworry(LuaContextInfo& info)
 //agg basic shapes
 //TODO polygon and polyline, maybe the overloads for roundedRect and curve
 
-#include "aggdraw.h"
+//#include "aggdraw.h"
 
-static int line(lua_State *L) {
+/*static int line(lua_State *L) {
 
 	int x1,y1,x2,y2;
 	x1 = luaL_checkinteger(L,1);
@@ -3500,18 +3500,18 @@ static int curve(lua_State *L) {
 	aggDraw.target->curve(x1, y1, x2, y2, x3, y3);
 
 	return 0;
-}
+}*/
 
 static const struct luaL_reg aggbasicshapes [] =
 {
-	{"line", line},
-	{"triangle", triangle},
-	{"rectangle", rectangle},
-	{"roundedRect", roundedRect},
-	{"ellipse", ellipse},
-	{"arc", arc},
-	{"star", star},
-	{"curve", curve},
+//	{"line", line},
+//	{"triangle", triangle},
+//	{"rectangle", rectangle},
+//	{"roundedRect", roundedRect},
+//	{"ellipse", ellipse},
+//	{"arc", arc},
+//	{"star", star},
+//	{"curve", curve},
 //	{"polygon", polygon},
 //	{"polyline", polyline},
 	{NULL, NULL}
@@ -3520,7 +3520,7 @@ static const struct luaL_reg aggbasicshapes [] =
 //agg general attributes
 //TODO missing functions, maybe the missing overloads 
 
-static int fillColor(lua_State *L) {
+/*static int fillColor(lua_State *L) {
 
 	lua_Integer r,g,b,a;
 	r = luaL_checkinteger(L,1);
@@ -3566,7 +3566,7 @@ static int lineWidth(lua_State *L) {
 	aggDraw.target->lineWidth(w);
 
 	return 0;
-}
+}*/
 
 static const struct luaL_reg agggeneralattributes [] =
 {
@@ -3576,22 +3576,22 @@ static const struct luaL_reg agggeneralattributes [] =
 //	{"masterAlpha", masterAlpha},
 //	{"antiAliasGamma", antiAliasGamma},
 //	{"font", font},
-	{"fillColor", fillColor},
-	{"noFill", noFill},
-	{"lineColor", lineColor},
-	{"noLine", noLine},
+//	{"fillColor", fillColor},
+//	{"noFill", noFill},
+//	{"lineColor", lineColor},
+//	{"noLine", noLine},
 //	{"fillLinearGradient", fillLinearGradient},
 //	{"lineLinearGradient", lineLinearGradient},
 //	{"fillRadialGradient", fillRadialGradient},
 //	{"lineRadialGradient", lineRadialGradient},
-	{"lineWidth", lineWidth},
+//	{"lineWidth", lineWidth},
 //	{"lineCap", lineCap},
 //	{"lineJoin", lineJoin},
 //	{"fillEvenOdd", fillEvenOdd},
 	{NULL, NULL}
 };
 
-static int setFont(lua_State *L) {
+/*static int setFont(lua_State *L) {
 
 	const char *choice;
 	choice = luaL_checkstring(L,1);
@@ -3610,12 +3610,12 @@ static int text(lua_State *L) {
 
 	aggDraw.target->renderTextDropshadowed(x,y,choice);
 	return 0;
-}
+}*/
 
 static const struct luaL_reg aggcustom [] =
 {
-	{"setFont", setFont},
-	{"text", text},
+//	{"setFont", setFont},
+//	{"text", text},
 	{NULL, NULL}
 };
 
@@ -3624,7 +3624,7 @@ static const struct luaL_reg aggcustom [] =
 //
 //  Displays the given text on the screen, using the same font and techniques as the
 //  main HUD.
-static int gui_text(lua_State *L) {
+/*static int gui_text(lua_State *L) {
 	const char *msg;
 	int x, y;
 
@@ -3635,7 +3635,7 @@ static int gui_text(lua_State *L) {
 	osd->addFixed(x, y, "%s", msg);
 
 	return 0;
-}
+}*/
 
 /*static int stylus_read(lua_State *L){
 	/*
@@ -3679,7 +3679,7 @@ static const struct luaL_reg emulib [] =
 //	{"registerstart", emu_registerstart},
 //	{"registerexit", emu_registerexit},
 	{"persistglobalvariables", emu_persistglobalvariables},
-	{"message", emu_message},
+//	{"message", emu_message},
 	{"print", print}, // sure, why not
 	{"openscript", emu_openscript},
 //	{"loadrom", emu_loadrom},
@@ -3690,7 +3690,7 @@ static const struct luaL_reg emulib [] =
 static const struct luaL_reg guilib [] =
 {
 	{"register", gui_register},
-	{"text", gui_text},
+//	{"text", gui_text},
 //	{"box", gui_box},
 //	{"line", gui_line},
 //	{"pixel", gui_pixel},
@@ -3703,7 +3703,7 @@ static const struct luaL_reg guilib [] =
 //	{"gdoverlay", gui_gdoverlay},
 //	{"redraw", emu_redraw}, // some people might think of this as more of a GUI function
 	// alternative names
-	{"drawtext", gui_text},
+//	{"drawtext", gui_text},
 //	{"drawbox", gui_box},
 //	{"drawline", gui_line},
 //	{"drawpixel", gui_pixel},

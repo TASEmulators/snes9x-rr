@@ -28,7 +28,7 @@
 #include <time.h>
 #include "types.h"
 
-#include "aggdraw.h"
+//#include "aggdraw.h"
 
 #define OSD_MAX_LINES 4
 #define OSD_TIMER_SECS 2
