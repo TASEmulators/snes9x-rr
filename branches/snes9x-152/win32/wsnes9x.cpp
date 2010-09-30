@@ -210,8 +210,8 @@
 #include "../movie.h"
 #include "../controls.h"
 #include "../conffile.h"
-#include "../aggdraw.h"
-#include "../GPU_osd.h"
+//#include "../aggdraw.h"
+//#include "../GPU_osd.h"
 #include "AVIOutput.h"
 #include "InputCustom.h"
 #include "ram_search.h"
@@ -3518,12 +3518,6 @@ int WINAPI WinMain(
 	}
 
 	InitLUTsWin32(); // init win hq2x
-
-	extern void Agg_init();
-	Agg_init();
-
-	if (osd)  {delete osd; osd =NULL; }
-	osd  = new OSDCLASS(-1);
 
 	WinDisplayReset();
 
