@@ -120,11 +120,13 @@
 #include "../disasm.h"
 #include "WAVOutput.h"
 #include "AVIOutput.h"
+#include "CWindow.h"
 #include "InputCustom.h"
 #include "lazymacro.h"
 #include "ram_search.h"
 #include "ramwatch.h"
 #include "oldramsearch.h"
+#include "memView.h"
 #include <vector>
 
 #ifdef UNZIP_SUPPORT
@@ -312,8 +314,6 @@ void LoadExts(void);
 extern FILE *trace_fs;
 extern SCheatData Cheat;
 extern bool8 do_frame_adjust;
-
-HINSTANCE g_hInst;
 
 #ifdef DEBUGGER
 extern "C" void Trace ();
@@ -1931,7 +1931,7 @@ static bool DoOpenRomDialog(char filename [_MAX_PATH], bool noCustomDlg = false)
 			icex.dwICC   = ICC_LISTVIEW_CLASSES|ICC_TREEVIEW_CLASSES;
 			InitCommonControlsEx(&icex); // this could cause failure if the common control DLL isn't found
 
-			return (1 <= DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_OPEN_ROM), GUI.hWnd, DlgOpenROMProc, (LPARAM)filename));
+			return (1 <= DialogBoxParam(GUI.hInstance, MAKEINTRESOURCE(IDD_OPEN_ROM), GUI.hWnd, DlgOpenROMProc, (LPARAM)filename));
 		}
 		catch(...) {} // use standard dialog if the special one fails
 
@@ -2172,7 +2172,7 @@ LRESULT CALLBACK WinProc(
     switch (uMsg)
     {
 	case WM_CREATE:
-		g_hInst = ((LPCREATESTRUCT)lParam)->hInstance;
+		GUI.hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
 #ifndef MK_APU
 		DeleteMenu(GUI.hMenu,IDM_CATCH_UP_SOUND,MF_BYCOMMAND);
 #endif
@@ -2244,7 +2244,7 @@ LRESULT CALLBACK WinProc(
 					HWND IsScriptFileOpen(const char* Path);
 					if(!IsScriptFileOpen(temp))
 					{
-						HWND hDlg = CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_LUA), hWnd, (DLGPROC) LuaScriptProc);
+						HWND hDlg = CreateDialog(GUI.hInstance, MAKEINTRESOURCE(IDD_LUA), hWnd, (DLGPROC) LuaScriptProc);
 						SendDlgItemMessage(hDlg,IDC_EDIT_LUAPATH,WM_SETTEXT,0,(LPARAM)temp);
 					}
 				}
@@ -2378,7 +2378,7 @@ LRESULT CALLBACK WinProc(
 
 		case ID_FILE_MOVIE_SEEK:
                         RestoreGUIDisplay ();
-			DialogBox(g_hInst, MAKEINTRESOURCE(IDD_MOVIE_SEEK), hWnd, DlgSeekProc);
+			DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_MOVIE_SEEK), hWnd, DlgSeekProc);
                         RestoreSNESDisplay ();
 			break;
 		case ID_MOVIE_CONTINUE:
@@ -2400,7 +2400,7 @@ LRESULT CALLBACK WinProc(
 				RestoreGUIDisplay ();  //exit DirectX
 				OpenMovieParams op;
 				memset(&op, 0, sizeof(op));
-				if(DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_OPENMOVIE), hWnd, DlgOpenMovie, (LPARAM)&op) &&
+				if(DialogBoxParam(GUI.hInstance, MAKEINTRESOURCE(IDD_OPENMOVIE), hWnd, DlgOpenMovie, (LPARAM)&op) &&
 					op.Path[0]!='\0')
 				{
 					int err=S9xMovieOpen (op.Path, op.ReadOnly, op.SyncFlags, op.SyncFlags2);
@@ -2429,7 +2429,7 @@ LRESULT CALLBACK WinProc(
 			{
 				if(LuaScriptHWnds.size() < 16)
 				{
-					CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_LUA), GUI.hWnd, (DLGPROC) LuaScriptProc);
+					CreateDialog(GUI.hInstance, MAKEINTRESOURCE(IDD_LUA), GUI.hWnd, (DLGPROC) LuaScriptProc);
 				}
 			}
 			break;
@@ -2444,7 +2444,7 @@ LRESULT CALLBACK WinProc(
 				RestoreGUIDisplay ();  //exit DirectX
 				OpenMovieParams op;
 				memset(&op, 0, sizeof(op));
-				if(DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_CREATEMOVIE), hWnd, DlgCreateMovie, (LPARAM)&op) &&
+				if(DialogBoxParam(GUI.hInstance, MAKEINTRESOURCE(IDD_CREATEMOVIE), hWnd, DlgCreateMovie, (LPARAM)&op) &&
 					op.Path[0]!='\0')
 				{
 					if(!Settings.ShutdownMaster)
@@ -2483,7 +2483,7 @@ LRESULT CALLBACK WinProc(
 			break;
 		case IDM_GFX_PACKS:
 			RestoreGUIDisplay ();  //exit DirectX
-			DialogBox(g_hInst, MAKEINTRESOURCE(IDD_GFX_PACK), hWnd, DlgPackConfigProc);
+			DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_GFX_PACK), hWnd, DlgPackConfigProc);
 			RestoreSNESDisplay ();// re-enter after dialog
 			break;
 		case IDM_CATCH_UP_SOUND:
@@ -2608,7 +2608,7 @@ LRESULT CALLBACK WinProc(
 				//showFPS = Settings.DisplayFrameRate ? true : false;
 				//if (!VOODOO_MODE && !GUI.FullScreen)
 				//	GetWindowRect (GUI.hWnd, &GUI.window_size);
-				DialogBox(g_hInst, MAKEINTRESOURCE(IDD_NEWDISPLAY), hWnd, DlgFunky);
+				DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_NEWDISPLAY), hWnd, DlgFunky);
 				//_DirectXConfig (DirectDraw.lpDD, &Settings, &GUI, &showFPS);
 				
 				//Settings.DisplayFrameRate = showFPS;
@@ -2645,13 +2645,13 @@ LRESULT CALLBACK WinProc(
 
 		case ID_OPTIONS_JOYPAD:
             RestoreGUIDisplay ();
-			DialogBox(g_hInst, MAKEINTRESOURCE(IDD_INPUTCONFIG), hWnd, DlgInputConfig);
+			DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_INPUTCONFIG), hWnd, DlgInputConfig);
             RestoreSNESDisplay ();
             break;
 
 		case ID_OPTIONS_KEYCUSTOM:
             RestoreGUIDisplay ();
-			DialogBox(g_hInst, MAKEINTRESOURCE(IDD_KEYCUSTOM), hWnd, DlgHotkeyConfig);
+			DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_KEYCUSTOM), hWnd, DlgHotkeyConfig);
             RestoreSNESDisplay ();
             break;
 
@@ -2659,7 +2659,7 @@ LRESULT CALLBACK WinProc(
 			RestoreGUIDisplay ();
 			if(!inputMacroHWND) // create and show non-modal macro editor window
 			{
-				CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_MACRO_SETTINGS), hWnd, DlgInputMacro); // non-modal/modeless
+				CreateDialog(GUI.hInstance, MAKEINTRESOURCE(IDD_MACRO_SETTINGS), hWnd, DlgInputMacro); // non-modal/modeless
 				ShowWindow(inputMacroHWND, SW_SHOW);
 			}
 			else // already open so just reactivate the window
@@ -2719,7 +2719,7 @@ LRESULT CALLBACK WinProc(
             break;
         case ID_NETPLAY_CONNECT:
             RestoreGUIDisplay ();
-			if(1<=DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_NETCONNECT), hWnd, DlgNetConnect,(LPARAM)&hostname))
+			if(1<=DialogBoxParam(GUI.hInstance, MAKEINTRESOURCE(IDD_NETCONNECT), hWnd, DlgNetConnect,(LPARAM)&hostname))
 
             {
 
@@ -2751,7 +2751,7 @@ LRESULT CALLBACK WinProc(
 			{
 				bool8 old_netplay_server = Settings.NetPlayServer;
 				RestoreGUIDisplay ();
-				if(1<=DialogBox(g_hInst, MAKEINTRESOURCE(IDD_NPOPTIONS), hWnd, DlgNPOptions))
+				if(1<=DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_NPOPTIONS), hWnd, DlgNPOptions))
 				{
 					if (old_netplay_server != Settings.NetPlayServer)
 					{
@@ -2929,7 +2929,7 @@ LRESULT CALLBACK WinProc(
 			{
 				struct SSettings orig = Settings;
 				RestoreGUIDisplay ();
-				if(1<=DialogBoxParam(g_hInst,MAKEINTRESOURCE(IDD_SOUND_OPTS),hWnd,DlgSoundConf, (LPARAM)&Settings))
+				if(1<=DialogBoxParam(GUI.hInstance,MAKEINTRESOURCE(IDD_SOUND_OPTS),hWnd,DlgSoundConf, (LPARAM)&Settings))
 				{
 					if (orig.NextAPUEnabled != Settings.NextAPUEnabled)
 					{
@@ -2972,7 +2972,7 @@ LRESULT CALLBACK WinProc(
 					{
 						struct SPC7110RTC origrtc = s7r.rtc;
 						RestoreGUIDisplay ();
-						if(1<=DialogBoxParam(g_hInst,MAKEINTRESOURCE(IDD_7110_RTC),hWnd,SPC7110rtc, (LPARAM)&origrtc))
+						if(1<=DialogBoxParam(GUI.hInstance,MAKEINTRESOURCE(IDD_7110_RTC),hWnd,SPC7110rtc, (LPARAM)&origrtc))
 						{
 							rtc_f9.reg[0x00]=origrtc.reg[0x00];
 							rtc_f9.reg[0x01]=origrtc.reg[0x01];
@@ -3417,7 +3417,7 @@ LRESULT CALLBACK WinProc(
 							}
 						}	break;
 						case ID_FRAMESKIP_SETTINGS:
-							DialogBox(g_hInst, MAKEINTRESOURCE(IDD_FRAMESKIP_SETTINGS), hWnd, DlgFrameSkipSettings);
+							DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_FRAMESKIP_SETTINGS), hWnd, DlgFrameSkipSettings);
 							break;
 						case ID_FRAMESKIP_THROTTLE_6:
 						case ID_FRAMESKIP_THROTTLE_25:
@@ -3485,7 +3485,7 @@ LRESULT CALLBACK WinProc(
 						case ID_CHEAT_ENTER:
 							RestoreGUIDisplay ();
 							S9xRemoveCheats ();
-							DialogBox(g_hInst, MAKEINTRESOURCE(IDD_CHEATER), hWnd, DlgCheater);
+							DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_CHEATER), hWnd, DlgCheater);
 							S9xSaveCheatFile (S9xGetFilename (".cht", CHEAT_DIR));
 							S9xApplyCheats ();
 							RestoreSNESDisplay ();
@@ -3494,7 +3494,7 @@ LRESULT CALLBACK WinProc(
 							if(!RamSearchHWnd)
 							{
 								reset_address_info();
-								RamSearchHWnd = CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_RAMSEARCH), hWnd, (DLGPROC) RamSearchProc);
+								RamSearchHWnd = CreateDialog(GUI.hInstance, MAKEINTRESOURCE(IDD_RAMSEARCH), hWnd, (DLGPROC) RamSearchProc);
 							}
 							else
 								SetForegroundWindow(RamSearchHWnd);
@@ -3502,7 +3502,7 @@ LRESULT CALLBACK WinProc(
 						case ID_RAM_WATCH:
 							if(!RamWatchHWnd)
 							{
-								RamWatchHWnd = CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_RAMWATCH), hWnd, (DLGPROC) RamWatchProc);
+								RamWatchHWnd = CreateDialog(GUI.hInstance, MAKEINTRESOURCE(IDD_RAMWATCH), hWnd, (DLGPROC) RamWatchProc);
 								//				DialogsOpen++;
 							}
 							else
@@ -3512,7 +3512,7 @@ LRESULT CALLBACK WinProc(
 							RestoreGUIDisplay ();
 							if(!oldRamSearchHWND) // create and show non-modal RAM search window
 							{
-								oldRamSearchHWND = CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_RAM_SEARCH), hWnd, DlgRAMSearch); // non-modal/modeless
+								oldRamSearchHWND = CreateDialog(GUI.hInstance, MAKEINTRESOURCE(IDD_RAM_SEARCH), hWnd, DlgRAMSearch); // non-modal/modeless
 								ShowWindow(oldRamSearchHWND, SW_SHOW);
 							}
 							else // already open so just reactivate the window
@@ -3521,6 +3521,14 @@ LRESULT CALLBACK WinProc(
 							}
 							RestoreSNESDisplay ();
 							break;
+						case IDM_MEMORY:
+							//if(!MemView_IsOpened(ARMCPU_ARM9)) MemView_DlgOpen(HWND_DESKTOP, "ARM9 memory", ARMCPU_ARM9);
+							//if(!MemView_IsOpened(ARMCPU_ARM7)) MemView_DlgOpen(HWND_DESKTOP, "ARM7 memory", ARMCPU_ARM7);
+							if (!RegWndClass("MemView_ViewBox", MemView_ViewBoxProc, 0, sizeof(CMemView*)))
+								return 0;
+
+							OpenToolWindow(new CMemView());
+							return 0;
 						case ID_TRACE_LOGGER: {
 							if (S9xTraceLogStream) {
 								fclose(S9xTraceLogStream);
@@ -3571,12 +3579,12 @@ LRESULT CALLBACK WinProc(
 							break;
 						case ID_OPTIONS_SETTINGS:
 							RestoreGUIDisplay ();
-							DialogBox(g_hInst, MAKEINTRESOURCE(IDD_EMU_SETTINGS), hWnd, DlgEmulatorProc);
+							DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_EMU_SETTINGS), hWnd, DlgEmulatorProc);
 							RestoreSNESDisplay ();
 							break;
 						case ID_HELP_ABOUT:
 							RestoreGUIDisplay ();
-							DialogBox(g_hInst, MAKEINTRESOURCE(IDD_ABOUT), hWnd, DlgAboutProc);
+							DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_ABOUT), hWnd, DlgAboutProc);
 							RestoreSNESDisplay ();
 							break;
 #ifdef DEBUGGER
@@ -3593,7 +3601,7 @@ LRESULT CALLBACK WinProc(
 #endif
 						case IDM_7110_CACHE:
 							RestoreGUIDisplay ();
-							DialogBox(g_hInst, MAKEINTRESOURCE(IDD_SPC7110_CACHE), hWnd, DlgSP7PackConfig);
+							DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_SPC7110_CACHE), hWnd, DlgSP7PackConfig);
 							RestoreSNESDisplay ();
 							break;
 						case IDM_LOG_7110:
@@ -3601,7 +3609,7 @@ LRESULT CALLBACK WinProc(
 							break;
 						case IDM_ROM_INFO:
 							RestoreGUIDisplay ();
-							DialogBox(g_hInst, MAKEINTRESOURCE(IDD_ROM_INFO), hWnd, DlgInfoProc);
+							DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_ROM_INFO), hWnd, DlgInfoProc);
 							RestoreSNESDisplay ();
 							break;
 						case ID_EMULATOR_BACKGROUNDRUN:
@@ -3970,11 +3978,11 @@ LRESULT CALLBACK WinProc(
 		if ((int) lParam >= 0)
 		{
 			RestoreGUIDisplay ();
-			DialogBox(g_hInst, MAKEINTRESOURCE(IDD_NETPLAYPROGRESS), hWnd, DlgNPProgress);
+			DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_NETPLAYPROGRESS), hWnd, DlgNPProgress);
 		}
 		else
 		{
-			DialogBox(g_hInst, MAKEINTRESOURCE(IDD_NETPLAYPROGRESS), hWnd, DlgNPProgress);
+			DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_NETPLAYPROGRESS), hWnd, DlgNPProgress);
 			RestoreSNESDisplay ();
 		}
 #endif
@@ -5001,7 +5009,7 @@ int WINAPI WinMain(
 				S9xMainLoop();
 				GUI.FrameCount++;
 
-				Update_RAM_Search(); // Update_RAM_Watch() is also called.
+				UpdateToolWindows();
 			}
 
 #ifdef NETPLAY_SUPPORT
@@ -5091,6 +5099,13 @@ loop_exit:
 		_CrtDumpMemoryLeaks();
 #endif
 		return msg.wParam;
+}
+
+void UpdateToolWindows()
+{
+	Update_RAM_Search();	//Update_RAM_Watch() is also called; hotkey.cpp - HK_StateLoadSlot & State_Load also call these functions
+
+	RefreshAllToolWindows();
 }
 
 void RestoreGUIDisplay ()
@@ -8261,7 +8276,7 @@ INT_PTR CALLBACK DlgOpenROMProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 			TCHAR tempclassname[]=TEXT("S9xSplitter");
 			ZeroMemory(&wcex, sizeof(WNDCLASSEX));
 			wcex.cbSize=sizeof(WNDCLASSEX);
-			wcex.hInstance=g_hInst;
+			wcex.hInstance=GUI.hInstance;
 			wcex.lpfnWndProc=DlgChildSplitProc;
 			wcex.lpszClassName=tempclassname;
 			wcex.hbrBackground=(HBRUSH)GetStockObject(LTGRAY_BRUSH);
@@ -8277,7 +8292,7 @@ INT_PTR CALLBACK DlgOpenROMProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 			p.x=treeRect.right;
 			p.y=treeRect.top;
 			ScreenToClient(hDlg, &p);
-			hSplit=CreateWindow(TEXT("S9xSplitter"), TEXT(""),WS_CHILD|WS_VISIBLE , p.x, p.y, listRect.left-treeRect.right , listRect.bottom-listRect.top, hDlg,NULL, g_hInst,0);
+			hSplit=CreateWindow(TEXT("S9xSplitter"), TEXT(""),WS_CHILD|WS_VISIBLE , p.x, p.y, listRect.left-treeRect.right , listRect.bottom-listRect.top, hDlg,NULL, GUI.hInstance,0);
 
 			LVCOLUMN col;
 			static const LPSTR temp1 = TEXT(ROM_COLUMN_FILENAME);
@@ -8344,7 +8359,7 @@ INT_PTR CALLBACK DlgOpenROMProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 			HANDLE hBitmap;
 
 #define ADD_IMAGE(IDB_NAME) \
-			hBitmap=LoadImage(g_hInst, MAKEINTRESOURCE(IDB_NAME), IMAGE_BITMAP, 0,0, LR_DEFAULTCOLOR|LR_CREATEDIBSECTION); \
+			hBitmap=LoadImage(GUI.hInstance, MAKEINTRESOURCE(IDB_NAME), IMAGE_BITMAP, 0,0, LR_DEFAULTCOLOR|LR_CREATEDIBSECTION); \
 			ImageList_Add(hIcons, (HBITMAP)hBitmap, NULL); \
 			DeleteObject(hBitmap);
 
@@ -8778,7 +8793,7 @@ INT_PTR CALLBACK DlgOpenROMProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 				ClearCacheList(rdl);
 				rdl=NULL;
 				DestroyWindow(hSplit);
-				UnregisterClass(TEXT("S9xSplitter"), g_hInst);
+				UnregisterClass(TEXT("S9xSplitter"), GUI.hInstance);
 				TreeView_DeleteAllItems(dirList);
 				ListView_DeleteAllItems(romList);
 				return true;
@@ -11902,7 +11917,7 @@ const char * S9xStringInput(const char *msg)
 	lstrcpyn(WinStringInputTitle, msg, COUNT(WinStringInputTitle));
 
 	RestoreGUIDisplay ();
-	ret = DialogBox(g_hInst, MAKEINTRESOURCE(IDD_STRING_INPUT), GUI.hWnd, DlgStringInputProc);
+	ret = DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_STRING_INPUT), GUI.hWnd, DlgStringInputProc);
 	RestoreSNESDisplay ();
 
 	if (ret)

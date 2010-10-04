@@ -67,7 +67,7 @@ static unsigned int s_maxItemIndex = 0; // max currently valid item index, the l
 
 HWND RamSearchHWnd;
 #define hWnd GUI.hWnd
-#define hInst g_hInst
+#define hInst GUI.hInstance
 static char Str_Tmp [1024];
 
 int disableRamSearchUpdate = false;
@@ -1772,7 +1772,7 @@ LRESULT CALLBACK RamSearchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 						cht.format = fmtTable[numberType];
 						cht.new_val = CALL_WITH_T_SIZE_TYPES_1(GetCurValueFromItemIndex, rs_type_size,rs_t=='s',noMisalign, watchItemIndex);
 						cht.saved_val = CALL_WITH_T_SIZE_TYPES_1(GetPrevValueFromItemIndex, rs_type_size,rs_t=='s',noMisalign, watchItemIndex);
-						if(DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_CHEAT_FROM_SEARCH), hDlg, DlgAddCheat, (LPARAM)&cht))
+						if(DialogBoxParam(GUI.hInstance, MAKEINTRESOURCE(IDD_CHEAT_FROM_SEARCH), hDlg, DlgAddCheat, (LPARAM)&cht))
 						{
 							int p;
 							for(p=0; p<cht.size; p++)

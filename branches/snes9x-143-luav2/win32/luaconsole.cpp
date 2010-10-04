@@ -19,7 +19,7 @@
 #include "lua-engine.h"
 
 #define g_hWnd GUI.hWnd
-#define g_hInstance g_hInst
+#define g_hInstance GUI.hInstance
 
 #define MAX_RECENT_SCRIPTS 15
 
@@ -376,7 +376,7 @@ static int Change_File_L(char *Dest, char *Dir, char *Titre, char *Filter, char 
 
 	ofn.lStructSize = sizeof(OPENFILENAME);
 	ofn.hwndOwner = hwnd;
-	ofn.hInstance = g_hInstance;
+	ofn.hInstance = GUI.hInstance;
 	ofn.lpstrFile = Dest;
 	ofn.nMaxFile = 2047;
 	ofn.lpstrFilter = Filter;
@@ -785,7 +785,7 @@ const char* OpenLuaScript(const char* filename, const char* extraDirToCheck, boo
 		{
 			HWND prevWindow = GetActiveWindow();
 
-			HWND hDlg = CreateDialog(g_hInstance, MAKEINTRESOURCE(IDD_LUA), g_hWnd, (DLGPROC) LuaScriptProc);
+			HWND hDlg = CreateDialog(GUI.hInstance, MAKEINTRESOURCE(IDD_LUA), g_hWnd, (DLGPROC) LuaScriptProc);
 			SendMessage(hDlg,WM_COMMAND,IDC_NOTIFY_SUBSERVIENT,TRUE);
 			SendDlgItemMessage(hDlg,IDC_EDIT_LUAPATH,WM_SETTEXT,0,(LPARAM)filename);
 //			DialogsOpen++;

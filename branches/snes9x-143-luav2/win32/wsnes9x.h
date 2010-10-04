@@ -583,8 +583,6 @@ void S9xWinInitSound();
 void S9xWinDeinitSound();
 bool S9xWinIsSoundActive();
 
-extern HINSTANCE g_hInst;
-
 const char *S9xGetFilenameRel (const char *ex);
 
 struct ICheat
@@ -601,6 +599,8 @@ struct ICheat
 
 extern INT_PTR CALLBACK DlgAddCheat(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 extern INT_PTR CALLBACK DlgCheater(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
+
+void UpdateToolWindows();
 
 // from ramwatch.cpp
 extern bool AutoRWLoad;         //Keeps track of whether Auto-load is checked

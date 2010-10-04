@@ -123,8 +123,7 @@
 #include "dsp1.h"
 #include "language.h"
 #ifdef WIN32
-#include "win32/ram_search.h"
-#include "win32/ramwatch.h"
+#include "win32/wsnes9x.h"
 #endif
 
 //you would think everyone would have these
@@ -1980,7 +1979,7 @@ int S9xUnfreezeFromStream (STREAM stream)
 			S9xSDD1PostLoadState ();
 
 		#ifdef WIN32
-			Update_RAM_Search(); // Update_RAM_Watch() is also called.
+			UpdateToolWindows();
 		#endif
 	}
 

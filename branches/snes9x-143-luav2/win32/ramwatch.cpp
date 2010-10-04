@@ -48,7 +48,7 @@ struct InitRamWatch
 HWND RamWatchHWnd;
 #define gamefilename S9xGetFilenameRel("")
 #define hWnd GUI.hWnd
-#define hInst g_hInst
+#define hInst GUI.hInstance
 static char Str_Tmp [1024];
 
 void init_list_box(HWND Box, const char* Strs[], int numColumns, int *columnWidths); //initializes the ram search and/or ram watch listbox
@@ -1142,7 +1142,7 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 						cht.format = fmtTable[numberType];
 						cht.new_val = rswatches[watchIndex].CurValue;
 						cht.saved_val = rswatches[watchIndex].CurValue;
-						if(DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_CHEAT_FROM_SEARCH), hDlg, DlgAddCheat, (LPARAM)&cht))
+						if(DialogBoxParam(GUI.hInstance, MAKEINTRESOURCE(IDD_CHEAT_FROM_SEARCH), hDlg, DlgAddCheat, (LPARAM)&cht))
 						{
 							int p;
 							for(p=0; p<cht.size; p++)
