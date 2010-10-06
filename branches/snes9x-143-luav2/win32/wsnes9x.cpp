@@ -5035,6 +5035,8 @@ loop_exit:
 	//stop any lua we might already have had running
 //	S9xLuaStop();
 
+	CloseAllToolWindows();
+
 #ifdef USE_GLIDE
 	S9xGlideEnable (FALSE);
 #endif
