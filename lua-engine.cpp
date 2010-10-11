@@ -3270,7 +3270,7 @@ DEFINE_LUA_FUNCTION(input_getcurrentinputstatus, "")
 #ifdef _WIN32
 	// keyboard and mouse button status
 	{
-		int BackgroundInput = 0;//TODO
+		int BackgroundInput = GUI.BackgroundInput;
 
 		unsigned char keys [256];
 		if(!BackgroundInput)

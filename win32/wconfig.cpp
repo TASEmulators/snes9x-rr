@@ -886,6 +886,7 @@ void WinPostSave(ConfigFile& conf)
 		case 9: Settings.SoundPlaybackRate = 48000; break;
 	}*/
 	Settings.ShutdownMaster = preSaveShutdownMaster; // revert temp change
+	GUI.BackgroundInput &= !GUI.InactivePause;
 }
 void WinPostLoad(ConfigFile& conf)
 {
@@ -1000,6 +1001,7 @@ void WinRegisterConfigItems()
 #undef CATEGORY
 #define CATEGORY "Settings\\Win"
 	AddBoolC("PauseWhenInactive", GUI.InactivePause, TRUE, "true to pause Snes9x when it is not the active window");
+	AddBool2C("Joypads:Background", GUI.BackgroundInput, true, "on to detect game keypresses and hotkeys while window is inactive, if PauseWhenInactive = FALSE.");
 	AddBoolC("CustomRomOpenDialog", GUI.CustomRomOpen, false, "false to use standard Windows open dialog for the ROM open dialog");
 	AddBoolC("ToggledTurbo", GUI.TurboModeToggle, FALSE, "true to allow fast-forward to stay on without holding the turbo button");
 //	AddUIntC("Language", GUI.Language, 0, "0=English, 1=Nederlands"); // NYI
@@ -1091,11 +1093,9 @@ void WinRegisterConfigItems()
 #undef ADDT3
 #undef ADDTN
 #undef ADD2T2
-	AddBool2C("Joypads:Background", GUI.BackgroundKeyGamekeys, true, "on to detect game keypresses while window is inactive, if PauseWhenInactive = FALSE.");
 #undef CATEGORY
 #define	CATEGORY "Controls\\Win\\Hotkeys"
 	AddBool2C("Handler:Joystick", GUI.JoystickHotkeys, true, "on to detect game controller buttons assigned to hotkeys. May impact performance.");
-	AddBool2C("Handler:Background", GUI.BackgroundKeyHotkeys, false, "on to detect keyboard hotkeys when in the background. May impact performance and decrease responsiveness.");
 #define ADD(x) AddVKey("Key:" #x , CustomKeys.x.key, CustomKeys.x.key); AddVKMod("Mods:" #x, CustomKeys.x.modifiers, CustomKeys.x.modifiers)
 #define ADDN(x,n2) AddVKey("Key:" #n2, CustomKeys.x.key, CustomKeys.x.key); AddVKMod("Mods:" #n2, CustomKeys.x.modifiers, CustomKeys.x.modifiers)
 	ADD(SpeedUp); ADD(SpeedDown); ADD(Pause); ADD(FrameAdvance);

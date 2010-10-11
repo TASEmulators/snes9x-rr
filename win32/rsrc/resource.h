@@ -546,13 +546,15 @@
 #define ID_VIEW_DISPLAYINPUT            40203
 #define ID_VIEW_DISPLAYLAG              40204
 #define IDM_MEMORY                      40205
+#define ID_EMULATOR_BACKGROUNDRUN       40206
+#define ID_EMULATOR_BACKGROUNDINPUT     40207
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        157
-#define _APS_NEXT_COMMAND_VALUE         40206
+#define _APS_NEXT_COMMAND_VALUE         40208
 #define _APS_NEXT_CONTROL_VALUE         3068
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

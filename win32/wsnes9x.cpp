@@ -1699,7 +1699,7 @@ LRESULT CALLBACK WinProc(
 		DragAcceptFiles(hWnd, TRUE);
 		return 0;
 	case WM_KEYDOWN:
-		if(GUI.BackgroundKeyHotkeys)
+		if(GUI.BackgroundInput)
 			break;
 	case WM_CUSTKEYDOWN:
 	case WM_SYSKEYDOWN:
@@ -2597,6 +2597,14 @@ LRESULT CALLBACK WinProc(
 							DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_ROM_INFO), hWnd, DlgInfoProc);
 							RestoreSNESDisplay ();
 							break;
+						case ID_EMULATOR_BACKGROUNDRUN:
+							GUI.InactivePause = !GUI.InactivePause;
+							GUI.BackgroundInput &= !GUI.InactivePause;
+							break;
+						case ID_EMULATOR_BACKGROUNDINPUT:
+							GUI.BackgroundInput = !GUI.BackgroundInput;
+							GUI.InactivePause &= !GUI.BackgroundInput;
+							break;
 						default:
 							if ((wParam & 0xffff) >= 0xFF00)
 							{
@@ -2976,7 +2984,7 @@ VOID CALLBACK HotkeyTimer( UINT idEvent, UINT uMsg, DWORD dwUser, DWORD dw1, DWO
 			}
 			counter++;
 		}
-		if(GUI.BackgroundKeyHotkeys)
+		if(GUI.BackgroundInput)
 		{
 			static int counter = 0;
 			static uint32 joyState [256];
@@ -3611,7 +3619,7 @@ int WINAPI WinMain(
     Settings.StopEmulation = TRUE;
     GUI.hFrameTimer = timeSetEvent (20, 0, FrameTimer, 0, TIME_PERIODIC);
 
-	if(GUI.JoystickHotkeys || GUI.BackgroundKeyHotkeys)
+	if(GUI.JoystickHotkeys || GUI.BackgroundInput)
 	    GUI.hHotkeyTimer = timeSetEvent (32, 0, HotkeyTimer, 0, TIME_PERIODIC);
 	else
 		GUI.hHotkeyTimer = 0;
@@ -4040,6 +4048,11 @@ static void CheckMenuStates ()
     SetMenuItemInfo (GUI.hMenu, ID_FILE_RESET, FALSE, &mii);
     SetMenuItemInfo (GUI.hMenu, ID_CHEAT_ENTER, FALSE, &mii);
 	SetMenuItemInfo (GUI.hMenu, IDM_ROM_INFO, FALSE, &mii);
+
+	mii.fState = !GUI.InactivePause ? MFS_CHECKED : MFS_UNCHECKED;
+	SetMenuItemInfo (GUI.hMenu, ID_EMULATOR_BACKGROUNDRUN, FALSE, &mii);
+	mii.fState = GUI.BackgroundInput ? MFS_CHECKED : MFS_UNCHECKED;
+	SetMenuItemInfo (GUI.hMenu, ID_EMULATOR_BACKGROUNDINPUT, FALSE, &mii);
 
 	mii.fState = RamWatchHWnd ? MFS_CHECKED : MFS_UNCHECKED;
 	if (Settings.StopEmulation || GUI.FullScreen)
