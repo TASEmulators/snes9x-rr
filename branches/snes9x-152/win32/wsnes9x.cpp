@@ -976,14 +976,14 @@ int HandleKeyMessage(WPARAM wParam, LPARAM lParam)
 			if(wParam == Joypad[J].X) p.X = !p.X;
 			if(wParam == Joypad[J].Start) p.Start = !p.Start;
 			if(wParam == Joypad[J].Select) p.Select = !p.Select;
-///					if(wParam == Joypad[J].Left) p.Left = !p.Left;
-///					if(wParam == Joypad[J].Right) p.Right = !p.Right;
-///					if(wParam == Joypad[J].Up) p.Up = !p.Up;
-///					if(wParam == Joypad[J].Down) p.Down = !p.Down;
-///					if(wParam == Joypad[J].Left_Down) p.Left_Down = !p.Left_Down;
-///					if(wParam == Joypad[J].Left_Up) p.Left_Up = !p.Left_Up;
-///					if(wParam == Joypad[J].Right_Down) p.Right_Down = !p.Right_Down;
-///					if(wParam == Joypad[J].Right_Up) p.Right_Up = !p.Right_Up;
+			if(wParam == Joypad[J].Left) p.Left = !p.Left;
+			if(wParam == Joypad[J].Right) p.Right = !p.Right;
+			if(wParam == Joypad[J].Up) p.Up = !p.Up;
+			if(wParam == Joypad[J].Down) p.Down = !p.Down;
+			if(wParam == Joypad[J].Left_Down) p.Left_Down = !p.Left_Down;
+			if(wParam == Joypad[J].Left_Up) p.Left_Up = !p.Left_Up;
+			if(wParam == Joypad[J].Right_Down) p.Right_Down = !p.Right_Down;
+			if(wParam == Joypad[J].Right_Up) p.Right_Up = !p.Right_Up;
 /*					if(!Settings.UpAndDown)
 			{
 				if(p.Left && p.Right && )

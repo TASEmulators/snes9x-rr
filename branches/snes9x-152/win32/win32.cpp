@@ -928,14 +928,14 @@ void S9xWinScanJoypads ()
 				PadState[0] |= ToggleJoypadStorage[J].A||TurboToggleJoypadStorage[J].A      ? 128 : 0;
 
 	            PadState[1]  = 0;
-				PadState[1] |= ToggleJoypadStorage[J].Right  ?   1 : 0;
-				PadState[1] |= ToggleJoypadStorage[J].Left   ?   2 : 0;
-				PadState[1] |= ToggleJoypadStorage[J].Down   ?   4 : 0;
-				PadState[1] |= ToggleJoypadStorage[J].Up     ?   8 : 0;
-				PadState[1] |= ToggleJoypadStorage[J].Start||TurboToggleJoypadStorage[J].Start  ?  16 : 0;
+				PadState[1] |= ToggleJoypadStorage[J].Right||TurboToggleJoypadStorage[J].Right   ?   1 : 0;
+				PadState[1] |= ToggleJoypadStorage[J].Left||TurboToggleJoypadStorage[J].Left     ?   2 : 0;
+				PadState[1] |= ToggleJoypadStorage[J].Down||TurboToggleJoypadStorage[J].Down     ?   4 : 0;
+				PadState[1] |= ToggleJoypadStorage[J].Up||TurboToggleJoypadStorage[J].Up         ?   8 : 0;
+				PadState[1] |= ToggleJoypadStorage[J].Start||TurboToggleJoypadStorage[J].Start   ?  16 : 0;
 				PadState[1] |= ToggleJoypadStorage[J].Select||TurboToggleJoypadStorage[J].Select ?  32 : 0;
-				PadState[1] |= ToggleJoypadStorage[J].Y||TurboToggleJoypadStorage[J].Y      ?  64 : 0;
-				PadState[1] |= ToggleJoypadStorage[J].B||TurboToggleJoypadStorage[J].B      ? 128 : 0;
+				PadState[1] |= ToggleJoypadStorage[J].Y||TurboToggleJoypadStorage[J].Y           ?  64 : 0;
+				PadState[1] |= ToggleJoypadStorage[J].B||TurboToggleJoypadStorage[J].B           ? 128 : 0;
 			}
 			// auto-hold AND regular key/joystick presses
 			if(S9xGetState(Joypad[J+8].Left))
@@ -971,9 +971,9 @@ void S9xWinScanJoypads ()
 			if(turbofy || ((GUI.TurboMask&TURBO_STA_MASK))&&(PadState[1]&16) || !S9xGetState(Joypad[J+8].Start )) PadState[1]^=((joypads[J]&(16<<8))>>8);
 			if(turbofy || ((GUI.TurboMask&TURBO_SEL_MASK))&&(PadState[1]&32) || !S9xGetState(Joypad[J+8].Select)) PadState[1]^=((joypads[J]&(32<<8))>>8);
 			if(           ((GUI.TurboMask&TURBO_LEFT_MASK))&&(PadState[1]&2)                                    ) PadState[1]^=((joypads[J]&(2<<8))>>8);
-			if(           ((GUI.TurboMask&TURBO_UP_MASK))&&(PadState[1]&9)                                      ) PadState[1]^=((joypads[J]&(8<<8))>>8);
+			if(           ((GUI.TurboMask&TURBO_UP_MASK))&&(PadState[1]&8)                                      ) PadState[1]^=((joypads[J]&(8<<8))>>8);
 			if(           ((GUI.TurboMask&TURBO_RIGHT_MASK))&&(PadState[1]&1)                                   ) PadState[1]^=((joypads[J]&(1<<8))>>8);
-			if(           ((GUI.TurboMask&TURBO_RIGHT_MASK))&&(PadState[1]&4)                                   ) PadState[1]^=((joypads[J]&(4<<8))>>8);
+			if(           ((GUI.TurboMask&TURBO_DOWN_MASK))&&(PadState[1]&4)                                    ) PadState[1]^=((joypads[J]&(4<<8))>>8);
 
 			if(TurboToggleJoypadStorage[J].A     ) PadState[0]^=(joypads[J]&128);
 			if(TurboToggleJoypadStorage[J].B     ) PadState[1]^=((joypads[J]&(128<<8))>>8);
@@ -983,6 +983,10 @@ void S9xWinScanJoypads ()
 			if(TurboToggleJoypadStorage[J].R     ) PadState[0]^=(joypads[J]&16);
 			if(TurboToggleJoypadStorage[J].Start ) PadState[1]^=((joypads[J]&(16<<8))>>8);
 			if(TurboToggleJoypadStorage[J].Select) PadState[1]^=((joypads[J]&(32<<8))>>8);
+			if(TurboToggleJoypadStorage[J].Left  ) PadState[1] ^= ((joypads[J]&(2<<8))>>8);
+			if(TurboToggleJoypadStorage[J].Up    ) PadState[1] ^= ((joypads[J]&(8<<8))>>8);
+			if(TurboToggleJoypadStorage[J].Right ) PadState[1] ^= ((joypads[J]&(1<<8))>>8);
+			if(TurboToggleJoypadStorage[J].Down  ) PadState[1] ^= ((joypads[J]&(4<<8))>>8);
 			//end turbo case...
 
 
