@@ -43,6 +43,7 @@
 #define IDD_EDITWATCH                   153
 #define IDD_PROMPT                      154
 #define IDR_RWACCELERATOR               155
+#define IDD_MEM_VIEW                    156
 #define IDC_DRIVER                      1001
 #define IDC_BUFLEN                      1002
 #define IDC_RATE                        1003
@@ -64,7 +65,6 @@
 #define IDC_FMUT                        1018
 #define IDC_VRAM_DISPLAY                1019
 #define IDC_WIP1                        1019
-#define IDC_ADDRESS                     1020
 #define IDC_FAMT                        1020
 #define IDC_ROM_DATA                    1051
 #define IDC_WARNINGS                    1052
@@ -316,6 +316,14 @@
 #define IDC_LABEL_HK12                  1255
 #define IDC_LABEL_HK13                  1256
 #define IDC_PLAYWARN                    1257
+#define IDC_GO                          1258
+#define IDC_TEXTDUMP                    1259
+#define IDC_MEMVIEWBOX                  1260
+#define IDC_ADDRESS                     1261
+#define IDC_RAWDUMP                     1262
+#define IDC_REGION                      1263
+#define IDC_VIEWMODE                    1264
+#define IDC_DUMPALL                     1265
 #define IDC_HOTKEY1                     2000
 #define IDC_HOTKEY2                     2001
 #define IDC_HOTKEY3                     2002
@@ -537,13 +545,14 @@
 #define ID_VIEW_DISPLAYFPS              40202
 #define ID_VIEW_DISPLAYINPUT            40203
 #define ID_VIEW_DISPLAYLAG              40204
+#define IDM_MEMORY                      40205
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        156
-#define _APS_NEXT_COMMAND_VALUE         40205
+#define _APS_NEXT_RESOURCE_VALUE        157
+#define _APS_NEXT_COMMAND_VALUE         40206
 #define _APS_NEXT_CONTROL_VALUE         3068
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

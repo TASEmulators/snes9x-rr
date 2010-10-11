@@ -214,6 +214,8 @@
 //#include "../GPU_osd.h"
 #include "AVIOutput.h"
 #include "InputCustom.h"
+#include "CWindow.h"
+#include "memView.h"
 #include "ram_search.h"
 #include "ramwatch.h"
 #include <vector>
@@ -1457,7 +1459,7 @@ static bool DoOpenRomDialog(char filename [_MAX_PATH], bool noCustomDlg = false)
 			icex.dwICC   = ICC_LISTVIEW_CLASSES|ICC_TREEVIEW_CLASSES;
 			InitCommonControlsEx(&icex); // this could cause failure if the common control DLL isn't found
 
-			return (1 <= DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_OPEN_ROM), GUI.hWnd, DlgOpenROMProc, (LPARAM)filename));
+			return (1 <= DialogBoxParam(GUI.hInstance, MAKEINTRESOURCE(IDD_OPEN_ROM), GUI.hWnd, DlgOpenROMProc, (LPARAM)filename));
 		}
 		catch(...) {} // use standard dialog if the special one fails
 
@@ -1757,7 +1759,7 @@ LRESULT CALLBACK WinProc(
 					HWND IsScriptFileOpen(const char* Path);
 					if(!IsScriptFileOpen(temp))
 					{
-						HWND hDlg = CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_LUA), hWnd, (DLGPROC) LuaScriptProc);
+						HWND hDlg = CreateDialog(GUI.hInstance, MAKEINTRESOURCE(IDD_LUA), hWnd, (DLGPROC) LuaScriptProc);
 						SendDlgItemMessage(hDlg,IDC_EDIT_LUAPATH,WM_SETTEXT,0,(LPARAM)temp);
 					}
 				}
@@ -1849,7 +1851,7 @@ LRESULT CALLBACK WinProc(
 				RestoreGUIDisplay ();  //exit DirectX
 				OpenMovieParams op;
 				memset(&op, 0, sizeof(op));
-				if(DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_OPENMOVIE), hWnd, DlgOpenMovie, (LPARAM)&op) &&
+				if(DialogBoxParam(GUI.hInstance, MAKEINTRESOURCE(IDD_OPENMOVIE), hWnd, DlgOpenMovie, (LPARAM)&op) &&
 					op.Path[0]!='\0')
 				{
 					int err=S9xMovieOpen (op.Path, op.ReadOnly);
@@ -1878,7 +1880,7 @@ LRESULT CALLBACK WinProc(
 			{
 				if(LuaScriptHWnds.size() < 16)
 				{
-					CreateDialog(g_hInst, MAKEINTRESOURCE(IDD_LUA), GUI.hWnd, (DLGPROC) LuaScriptProc);
+					CreateDialog(GUI.hInstance, MAKEINTRESOURCE(IDD_LUA), GUI.hWnd, (DLGPROC) LuaScriptProc);
 				}
 			}
 			break;
@@ -1893,7 +1895,7 @@ LRESULT CALLBACK WinProc(
 				RestoreGUIDisplay ();  //exit DirectX
 				OpenMovieParams op;
 				memset(&op, 0, sizeof(op));
-				if(DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_CREATEMOVIE), hWnd, DlgCreateMovie, (LPARAM)&op) &&
+				if(DialogBoxParam(GUI.hInstance, MAKEINTRESOURCE(IDD_CREATEMOVIE), hWnd, DlgCreateMovie, (LPARAM)&op) &&
 					op.Path[0]!='\0')
 				{
 					if(Settings.ShutdownMaster)
@@ -2051,7 +2053,7 @@ LRESULT CALLBACK WinProc(
 				
 				if(GUI.FullScreen)
 					ToggleFullScreen();
-				DialogBox(g_hInst, MAKEINTRESOURCE(IDD_NEWDISPLAY), hWnd, DlgFunky);
+				DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_NEWDISPLAY), hWnd, DlgFunky);
 				
 				SwitchToGDI();
 
@@ -2073,13 +2075,13 @@ LRESULT CALLBACK WinProc(
 
 		case ID_OPTIONS_JOYPAD:
             RestoreGUIDisplay ();
-			DialogBox(g_hInst, MAKEINTRESOURCE(IDD_INPUTCONFIG), hWnd, DlgInputConfig);
+			DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_INPUTCONFIG), hWnd, DlgInputConfig);
             RestoreSNESDisplay ();
             break;
 
 		case ID_OPTIONS_KEYCUSTOM:
             RestoreGUIDisplay ();
-			DialogBox(g_hInst, MAKEINTRESOURCE(IDD_KEYCUSTOM), hWnd, DlgHotkeyConfig);
+			DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_KEYCUSTOM), hWnd, DlgHotkeyConfig);
             RestoreSNESDisplay ();
             break;
 
@@ -2114,7 +2116,7 @@ LRESULT CALLBACK WinProc(
 #endif
 				RestoreGUIDisplay ();
 
-				const bool ok = (1 <= DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_MULTICART), GUI.hWnd, DlgMultiROMProc, (LPARAM)NULL));
+				const bool ok = (1 <= DialogBoxParam(GUI.hInstance, MAKEINTRESOURCE(IDD_MULTICART), GUI.hWnd, DlgMultiROMProc, (LPARAM)NULL));
 
 				if(ok)
 				{
@@ -2223,7 +2225,7 @@ LRESULT CALLBACK WinProc(
             break;
         case ID_NETPLAY_CONNECT:
             RestoreGUIDisplay ();
-			if(1<=DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_NETCONNECT), hWnd, DlgNetConnect,(LPARAM)&hostname))
+			if(1<=DialogBoxParam(GUI.hInstance, MAKEINTRESOURCE(IDD_NETCONNECT), hWnd, DlgNetConnect,(LPARAM)&hostname))
 
             {
 
@@ -2255,7 +2257,7 @@ LRESULT CALLBACK WinProc(
 			{
 				bool8 old_netplay_server = Settings.NetPlayServer;
 				RestoreGUIDisplay ();
-				if(1<=DialogBox(g_hInst, MAKEINTRESOURCE(IDD_NPOPTIONS), hWnd, DlgNPOptions))
+				if(1<=DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_NPOPTIONS), hWnd, DlgNPOptions))
 				{
 					if (old_netplay_server != Settings.NetPlayServer)
 					{
@@ -2392,7 +2394,7 @@ LRESULT CALLBACK WinProc(
         case ID_SOUND_OPTIONS:
 			{
 				RestoreGUIDisplay ();
-				if(1<=DialogBoxParam(g_hInst,MAKEINTRESOURCE(IDD_SOUND_OPTS),hWnd,DlgSoundConf, (LPARAM)&Settings))
+				if(1<=DialogBoxParam(GUI.hInstance,MAKEINTRESOURCE(IDD_SOUND_OPTS),hWnd,DlgSoundConf, (LPARAM)&Settings))
 				{
 					ReInitSound();
 				}
@@ -2517,7 +2519,7 @@ LRESULT CALLBACK WinProc(
 						case ID_CHEAT_ENTER:
 							RestoreGUIDisplay ();
 							S9xRemoveCheats ();
-							DialogBox(g_hInst, MAKEINTRESOURCE(IDD_CHEATER), hWnd, DlgCheater);
+							DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_CHEATER), hWnd, DlgCheater);
 							S9xSaveCheatFile (S9xGetFilename (".cht", CHEAT_DIR));
 							S9xApplyCheats ();
 							RestoreSNESDisplay ();
@@ -2539,6 +2541,14 @@ LRESULT CALLBACK WinProc(
 							else
 								SetForegroundWindow(RamWatchHWnd);
 							break;
+						case IDM_MEMORY:
+							//if(!MemView_IsOpened(ARMCPU_ARM9)) MemView_DlgOpen(HWND_DESKTOP, "ARM9 memory", ARMCPU_ARM9);
+							//if(!MemView_IsOpened(ARMCPU_ARM7)) MemView_DlgOpen(HWND_DESKTOP, "ARM7 memory", ARMCPU_ARM7);
+							if (!RegWndClass("MemView_ViewBox", MemView_ViewBoxProc, 0, sizeof(CMemView*)))
+								return 0;
+
+							OpenToolWindow(new CMemView());
+							return 0;
 						case ID_CHEAT_APPLY:
 							Settings.ApplyCheats = !Settings.ApplyCheats;
 							if (!Settings.ApplyCheats){
@@ -2556,12 +2566,12 @@ LRESULT CALLBACK WinProc(
 							break;
 						case ID_OPTIONS_SETTINGS:
 							RestoreGUIDisplay ();
-							DialogBox(g_hInst, MAKEINTRESOURCE(IDD_EMU_SETTINGS), hWnd, DlgEmulatorProc);
+							DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_EMU_SETTINGS), hWnd, DlgEmulatorProc);
 							RestoreSNESDisplay ();
 							break;
 						case ID_HELP_ABOUT:
 							RestoreGUIDisplay ();
-							DialogBox(g_hInst, MAKEINTRESOURCE(IDD_ABOUT), hWnd, DlgAboutProc);
+							DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_ABOUT), hWnd, DlgAboutProc);
 							RestoreSNESDisplay ();
 							break;
 #ifdef DEBUGGER
@@ -2584,7 +2594,7 @@ LRESULT CALLBACK WinProc(
 #endif
 						case IDM_ROM_INFO:
 							RestoreGUIDisplay ();
-							DialogBox(g_hInst, MAKEINTRESOURCE(IDD_ROM_INFO), hWnd, DlgInfoProc);
+							DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_ROM_INFO), hWnd, DlgInfoProc);
 							RestoreSNESDisplay ();
 							break;
 						default:
@@ -2818,11 +2828,11 @@ LRESULT CALLBACK WinProc(
 		if ((int) lParam >= 0)
 		{
 			RestoreGUIDisplay ();
-			DialogBox(g_hInst, MAKEINTRESOURCE(IDD_NETPLAYPROGRESS), hWnd, DlgNPProgress);
+			DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_NETPLAYPROGRESS), hWnd, DlgNPProgress);
 		}
 		else
 		{
-			DialogBox(g_hInst, MAKEINTRESOURCE(IDD_NETPLAYPROGRESS), hWnd, DlgNPProgress);
+			DialogBox(GUI.hInstance, MAKEINTRESOURCE(IDD_NETPLAYPROGRESS), hWnd, DlgNPProgress);
 			RestoreSNESDisplay ();
 		}
 #endif
@@ -3077,6 +3087,9 @@ static void EnsureInputDisplayUpdated()
 		WinRefreshDisplay();
 }
 
+DWORD guiUpdateFrequency = 50;
+DWORD lastPaintTime = 0;
+
 // for "frame advance skips non-input frames" feature
 void S9xOnSNESPadRead()
 {
@@ -3096,23 +3109,38 @@ void S9xOnSNESPadRead()
 			// wait until either unpause or next frame advance
 			// note: using GUI.hWnd instead of NULL for PeekMessage/GetMessage breaks some non-modal dialogs
 			MSG msg;
-			while (Settings.StopEmulation || (Settings.Paused && !Settings.FrameAdvance) ||
-				Settings.ForcedPause ||
-				PeekMessage (&msg, NULL, 0, 0, PM_NOREMOVE))
+			do
 			{
-				if (!GetMessage (&msg, NULL, 0, 0))
+				while (PeekMessage (&msg, NULL, 0, 0, PM_NOREMOVE))
 				{
-					PostMessage(GUI.hWnd, WM_QUIT, 0,0);
-					return;
-				}
+					if (!GetMessage (&msg, NULL, 0, 0))
+					{
+						PostMessage(GUI.hWnd, WM_QUIT, 0,0);
+						return;
+					}
 
-				if (!TranslateAccelerator (GUI.hWnd, GUI.Accelerators, &msg))
+					if (!TranslateAccelerator (GUI.hWnd, GUI.Accelerators, &msg))
+					{
+						TranslateMessage (&msg);
+						DispatchMessage (&msg);
+					}
+				}
+				if (Settings.StopEmulation || (Settings.Paused && !Settings.FrameAdvance) || Settings.ForcedPause)
 				{
-					TranslateMessage (&msg);
-					DispatchMessage (&msg);
+					DWORD lastTime = timeGetTime();
+					if (lastTime - lastPaintTime >= guiUpdateFrequency)
+					{
+						UpdateToolWindows();
+						InvalidateRect(GUI.hWnd, NULL, FALSE);
+						lastPaintTime = lastTime;
+					}
+					else
+					{
+						Sleep(5);
+					}
+					continue;
 				}
-			}
-
+			} while(false);
 		}
 		else
 		{
@@ -3633,40 +3661,57 @@ int WINAPI WinMain(
 		EnsureInputDisplayUpdated();
 
 		// note: using GUI.hWnd instead of NULL for PeekMessage/GetMessage breaks some non-modal dialogs
-        while (Settings.StopEmulation || (Settings.Paused && !Settings.FrameAdvance) ||
-			Settings.ForcedPause ||
-			PeekMessage (&msg, NULL, 0, 0, PM_NOREMOVE))
-        {
-            if (!GetMessage (&msg, NULL, 0, 0))
-                goto loop_exit; // got WM_QUIT
+		do
+		{
+	        while (PeekMessage (&msg, NULL, 0, 0, PM_NOREMOVE))
+	        {
+	            if (!GetMessage (&msg, NULL, 0, 0))
+	                goto loop_exit; // got WM_QUIT
 
-			// do not process non-modal dialog messages
-			if (RamSearchHWnd && IsDialogMessage(RamSearchHWnd, &msg))
-				continue;
+				// do not process non-modal dialog messages
+				if (RamSearchHWnd && IsDialogMessage(RamSearchHWnd, &msg))
+					continue;
 
-			if (RamWatchHWnd && IsDialogMessage(RamWatchHWnd, &msg)) {
-				if(msg.message == WM_KEYDOWN) // send keydown messages to the dialog (for accelerators, and also needed for the Alt key to work)
-					SendMessage(RamWatchHWnd, msg.message, msg.wParam, msg.lParam);
-				continue;
-			}
+				if (RamWatchHWnd && IsDialogMessage(RamWatchHWnd, &msg)) {
+					if(msg.message == WM_KEYDOWN) // send keydown messages to the dialog (for accelerators, and also needed for the Alt key to work)
+						SendMessage(RamWatchHWnd, msg.message, msg.wParam, msg.lParam);
+					continue;
+				}
 
-            if (!TranslateAccelerator (GUI.hWnd, GUI.Accelerators, &msg))
-            {
-                TranslateMessage (&msg);
-                DispatchMessage (&msg);
-            }
+	            if (!TranslateAccelerator (GUI.hWnd, GUI.Accelerators, &msg))
+	            {
+	                TranslateMessage (&msg);
+	                DispatchMessage (&msg);
+	            }
 
-			if (Settings.Paused || Settings.ForcedPause)
-			{
+				// TODO: think better way to update GUI for Lua
+				if (Settings.Paused || Settings.ForcedPause)
+				{
+					DWORD lastTime = timeGetTime();
+					if (lastTime - lastPaintTime >= 250) {
+						InvalidateRect(GUI.hWnd, NULL, FALSE);
+						lastPaintTime = lastTime;
+					}
+				}
+
+				S9xSetSoundMute(GUI.Mute || Settings.ForcedPause || (Settings.Paused && (!Settings.FrameAdvance || GUI.FAMute)));
+	        }
+	        if (Settings.StopEmulation || (Settings.Paused && !Settings.FrameAdvance) || Settings.ForcedPause)
+	        {
 				DWORD lastTime = timeGetTime();
-				if (lastTime - lastPaintTime >= 500) {
+				if (lastTime - lastPaintTime >= guiUpdateFrequency)
+				{
+					UpdateToolWindows();
 					InvalidateRect(GUI.hWnd, NULL, FALSE);
 					lastPaintTime = lastTime;
 				}
-			}
-
-			S9xSetSoundMute(GUI.Mute || Settings.ForcedPause || (Settings.Paused && (!Settings.FrameAdvance || GUI.FAMute)));
-        }
+				else
+				{
+					Sleep(5);
+				}
+				continue;
+	        }
+	    } while(false);
 
 #ifdef NETPLAY_SUPPORT
         if (!Settings.NetPlay || !NetPlay.PendingWait4Sync ||
@@ -3764,7 +3809,7 @@ int WINAPI WinMain(
 				}
 
 				S9xMainLoop();
-				Update_RAM_Search(); // Update_RAM_Watch() is also called.
+				UpdateToolWindows();
 				GUI.FrameCount++;
 			}
 
@@ -3788,6 +3833,8 @@ int WINAPI WinMain(
     }
 
 loop_exit:
+
+	CloseAllToolWindows();
 
 	Settings.StopEmulation = TRUE;
 
@@ -3835,6 +3882,13 @@ loop_exit:
 		_CrtDumpMemoryLeaks();
 #endif
 		return msg.wParam;
+}
+
+void UpdateToolWindows()
+{
+	Update_RAM_Search();	//Update_RAM_Watch() is also called
+
+	RefreshAllToolWindows();
 }
 
 void FreezeUnfreeze (int slot, bool8 freeze)
@@ -4457,7 +4511,7 @@ BOOL CreateToolTip(int toolID, HWND hDlg, TCHAR* pText)
                               CW_USEDEFAULT, CW_USEDEFAULT,
                               CW_USEDEFAULT, CW_USEDEFAULT,
                               hDlg, NULL, 
-                              g_hInst, NULL);
+                              GUI.hInstance, NULL);
                               
    if (!hwndTool || !hwndTip)
    {
@@ -5861,7 +5915,7 @@ int CALLBACK DlgOpenROMProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			TCHAR tempclassname[]=TEXT("S9xSplitter");
 			ZeroMemory(&wcex, sizeof(WNDCLASSEX));
 			wcex.cbSize=sizeof(WNDCLASSEX);
-			wcex.hInstance=g_hInst;
+			wcex.hInstance=GUI.hInstance;
 			wcex.lpfnWndProc=DlgChildSplitProc;
 			wcex.lpszClassName=tempclassname;
 			wcex.hbrBackground=(HBRUSH)GetStockObject(LTGRAY_BRUSH);
@@ -5877,7 +5931,7 @@ int CALLBACK DlgOpenROMProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			p.x=treeRect.right;
 			p.y=treeRect.top;
 			ScreenToClient(hDlg, &p);
-			hSplit=CreateWindow(TEXT("S9xSplitter"), TEXT(""),WS_CHILD|WS_VISIBLE , p.x, p.y, listRect.left-treeRect.right , listRect.bottom-listRect.top, hDlg,NULL, g_hInst,0);
+			hSplit=CreateWindow(TEXT("S9xSplitter"), TEXT(""),WS_CHILD|WS_VISIBLE , p.x, p.y, listRect.left-treeRect.right , listRect.bottom-listRect.top, hDlg,NULL, GUI.hInstance,0);
 
 			LVCOLUMN col;
 			static const LPSTR temp1 = TEXT(ROM_COLUMN_FILENAME);
@@ -5944,7 +5998,7 @@ int CALLBACK DlgOpenROMProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			HANDLE hBitmap;
 
 #define ADD_IMAGE(IDB_NAME) \
-			hBitmap=LoadImage(g_hInst, MAKEINTRESOURCE(IDB_NAME), IMAGE_BITMAP, 0,0, LR_DEFAULTCOLOR|LR_CREATEDIBSECTION); \
+			hBitmap=LoadImage(GUI.hInstance, MAKEINTRESOURCE(IDB_NAME), IMAGE_BITMAP, 0,0, LR_DEFAULTCOLOR|LR_CREATEDIBSECTION); \
 			ImageList_Add(hIcons, (HBITMAP)hBitmap, NULL); \
 			DeleteObject(hBitmap);
 
@@ -6358,7 +6412,7 @@ int CALLBACK DlgOpenROMProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 				ClearCacheList(rdl);
 				rdl=NULL;
 				DestroyWindow(hSplit);
-				UnregisterClass(TEXT("S9xSplitter"), g_hInst);
+				UnregisterClass(TEXT("S9xSplitter"), GUI.hInstance);
 				TreeView_DeleteAllItems(dirList);
 				ListView_DeleteAllItems(romList);
 				return true;

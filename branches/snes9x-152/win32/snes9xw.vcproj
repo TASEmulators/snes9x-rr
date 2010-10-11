@@ -2094,6 +2094,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CWindow.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CWindow.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CXAudio2.cpp"
 				>
 			</File>
@@ -2119,6 +2127,14 @@
 			</File>
 			<File
 				RelativePath=".\luaconsole.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\memView.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\memView.h"
 				>
 			</File>
 			<File
