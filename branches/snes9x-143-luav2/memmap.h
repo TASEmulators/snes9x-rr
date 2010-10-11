@@ -284,6 +284,8 @@ END_EXTERN_C
 
 void S9xAutoSaveSRAM ();
 
+bool IsHardwareAddressValid(uint32 address);
+
 #ifdef NO_INLINE_SET_GET
 uint8 S9xGetByte (uint32 Address, bool free=false);
 uint16 S9xGetWord (uint32 Address, bool free=false);

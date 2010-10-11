@@ -122,6 +122,7 @@
 #include "movie.h"
 #include "dsp1.h"
 #include "language.h"
+#include "lua-engine.h"
 #ifdef WIN32
 #include "win32/wsnes9x.h"
 #endif
@@ -1167,6 +1168,7 @@ bool8 S9xFreezeGame (const char *filename)
 	sscanf(ext, ".%03d", &stateNumber);
 	stateNumber++;
 	// call savestate.save callback if any and store the results in a luasav file if any
+	CallRegisteredLuaFunctions(LUACALL_BEFORESAVE);
 #ifdef SNAPSHOT_VERIFY_SUPPORTED
 	if(!s_verifyingSnapshot)
 #endif
@@ -1405,6 +1407,7 @@ successFinish:
 //
 //		CallRegisteredLuaLoadFunctions(stateNumber, saveData);
 	}
+	CallRegisteredLuaFunctions(LUACALL_AFTERLOAD);
 	// the refresh should happen last and only last, because lua code can't know what to draw in the gui if the refresh happens before savestate.registerload callbacks get called
 #ifdef WIN32
 	void S9xReRefresh ();

@@ -100,6 +100,7 @@
 #include "../movie.h"
 #include "../netplay.h"
 #include "../screenshot.h"
+#include "../lua-engine.h"
 
 #include "wsnes9x.h"
 #include "CDirectDraw.h"
@@ -1168,6 +1169,8 @@ bool8 S9xDeinitUpdate (int Width, int Height)
     LPDIRECTDRAWSURFACE2 pDDSurface = NULL;
     bool PrimarySurfaceLockFailed = false;
     RECT srcRect;
+
+	CallRegisteredLuaFunctions(LUACALL_AFTEREMULATIONGUI);
 
 	Src.Width = Width;
 	if(Height%SNES_HEIGHT)

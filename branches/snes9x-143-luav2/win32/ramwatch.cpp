@@ -777,7 +777,7 @@ LRESULT CALLBACK EditWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 						if((Temp.Address & ~0xFFFFFF) == ~0xFFFFFF)
 							Temp.Address &= 0xFFFFFF;
 
-						if(IsHardwareAddressValid(Temp.Address))
+						if(IsRAMWatchAddressValid(Temp.Address))
 						{
 							GetDlgItemText(hDlg,IDC_PROMPT_EDIT,Str_Tmp,80);
 							if (index < WatchCount) RemoveWatch(index);

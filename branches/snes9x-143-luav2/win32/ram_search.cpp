@@ -978,7 +978,7 @@ bool WriteValueAtHardwareAddress(HWAddressType address, unsigned int value, unsi
 	WriteValueAtSoftwareAddress(RWInternalToSoftwareAddress(address), value, size);
 	return true;
 }
-bool IsHardwareAddressValid(HWAddressType address)
+bool IsRAMWatchAddressValid(HWAddressType address)
 {
 	return RWInternalToSoftwareAddress(address) != NULL;
 }

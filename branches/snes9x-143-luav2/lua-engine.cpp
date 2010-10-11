@@ -1,18 +1,16 @@
 #include "types.h"
 #include "lua-engine.h"
-//#include "movie.h"
 #include <assert.h>
 #include <vector>
 #include <map>
 #include <string>
 #include <algorithm>
 #include "zlib.h"
-//#include "movie.h"
 //#include "GPU_osd.h"
-//#include "main.h"
-//#include "pcejin.h"
-//#include "debug.h"
-//#include "vb.h"
+#include "port.h"
+#include "snes9x.h"
+#include "display.h"
+#include "memmap.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -57,9 +55,9 @@ struct LuaContextInfo {
 	bool ranExit; // used to prevent a registered exit callback from ever getting called more than once
 	bool guiFuncsNeedDeferring; // true whenever GUI drawing would be cleared by the next emulation update before it would be visible, and thus needs to be deferred until after the next emulation update
 	int numDeferredGUIFuncs; // number of deferred function calls accumulated, used to impose an arbitrary limit to avoid running out of memory
-	bool ranFrameAdvance; // false if gens.frameadvance() hasn't been called yet
+	bool ranFrameAdvance; // false if emu.frameadvance() hasn't been called yet
 	int transparencyModifier; // values less than 255 will scale down the opacity of whatever the GUI renders, values greater than 255 will increase the opacity of anything transparent the GUI renders
-	SpeedMode speedMode; // determines how gens.frameadvance() acts
+	SpeedMode speedMode; // determines how emu.frameadvance() acts
 	char panicMessage [72]; // a message to print if the script terminates due to panic being set
 	std::string lastFilename; // path to where the script last ran from so that restart can work (note: storing the script in memory instead would not be useful because we always want the most up-to-date script from file)
 	std::string nextFilename; // path to where the script should run from next, mainly used in case the restart flag is true
@@ -307,7 +305,7 @@ DEFINE_LUA_FUNCTION(emu_registerexit, "func")
 	lua_setfield(L, LUA_REGISTRYINDEX, luaCallIDStrings[LUACALL_BEFOREEXIT]);
 	StopScriptIfFinished(luaStateToUIDMap[L]);
 	return 1;
-}/*
+}
 DEFINE_LUA_FUNCTION(emu_registerstart, "func")
 {
 	if (!lua_isnil(L,1))
@@ -317,11 +315,11 @@ DEFINE_LUA_FUNCTION(emu_registerstart, "func")
 	lua_insert(L,1);
 	lua_pushvalue(L,-1); // copy the function so we can also call it
 	lua_setfield(L, LUA_REGISTRYINDEX, luaCallIDStrings[LUACALL_ONSTART]);
-	if (!lua_isnil(L,-1) && ((Genesis_Started)||(SegaCD_Started)||(_32X_Started)))
+	if (!lua_isnil(L,-1) && !Settings.StopEmulation)
 		lua_call(L,0,0); // call the function now since the game has already started and this start function hasn't been called yet
 	StopScriptIfFinished(luaStateToUIDMap[L]);
 	return 1;
-}*/
+}
 DEFINE_LUA_FUNCTION(gui_register, "func")
 {
 	if (!lua_isnil(L,1))
@@ -519,7 +517,7 @@ static char* ConstructScriptSaveDataPath(char* output, int bufferSize, LuaContex
 	return rv;
 }
 
-// gens.persistglobalvariables({
+// emu.persistglobalvariables({
 //   variable1 = defaultvalue1,
 //   variable2 = defaultvalue2,
 //   etc
@@ -599,7 +597,7 @@ DEFINE_LUA_FUNCTION(emu_persistglobalvariables, "variabletable")
 			}
 			else
 			{
-				luaL_error(L, "'%s' = '%s' entries are not allowed in the table passed to gens.persistglobalvariables()", lua_typename(L,keyType), lua_typename(L,valueType));
+				luaL_error(L, "'%s' = '%s' entries are not allowed in the table passed to emu.persistglobalvariables()", lua_typename(L,keyType), lua_typename(L,valueType));
 			}
 
 			int varNameIndex = valueIndex;
@@ -1007,12 +1005,13 @@ DEFINE_LUA_FUNCTION(print, "...")
 }
 
 
-/*DEFINE_LUA_FUNCTION(emu_message, "str")
+DEFINE_LUA_FUNCTION(emu_message, "str")
 {
 	const char* str = toCString(L);
-	osd->addLine(str);
+//	osd->addLine(str);
+	S9xSetInfoString(str);
 	return 0;
-}*/
+}
 
 // provides an easy way to copy a table from Lua
 // (simple assignment only makes an alias, but sometimes an independent table is desired)
@@ -1270,7 +1269,7 @@ DEFINE_LUA_FUNCTION(bitbit, "whichbit")
 	BRET(rv);
 }
 
-//int gens_wait(lua_State* L);
+//int emu_wait(lua_State* L);
 
 void indicateBusy(lua_State* L, bool busy)
 {
@@ -1336,7 +1335,7 @@ void LuaRescueHook(lua_State* L, lua_Debug *dbg)
 			// but we don't trust their judgement completely,
 			// so periodically update the main loop so they have a chance to manually stop it
 			info.worryCount = 0;
-//			gens_wait(L);
+//			emu_wait(L);
 			info.stopWorrying = true;
 		}
 		return;
@@ -1435,9 +1434,9 @@ bool FailVerifyAtFrameBoundary(lua_State* L, const char* funcName, int unstarted
 /*
 // acts similar to normal emulation update
 // except without the user being able to activate emulator commands
-DEFINE_LUA_FUNCTION(gens_emulateframe, "")
+DEFINE_LUA_FUNCTION(emu_emulateframe, "")
 {
-	if(FailVerifyAtFrameBoundary(L, "gens.emulateframe", 0,1))
+	if(FailVerifyAtFrameBoundary(L, "emu.emulateframe", 0,1))
 		return 0;
 
 	Update_Emulation_One(HWnd);
@@ -1449,9 +1448,9 @@ DEFINE_LUA_FUNCTION(gens_emulateframe, "")
 
 // acts as a fast-forward emulation update that still renders every frame
 // and the user is unable to activate emulator commands during it
-DEFINE_LUA_FUNCTION(gens_emulateframefastnoskipping, "")
+DEFINE_LUA_FUNCTION(emu_emulateframefastnoskipping, "")
 {
-	if(FailVerifyAtFrameBoundary(L, "gens.emulateframefastnoskipping", 0,1))
+	if(FailVerifyAtFrameBoundary(L, "emu.emulateframefastnoskipping", 0,1))
 		return 0;
 
 	Update_Emulation_One_Before(HWnd);
@@ -1465,9 +1464,9 @@ DEFINE_LUA_FUNCTION(gens_emulateframefastnoskipping, "")
 
 // acts as a (very) fast-forward emulation update
 // where the user is unable to activate emulator commands
-DEFINE_LUA_FUNCTION(gens_emulateframefast, "")
+DEFINE_LUA_FUNCTION(emu_emulateframefast, "")
 {
-	if(FailVerifyAtFrameBoundary(L, "gens.emulateframefast", 0,1))
+	if(FailVerifyAtFrameBoundary(L, "emu.emulateframefast", 0,1))
 		return 0;
 
 	disableVideoLatencyCompensationCount = VideoLatencyCompensation + 1;
@@ -1500,9 +1499,9 @@ DEFINE_LUA_FUNCTION(gens_emulateframefast, "")
 // it should leave no trace of having been called,
 // so you can do things like generate future emulation states every frame
 // while the user continues to see and hear normal emulation
-DEFINE_LUA_FUNCTION(gens_emulateframeinvisible, "")
+DEFINE_LUA_FUNCTION(emu_emulateframeinvisible, "")
 {
-	if(FailVerifyAtFrameBoundary(L, "gens.emulateframeinvisible", 0,1))
+	if(FailVerifyAtFrameBoundary(L, "emu.emulateframeinvisible", 0,1))
 		return 0;
 
 	int oldDisableSound2 = disableSound2;
@@ -1526,7 +1525,7 @@ DEFINE_LUA_FUNCTION(gens_emulateframeinvisible, "")
 	return 0;
 }
 
-DEFINE_LUA_FUNCTION(gens_speedmode, "mode")
+DEFINE_LUA_FUNCTION(emu_speedmode, "mode")
 {
 	SpeedMode newSpeedMode = SPEEDMODE_NORMAL;
 	if(lua_isnumber(L,1))
@@ -1550,11 +1549,11 @@ DEFINE_LUA_FUNCTION(gens_speedmode, "mode")
 	return 0;
 }
 
-// tells Gens to wait while the script is doing calculations
-// can call this periodically instead of gens.frameadvance
+// tells emu to wait while the script is doing calculations
+// can call this periodically instead of emu.frameadvance
 // note that the user can use hotkeys at this time
-// (e.g. a savestate could possibly get loaded before gens.wait() returns)
-DEFINE_LUA_FUNCTION(gens_wait, "")
+// (e.g. a savestate could possibly get loaded before emu.wait() returns)
+DEFINE_LUA_FUNCTION(emu_wait, "")
 {
 	LuaContextInfo& info = GetCurrentInfo();
 
@@ -1562,12 +1561,12 @@ DEFINE_LUA_FUNCTION(gens_wait, "")
 	{
 		default:
 		case SPEEDMODE_NORMAL:
-			Step_Gens_MainLoop(true, false);
+			Step_emu_MainLoop(true, false);
 			break;
 		case SPEEDMODE_NOTHROTTLE:
 		case SPEEDMODE_TURBO:
 		case SPEEDMODE_MAXIMUM:
-			Step_Gens_MainLoop(Paused!=0, false);
+			Step_emu_MainLoop(Paused!=0, false);
 			break;
 	}
 
@@ -1578,10 +1577,10 @@ DEFINE_LUA_FUNCTION(gens_wait, "")
 
 
 /*
-DEFINE_LUA_FUNCTION(gens_frameadvance, "")
+DEFINE_LUA_FUNCTION(emu_frameadvance, "")
 {
-	if(FailVerifyAtFrameBoundary(L, "gens.frameadvance", 0,1))
-		return gens_wait(L);
+	if(FailVerifyAtFrameBoundary(L, "emu.frameadvance", 0,1))
+		return emu_wait(L);
 
 	int uid = luaStateToUIDMap[L];
 	LuaContextInfo& info = GetCurrentInfo();
@@ -1598,43 +1597,43 @@ DEFINE_LUA_FUNCTION(gens_frameadvance, "")
 	{
 		default:
 		case SPEEDMODE_NORMAL:
-			while(!Step_Gens_MainLoop(true, true) && !info.panic);
+			while(!Step_emu_MainLoop(true, true) && !info.panic);
 			break;
 		case SPEEDMODE_NOTHROTTLE:
-			while(!Step_Gens_MainLoop(Paused!=0, false) && !info.panic);
+			while(!Step_emu_MainLoop(Paused!=0, false) && !info.panic);
 			if(!(FastForwardKeyDown && (GetActiveWindow()==HWnd || BackgroundInput)))
-				gens_emulateframefastnoskipping(L);
+				emu_emulateframefastnoskipping(L);
 			else
-				gens_emulateframefast(L);
+				emu_emulateframefast(L);
 			break;
 		case SPEEDMODE_TURBO:
-			while(!Step_Gens_MainLoop(Paused!=0, false) && !info.panic);
-			gens_emulateframefast(L);
+			while(!Step_emu_MainLoop(Paused!=0, false) && !info.panic);
+			emu_emulateframefast(L);
 			break;
 		case SPEEDMODE_MAXIMUM:
-			while(!Step_Gens_MainLoop(Paused!=0, false) && !info.panic);
-			gens_emulateframeinvisible(L);
+			while(!Step_emu_MainLoop(Paused!=0, false) && !info.panic);
+			emu_emulateframeinvisible(L);
 			break;
 	}
 	return 0;
 }
 
-DEFINE_LUA_FUNCTION(gens_pause, "")
+DEFINE_LUA_FUNCTION(emu_pause, "")
 {
 	LuaContextInfo& info = GetCurrentInfo();
 
 	Paused = 1;
-	while(!Step_Gens_MainLoop(true, false) && !info.panic);
+	while(!Step_emu_MainLoop(true, false) && !info.panic);
 
 	// allow the user to not have to manually unpause
-	// after restarting a script that used gens.pause()
+	// after restarting a script that used emu.pause()
 	if(info.panic)
 		Paused = 0;
 
 	return 0;
 }
 
-DEFINE_LUA_FUNCTION(gens_unpause, "")
+DEFINE_LUA_FUNCTION(emu_unpause, "")
 {
 	LuaContextInfo& info = GetCurrentInfo();
 
@@ -1642,21 +1641,39 @@ DEFINE_LUA_FUNCTION(gens_unpause, "")
 	return 0;
 }
 
-DEFINE_LUA_FUNCTION(gens_redraw, "")
+DEFINE_LUA_FUNCTION(emu_redraw, "")
 {
 	Show_Genesis_Screen();
 	worry(L,250);
 	return 0;
 }
 */
-//uint32 PCEDBG_MemPeek(uint32 A, unsigned int bsize, bool hl, bool logical)
 
-//NEWTODO all this
-/*DEFINE_LUA_FUNCTION(memory_readbyte, "address")
+INLINE void S9xSetDWord (uint32 DWord, uint32 Address, bool free);
+INLINE uint32 S9xGetDWord (uint32 Address, bool free);
+
+INLINE uint32 S9xGetDWord (uint32 Address, bool free = true)
+{
+	uint32 ret;
+
+	ret = S9xGetWord(Address, free);
+	ret |= (S9xGetWord(Address+2, free) << 16);
+	return ret;
+}
+
+INLINE void S9xSetDWord (uint32 DWord, uint32 Address, bool free = true)
+{
+	S9xSetWordWrapped(DWord & 0xffff, Address, free);
+	CallRegisteredLuaMemHook(Address, 2, DWord & 0xffff, LUAMEMHOOK_WRITE);
+	S9xSetWordWrapped(DWord >> 16, Address+2, free);
+	CallRegisteredLuaMemHook(Address, 2, DWord >> 16, LUAMEMHOOK_WRITE);
+}
+
+DEFINE_LUA_FUNCTION(memory_readbyte, "address")
 {
 	int address = lua_tointeger(L,1);
 
-	unsigned char value = (unsigned char)(MDFN_IEN_VB::MemRead8(dummytimestamp,address) & 0xFF);
+	unsigned char value = (unsigned char)S9xGetByte(address, true);
 	lua_settop(L,0);
 	lua_pushinteger(L, value);
 	return 1; // we return the number of return values
@@ -1664,7 +1681,7 @@ DEFINE_LUA_FUNCTION(gens_redraw, "")
 DEFINE_LUA_FUNCTION(memory_readbytesigned, "address")
 {
 	int address = lua_tointeger(L,1);
-	signed char value = (signed char)(MDFN_IEN_VB::MemRead8(dummytimestamp,address) & 0xFF);
+	signed char value = (signed char)S9xGetByte(address, true);
 	lua_settop(L,0);
 	lua_pushinteger(L, value);
 	return 1;
@@ -1672,7 +1689,7 @@ DEFINE_LUA_FUNCTION(memory_readbytesigned, "address")
 DEFINE_LUA_FUNCTION(memory_readword, "address")
 {
 	int address = lua_tointeger(L,1);
-	unsigned short value = (unsigned short)(MDFN_IEN_VB::MemRead16(dummytimestamp,address) & 0xFFFF);
+	unsigned short value = (unsigned short)S9xGetWord(address, true);
 	lua_settop(L,0);
 	lua_pushinteger(L, value);
 	return 1;
@@ -1680,74 +1697,47 @@ DEFINE_LUA_FUNCTION(memory_readword, "address")
 DEFINE_LUA_FUNCTION(memory_readwordsigned, "address")
 {
 	int address = lua_tointeger(L,1);
-	signed short value = (signed short)(MDFN_IEN_VB::MemRead16(dummytimestamp,address) & 0xFFFF);
+	signed short value = (signed short)S9xGetWord(address, true);
 	lua_settop(L,0);
 	lua_pushinteger(L, value);
 	return 1;
 }
 DEFINE_LUA_FUNCTION(memory_readdword, "address")
 {
-	//int address = luaL_checkinteger(L,1);
-	//unsigned long value = (unsigned long)(PCEDBG_MemPeek(address, 2, true, false));
-	//lua_settop(L,0);
-	//lua_pushinteger(L, value);
+	int address = luaL_checkinteger(L,1);
+	unsigned long value = (unsigned long)S9xGetDWord(address, true);
+	lua_settop(L,0);
+	lua_pushinteger(L, value);
 	return 1;
 }
 DEFINE_LUA_FUNCTION(memory_readdwordsigned, "address")
 {
-	//int address = luaL_checkinteger(L,1);
-	//signed long value = (signed long)(PCEDBG_MemPeek(address, 2, true, false));
-	//lua_settop(L,0);
-	//lua_pushinteger(L, value);
+	int address = luaL_checkinteger(L,1);
+	signed long value = (signed long)S9xGetDWord(address, true);
+	lua_settop(L,0);
+	lua_pushinteger(L, value);
 	return 1;
-}*/
-
-//extern uint8 BaseRAM[32768];
-//extern writefunc PCEWrite[0x100];
-
-/*void memWrite(int Address, int Length, unsigned char* Buffer) {
-
-	while(Length--)
-	{
-		Address &= 0x1FFFFF;
-
-		uint8 wmpr = Address >> 13;
-
-//		PCEWrite[wmpr](Address, *Buffer);
-
-		Address++;
-		Buffer++;
-	}
 }
 
 DEFINE_LUA_FUNCTION(memory_writebyte, "address,value")
 {
 	int address = lua_tointeger(L,1);
 	unsigned char value = (unsigned char)(lua_tointeger(L,2) & 0xFF);
-
-	//unsigned char* Buffer = &value;
-
-	//int Length=1;
-
-	//memWrite(Address, Length, Buffer);
-
-	MDFN_IEN_VB::MemWrite8(dummytimestamp,address,value);
-
+	S9xSetByte(value, address, true);
 	return 0;
 }
 DEFINE_LUA_FUNCTION(memory_writeword, "address,value")
 {
 	int address = lua_tointeger(L,1);
 	unsigned short value = (unsigned short)(lua_tointeger(L,2) & 0xFFFF);
-
-	MDFN_IEN_VB::MemWrite16(dummytimestamp,address,value);
+	S9xSetWord(value, address, true);
 	return 0;
 }
 DEFINE_LUA_FUNCTION(memory_writedword, "address,value")
 {
 	int address = luaL_checkinteger(L,1);
 	unsigned long value = (unsigned long)(luaL_checkinteger(L,2));
-//	_MMU_write32<ARMCPU_ARM9>(address, value);
+	S9xSetDWord(value, address, true);
 	return 0;
 }
 
@@ -1768,13 +1758,12 @@ DEFINE_LUA_FUNCTION(memory_readbyterange, "address,length")
 	// put all the values into the (1-based) array
 	for(int a = address, n = 1; n <= length; a++, n++)
 	{
-//		if(IsHardwareAddressValid(a))
-//		{
-		//NEWTODO
-//			unsigned char value = (unsigned char)(PCEDBG_MemPeek(address, 1, true, false) & 0xFF);
-//			lua_pushinteger(L, value);
+		if(IsHardwareAddressValid(a))
+		{
+			unsigned char value = (unsigned char)S9xGetByte(address, true);
+			lua_pushinteger(L, value);
 			lua_rawseti(L, -2, n);
-//		}
+		}
 		// else leave the value nil
 	}
 
@@ -1788,7 +1777,7 @@ DEFINE_LUA_FUNCTION(memory_isvalid, "address")
 	lua_pushboolean(L, IsHardwareAddressValid(address));
 	return 1;
 }
-*/
+
 struct registerPointerMap
 {
 	const char* registerName;
@@ -1798,46 +1787,32 @@ struct registerPointerMap
 
 #define RPM_ENTRY(name,var) {name, (unsigned int*)&var, sizeof(var)},
 
-registerPointerMap m68kPointerMap [] = {
-/*	RPM_ENTRY("a0", main68k_context.areg[0])
-	RPM_ENTRY("a1", main68k_context.areg[1])
-	RPM_ENTRY("a2", main68k_context.areg[2])
-	RPM_ENTRY("a3", main68k_context.areg[3])
-	RPM_ENTRY("a4", main68k_context.areg[4])
-	RPM_ENTRY("a5", main68k_context.areg[5])
-	RPM_ENTRY("a6", main68k_context.areg[6])
-	RPM_ENTRY("a7", main68k_context.areg[7])
-	RPM_ENTRY("d0", main68k_context.dreg[0])
-	RPM_ENTRY("d1", main68k_context.dreg[1])
-	RPM_ENTRY("d2", main68k_context.dreg[2])
-	RPM_ENTRY("d3", main68k_context.dreg[3])
-	RPM_ENTRY("d4", main68k_context.dreg[4])
-	RPM_ENTRY("d5", main68k_context.dreg[5])
-	RPM_ENTRY("d6", main68k_context.dreg[6])
-	RPM_ENTRY("d7", main68k_context.dreg[7])
-	RPM_ENTRY("pc", main68k_context.pc)
-	RPM_ENTRY("sr", main68k_context.sr)*/
+registerPointerMap a65c816PointerMap [] = {
+	RPM_ENTRY("db", Registers.DB)
+	RPM_ENTRY("p", Registers.PL)
+	RPM_ENTRY("e", Registers.PH) // 1bit flag, how should lua engine handle it?
+	RPM_ENTRY("a", Registers.A.W)
+	RPM_ENTRY("d", Registers.D.W)
+	RPM_ENTRY("s", Registers.S.W)
+	RPM_ENTRY("x", Registers.X.W)
+	RPM_ENTRY("y", Registers.Y.W)
+	RPM_ENTRY("pb", Registers.PB)
+	RPM_ENTRY("pc", Registers.PCw)
+	RPM_ENTRY("pbpc", Registers.PBPC)
 	{}
 };
-registerPointerMap s68kPointerMap [] = {/*
-	RPM_ENTRY("a0", sub68k_context.areg[0])
-	RPM_ENTRY("a1", sub68k_context.areg[1])
-	RPM_ENTRY("a2", sub68k_context.areg[2])
-	RPM_ENTRY("a3", sub68k_context.areg[3])
-	RPM_ENTRY("a4", sub68k_context.areg[4])
-	RPM_ENTRY("a5", sub68k_context.areg[5])
-	RPM_ENTRY("a6", sub68k_context.areg[6])
-	RPM_ENTRY("a7", sub68k_context.areg[7])
-	RPM_ENTRY("d0", sub68k_context.dreg[0])
-	RPM_ENTRY("d1", sub68k_context.dreg[1])
-	RPM_ENTRY("d2", sub68k_context.dreg[2])
-	RPM_ENTRY("d3", sub68k_context.dreg[3])
-	RPM_ENTRY("d4", sub68k_context.dreg[4])
-	RPM_ENTRY("d5", sub68k_context.dreg[5])
-	RPM_ENTRY("d6", sub68k_context.dreg[6])
-	RPM_ENTRY("d7", sub68k_context.dreg[7])
-	RPM_ENTRY("pc", sub68k_context.pc)
-	RPM_ENTRY("sr", sub68k_context.sr)*/
+registerPointerMap sa1PointerMap [] = {
+	RPM_ENTRY("db", SA1Registers.DB)
+	RPM_ENTRY("p", SA1Registers.PL)
+	RPM_ENTRY("e", SA1Registers.PH) // 1bit flag, how should lua engine handle it?
+	RPM_ENTRY("a", SA1Registers.A.W)
+	RPM_ENTRY("d", SA1Registers.D.W)
+	RPM_ENTRY("s", SA1Registers.S.W)
+	RPM_ENTRY("x", SA1Registers.X.W)
+	RPM_ENTRY("y", SA1Registers.Y.W)
+	RPM_ENTRY("pb", SA1Registers.PB)
+	RPM_ENTRY("pc", SA1Registers.PCw)
+	RPM_ENTRY("pbpc", SA1Registers.PBPC)
 	{}
 };
 
@@ -1848,11 +1823,10 @@ struct cpuToRegisterMap
 }
 cpuToRegisterMaps [] =
 {
-	{"m68k.", m68kPointerMap},
-	{"main.", m68kPointerMap},
-	{"s68k.", s68kPointerMap},
-	{"sub.",  s68kPointerMap},
-	{"", m68kPointerMap},
+	{"65c816.", a65c816PointerMap},
+	{"main.", a65c816PointerMap},
+	{"sa1.", sa1PointerMap},
+	{"", a65c816PointerMap},
 };
 
 
@@ -2496,8 +2470,8 @@ DEFINE_LUA_FUNCTION(gui_parsecolor, "color")
 DEFINE_LUA_FUNCTION(gui_text, "x,y,str[,color=\"white\"[,outline=\"black\"]]")
 {
 	if(DeferGUIFuncIfNeeded(L))
-		return 0; // we have to wait until later to call this function because gens hasn't emulated the next frame yet
-		          // (the only way to avoid this deferring is to be in a gui.register or gens.registerafter callback)
+		return 0; // we have to wait until later to call this function because emu hasn't emulated the next frame yet
+		          // (the only way to avoid this deferring is to be in a gui.register or emu.registerafter callback)
 
 	int x = luaL_checkinteger(L,1) & 0xFFFF;
 	int y = luaL_checkinteger(L,2) & 0xFFFF;
@@ -3023,13 +2997,13 @@ DEFINE_LUA_FUNCTION(emu_openscript, "filename")
     return 0;
 }
 /*
-DEFINE_LUA_FUNCTION(gens_loadrom, "filename")
+DEFINE_LUA_FUNCTION(emu_loadrom, "filename")
 {
 	struct Temp { Temp() {EnableStopAllLuaScripts(false);} ~Temp() {EnableStopAllLuaScripts(true);}} dontStopScriptsHere;
 	const char* filename = lua_isstring(L,1) ? lua_tostring(L,1) : NULL;
 	char curScriptDir[1024]; GetCurrentScriptDir(curScriptDir, 1024);
 	filename = MakeRomPathAbsolute(filename, curScriptDir);
-	int result = GensLoadRom(filename);
+	int result = emuLoadRom(filename);
 	if(result <= 0)
 		luaL_error(L, "Failed to load ROM \"%s\": %s", filename, result ? "invalid or unsupported" : "cancelled or not found");
 	CallRegisteredLuaFunctions(LUACALL_ONSTART);
@@ -3051,12 +3025,12 @@ DEFINE_LUA_FUNCTION(emu_lagged, "")
 	lua_pushboolean(L, pcejin.isLagFrame);
 	return 1;
 }
-DEFINE_LUA_FUNCTION(gens_emulating, "")
+DEFINE_LUA_FUNCTION(emu_emulating, "")
 {
 	lua_pushboolean(L, Genesis_Started||SegaCD_Started||_32X_Started);
 	return 1;
 }
-DEFINE_LUA_FUNCTION(gens_atframeboundary, "")
+DEFINE_LUA_FUNCTION(emu_atframeboundary, "")
 {
 	lua_pushboolean(L, !Inside_Frame);
 	return 1;
@@ -3164,7 +3138,7 @@ DEFINE_LUA_FUNCTION(movie_play, "[filename]")
 DEFINE_LUA_FUNCTION(movie_replay, "")
 {
 	if(MainMovie.File)
-		GensReplayMovie();
+		emuReplayMovie();
 	else
 		luaL_error(L, "it is invalid to call movie.replay when no movie open.");
     return 0;
@@ -3674,12 +3648,12 @@ static const struct luaL_reg emulib [] =
 //	{"lagged", emu_lagged},
 //	{"emulating", emu_emulating},
 //	{"atframeboundary", emu_atframeboundary},
-//	{"registerbefore", emu_registerbefore},
-//	{"registerafter", emu_registerafter},
-//	{"registerstart", emu_registerstart},
-//	{"registerexit", emu_registerexit},
+	{"registerbefore", emu_registerbefore},
+	{"registerafter", emu_registerafter},
+	{"registerstart", emu_registerstart},
+	{"registerexit", emu_registerexit},
 	{"persistglobalvariables", emu_persistglobalvariables},
-//	{"message", emu_message},
+	{"message", emu_message},
 	{"print", print}, // sure, why not
 	{"openscript", emu_openscript},
 //	{"loadrom", emu_loadrom},
@@ -3723,46 +3697,46 @@ static const struct luaL_reg statelib [] =
 //	{"load", state_load},
 //	{"loadscriptdata", state_loadscriptdata},
 //	{"savescriptdata", state_savescriptdata},
-//	{"registersave", state_registersave},
-//	{"registerload", state_registerload},
+	{"registersave", state_registersave},
+	{"registerload", state_registerload},
 	{NULL, NULL}
 };
 static const struct luaL_reg memorylib [] =
 {
-	//{"readbyte", memory_readbyte},
-	//{"readbytesigned", memory_readbytesigned},
-	//{"readword", memory_readword},
-	//{"readwordsigned", memory_readwordsigned},
-	//{"readdword", memory_readdword},
-	//{"readdwordsigned", memory_readdwordsigned},
-	//{"readbyterange", memory_readbyterange},
-	//{"writebyte", memory_writebyte},
-	//{"writeword", memory_writeword},
-	//{"writedword", memory_writedword},
-//	{"isvalid", memory_isvalid},
-//	{"getregister", memory_getregister},
-//	{"setregister", memory_setregister},
+	{"readbyte", memory_readbyte},
+	{"readbytesigned", memory_readbytesigned},
+	{"readword", memory_readword},
+	{"readwordsigned", memory_readwordsigned},
+	{"readdword", memory_readdword},
+	{"readdwordsigned", memory_readdwordsigned},
+	{"readbyterange", memory_readbyterange},
+	{"writebyte", memory_writebyte},
+	{"writeword", memory_writeword},
+	{"writedword", memory_writedword},
+	{"isvalid", memory_isvalid},
+	{"getregister", memory_getregister},
+	{"setregister", memory_setregister},
 	// alternate naming scheme for word and double-word and unsigned
-	//{"readbyteunsigned", memory_readbyte},
-	//{"readwordunsigned", memory_readword},
-//	{"readdwordunsigned", memory_readdword},
-	//{"readshort", memory_readword},
-	//{"readshortunsigned", memory_readword},
-	//{"readshortsigned", memory_readwordsigned},
-//	{"readlong", memory_readdword},
-//	{"readlongunsigned", memory_readdword},
-//	{"readlongsigned", memory_readdwordsigned},
-	//{"writeshort", memory_writeword},
-//	{"writelong", memory_writedword},
+	{"readbyteunsigned", memory_readbyte},
+	{"readwordunsigned", memory_readword},
+	{"readdwordunsigned", memory_readdword},
+	{"readshort", memory_readword},
+	{"readshortunsigned", memory_readword},
+	{"readshortsigned", memory_readwordsigned},
+	{"readlong", memory_readdword},
+	{"readlongunsigned", memory_readdword},
+	{"readlongsigned", memory_readdwordsigned},
+	{"writeshort", memory_writeword},
+	{"writelong", memory_writedword},
 
 	// memory hooks
-//	{"registerwrite", memory_registerwrite},
-//	{"registerread", memory_registerread},
-//	{"registerexec", memory_registerexec},
+	{"registerwrite", memory_registerwrite},
+	{"registerread", memory_registerread},
+	{"registerexec", memory_registerexec},
 	// alternate names
-//	{"register", memory_registerwrite},
-//	{"registerrun", memory_registerexec},
-//	{"registerexecute", memory_registerexec},
+	{"register", memory_registerwrite},
+	{"registerrun", memory_registerexec},
+	{"registerexecute", memory_registerexec},
 
 	{NULL, NULL}
 };
@@ -4638,8 +4612,9 @@ void CallRegisteredLuaMemHook(unsigned int address, int size, unsigned int value
 	// (on my system that consistently took 200 ms total in the former case and 350 ms total in the latter case)
 	if(hookedRegions[hookType].NotEmpty())
 	{
-		if((hookType <= LUAMEMHOOK_EXEC) && (address >= 0xE00000))
-			address |= 0xFF0000; // account for mirroring of RAM
+		// TODO: add more mirroring
+		if(address >= 0x0000 && address <= 0x1FFF)
+			address |= 0x7E0000; // account for mirroring of LowRAM
 		if(hookedRegions[hookType].Contains(address, size))
 			CallRegisteredLuaMemHook_LuaMatch(address, size, value, hookType); // something has hooked this specific address
 	}

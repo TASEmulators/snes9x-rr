@@ -110,30 +110,6 @@ extern FILE *trace;
 
 static char *rom_filename=NULL;
 
-// Dummy Lua definitions for ASMs
-enum LuaCallID
-{
-	LUACALL_BEFOREEMULATION, // also written in asmstruc.h!
-	LUACALL_AFTEREMULATION,
-	LUACALL_BEFOREEXIT,
-
-	LUACALL_COUNT
-};
-EXTERN_C void CallRegisteredLuaFunctions(LuaCallID calltype){}
-
-enum LuaMemHookType // also written in asmstruc.h and sa1struc.h!
-{
-	LUAMEMHOOK_WRITE,
-	LUAMEMHOOK_READ,
-	LUAMEMHOOK_EXEC,
-	LUAMEMHOOK_WRITE_SUB,
-	LUAMEMHOOK_READ_SUB,
-	LUAMEMHOOK_EXEC_SUB,
-
-	LUAMEMHOOK_COUNT
-};
-EXTERN_C void CallRegisteredLuaMemHook(unsigned int address, int size, unsigned int value, LuaMemHookType hookType){}
-
 void S9xUsage ()
 {
     S9xMessage (S9X_INFO, S9X_USAGE, "snes9x: S9xUsage: snes9x <options> <rom image filename>\n");

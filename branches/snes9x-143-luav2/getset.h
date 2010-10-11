@@ -97,6 +97,7 @@
 #include "spc7110.h"
 #include "obc1.h"
 #include "seta.h"
+#include "lua-engine.h"
 
 
 extern "C"
@@ -348,16 +349,16 @@ INLINE uint16 S9xGetWordWrapped (uint32 Address, bool free)
 INLINE uint8 S9xGetByte (uint32 Address, bool free)
 {
 	uint8 Byte = S9xGetByteWrapped(Address, free);
-	//if (!free)
-	//	CallRegisteredLuaMemHook(Address, 1, Byte, LUAMEMHOOK_READ);
+	if (!free)
+		CallRegisteredLuaMemHook(Address, 1, Byte, LUAMEMHOOK_READ);
 	return Byte;
 }
 
 INLINE uint16 S9xGetWord (uint32 Address, bool free)
 {
 	uint16 Word = S9xGetWordWrapped(Address, free);
-	//if (!free)
-	//	CallRegisteredLuaMemHook(Address, 2, Word, LUAMEMHOOK_READ);
+	if (!free)
+		CallRegisteredLuaMemHook(Address, 2, Word, LUAMEMHOOK_READ);
 	return Word;
 }
 
@@ -762,13 +763,13 @@ INLINE uint8 *S9xGetMemPointer (uint32 Address)
 INLINE void S9xSetWord(uint16 Word, uint32 Address, bool free)
 {
 	S9xSetWordWrapped(Word,Address,free);
-	//CallRegisteredLuaMemHook(Address, 2, Word, LUAMEMHOOK_WRITE);
+	CallRegisteredLuaMemHook(Address, 2, Word, LUAMEMHOOK_WRITE);
 }
 
 INLINE void S9xSetByte(uint8 Byte, uint32 Address, bool free)
 {
 	S9xSetByteWrapped(Byte,Address,free);
-	//CallRegisteredLuaMemHook(Address, 1, Byte, LUAMEMHOOK_WRITE);
+	CallRegisteredLuaMemHook(Address, 1, Byte, LUAMEMHOOK_WRITE);
 }
 
 INLINE void S9xSetPCBase (uint32 Address)

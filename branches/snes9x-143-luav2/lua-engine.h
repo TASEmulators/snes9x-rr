@@ -1,6 +1,7 @@
 #ifndef LUA_SCRIPT_H
 #define LUA_SCRIPT_H
 
+#include "port.h"
 
 void OpenLuaContext(int uid, void(*print)(int uid, const char* str) = 0, void(*onstart)(int uid) = 0, void(*onstop)(int uid, bool statusOK) = 0);
 void RunLuaScriptFile(int uid, const char* filename);
@@ -8,6 +9,7 @@ void StopLuaScript(int uid);
 void RequestAbortLuaScript(int uid, const char* message = 0);
 void CloseLuaContext(int uid);
 
+// also written in asmstruc.h!
 enum LuaCallID
 {
 	LUACALL_BEFOREEMULATION,
@@ -37,8 +39,9 @@ enum LuaCallID
 
 	LUACALL_COUNT
 };
-void CallRegisteredLuaFunctions(LuaCallID calltype);
+EXTERN_C void CallRegisteredLuaFunctions(LuaCallID calltype);
 
+// also written in asmstruc.h and sa1struc.h!
 enum LuaMemHookType
 {
 	LUAMEMHOOK_WRITE,
@@ -50,7 +53,7 @@ enum LuaMemHookType
 
 	LUAMEMHOOK_COUNT
 };
-void CallRegisteredLuaMemHook(unsigned int address, int size, unsigned int value, LuaMemHookType hookType);
+EXTERN_C void CallRegisteredLuaMemHook(unsigned int address, int size, unsigned int value, LuaMemHookType hookType);
 
 struct LuaSaveData
 {

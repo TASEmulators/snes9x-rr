@@ -4884,6 +4884,7 @@ int WINAPI WinMain(
     }
 
     DWORD lastTime = timeGetTime();
+	DWORD lastPaintTime = 0;
 
 	MSG msg;
 	
@@ -4913,6 +4914,16 @@ int WINAPI WinMain(
 			{
 				TranslateMessage (&msg);
 				DispatchMessage (&msg);
+			}
+
+			// TODO: think better way to update GUI for Lua
+			if (Settings.Paused || Settings.ForcedPause)
+			{
+				DWORD lastTime = timeGetTime();
+				if (lastTime - lastPaintTime >= 250) {
+					InvalidateRect(GUI.hWnd, NULL, FALSE);
+					lastPaintTime = lastTime;
+				}
 			}
 		}
 

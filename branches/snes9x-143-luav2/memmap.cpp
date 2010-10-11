@@ -116,6 +116,7 @@
 #include "spc7110.h"
 #include "seta.h"
 #include "movie.h"
+#include "lua-engine.h"
 
 #ifdef UNZIP_SUPPORT
 #include "unzip/unzip.h"
@@ -939,7 +940,9 @@ again:
 	S9xApplyCheats ();
 	
     S9xReset ();
-	
+
+	CallRegisteredLuaFunctions(LUACALL_ONSTART);
+
     return (TRUE);
 }
 
@@ -4586,6 +4589,11 @@ void CMemory::ParseSNESHeader(uint8* RomHeader)
 		if(RomHeader[0x2A]==0x33)
 			memmove (CompanyId, &RomHeader [0], 2);
 		else sprintf(CompanyId, "%02X", RomHeader[0x2A]);
+}
+
+bool IsHardwareAddressValid(uint32 address)
+{
+	return (address >= 0x000000 && address <= 0xFFFFFF); // TODO: verify IsHardwareAddressValid implementation
 }
 
 #undef INLINE
