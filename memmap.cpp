@@ -198,6 +198,7 @@
 #include "movie.h"
 #include "reader.h"
 #include "display.h"
+#include "lua-engine.h"
 
 #ifndef SET_UI_COLOR
 #define SET_UI_COLOR(r, g, b) ;
@@ -1732,6 +1733,8 @@ again:
 	S9xApplyCheats();
 
 	S9xReset();
+
+	CallRegisteredLuaFunctions(LUACALL_ONSTART);
 
     return (TRUE);
 }

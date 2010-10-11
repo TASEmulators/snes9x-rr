@@ -186,6 +186,7 @@
 #include "obc1.h"
 #include "seta.h"
 #include "bsx.h"
+#include "lua-engine.h"
 
 extern uint8	OpenBus;
 
@@ -753,22 +754,30 @@ inline void S9xSetWordInternal (uint16 Word, uint32 Address, enum s9xwrap_t w = 
 
 inline uint8 S9xGetByte (uint32 Address, bool free = false)
 {
-	return S9xGetByteInternal(Address, free);
+	uint8 Byte = S9xGetByteInternal(Address, free);
+	if (!free)
+		CallRegisteredLuaMemHook(Address, 1, Byte, LUAMEMHOOK_READ);
+	return Byte;
 }
 
 inline uint16 S9xGetWord (uint32 Address, enum s9xwrap_t w = WRAP_NONE, bool free = false)
 {
-	return S9xGetWordInternal(Address, w, free);
+	uint16 Word = S9xGetWordInternal(Address, w, free);
+	if (!free)
+		CallRegisteredLuaMemHook(Address, 2, Word, LUAMEMHOOK_READ);
+	return Word;
 }
 
 inline void S9xSetByte (uint8 Byte, uint32 Address, bool free = false)
 {
 	S9xSetByteInternal(Byte, Address, free);
+	CallRegisteredLuaMemHook(Address, 1, Byte, LUAMEMHOOK_WRITE);
 }
 
 inline void S9xSetWord (uint16 Word, uint32 Address, enum s9xwrap_t w = WRAP_NONE, enum s9xwriteorder_t o = WRITE_01, bool free = false)
 {
 	S9xSetWordInternal(Word, Address, w, o, free);
+	CallRegisteredLuaMemHook(Address, 2, Word, LUAMEMHOOK_WRITE);
 }
 
 inline void S9xSetPCBase (uint32 Address)
@@ -930,6 +939,11 @@ inline uint8 * S9xGetMemPointer (uint32 Address)
 		default:
 			return (NULL);
 	}
+}
+
+inline bool IsHardwareAddressValid(uint32 address)
+{
+	return (address >= 0x000000 && address <= 0xFFFFFF); // TODO: verify IsHardwareAddressValid implementation
 }
 
 #endif

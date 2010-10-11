@@ -293,6 +293,7 @@ void S9xSA1MainLoop (void)
 			Opcodes = S9xSA1OpcodesSlow;
 		}
 
+	    CallRegisteredLuaMemHook(SA1Registers.PBPC, SA1.S9xOpLengths[Op], Op, LUAMEMHOOK_EXEC);
 		Registers.PCw++;
 		(*Opcodes[Op].S9xOpcode)();
 	}

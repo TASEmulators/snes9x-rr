@@ -20,7 +20,7 @@ void UpdateRamSearchTitleBar(int percent = 0);
 void SetRamSearchUndoType(HWND hDlg, int type);
 unsigned int ReadValueAtHardwareAddress(HWAddressType address, unsigned int size);
 bool WriteValueAtHardwareAddress(HWAddressType address, unsigned int value, unsigned int size);
-bool IsHardwareAddressValid(HWAddressType address);
+bool IsRAMWatchAddressValid(HWAddressType address);
 extern int curr_ram_size;
 extern bool noMisalign;
 extern HWND RamSearchHWnd;

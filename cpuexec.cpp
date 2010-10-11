@@ -197,6 +197,8 @@ void S9xMainLoop (void)
 		S9xSoftReset();
 	}
 
+	CallRegisteredLuaFunctions(LUACALL_BEFOREEMULATION);
+
 	for (;;)
 	{
 		if (CPU.Flags)
@@ -308,6 +310,7 @@ void S9xMainLoop (void)
 				Opcodes = S9xOpcodesSlow;
 		}
 
+		CallRegisteredLuaMemHook(Registers.PBPC, ICPU.S9xOpLengths[Op], Op, LUAMEMHOOK_EXEC);
 		Registers.PCw++;
 		(*Opcodes[Op].S9xOpcode)();
 
@@ -328,6 +331,8 @@ void S9xMainLoop (void)
 		S9xSyncSpeed();
 		CPU.Flags &= ~SCAN_KEYS_FLAG;
 	}
+
+	CallRegisteredLuaFunctions(LUACALL_AFTEREMULATION);
 }
 
 void S9xSetIRQ (uint32 source)
