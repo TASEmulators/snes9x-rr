@@ -1,3 +1,4 @@
+
 #include "types.h"
 #include "lua-engine.h"
 #include <assert.h>
@@ -238,17 +239,17 @@ LuaMemHookType MatchHookTypeToCPU(lua_State* L, LuaMemHookType hookType)
 	if(cpunameIndex)
 	{
 		const char* cpuName = lua_tostring(L, cpunameIndex);
-		if(!stricmp(cpuName, "sub") || !stricmp(cpuName, "s68k"))
+		if(!stricmp(cpuName, "sa1"))
 			cpuID = 1;
 		lua_remove(L, cpunameIndex);
 	}
 
 	switch(cpuID)
 	{
-	case 0: // m68k:
+	case 0: // 65c816:
 		return hookType;
 
-	case 1: // s68k:
+	case 1: // sa1:
 		switch(hookType)
 		{
 		case LUAMEMHOOK_WRITE: return LUAMEMHOOK_WRITE_SUB;
@@ -1760,7 +1761,7 @@ DEFINE_LUA_FUNCTION(memory_readbyterange, "address,length")
 	{
 		if(IsHardwareAddressValid(a))
 		{
-			unsigned char value = (unsigned char)S9xGetByte(address, true);
+			unsigned char value = (unsigned char)S9xGetByte(a, true);
 			lua_pushinteger(L, value);
 			lua_rawseti(L, -2, n);
 		}
