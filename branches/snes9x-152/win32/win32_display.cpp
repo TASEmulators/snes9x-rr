@@ -298,6 +298,8 @@ bool8 S9xContinueUpdate(int Width, int Height)
 // do the actual rendering of a frame
 bool8 S9xDeinitUpdate (int Width, int Height)
 {
+	CallRegisteredLuaFunctions(LUACALL_AFTEREMULATIONGUI);
+
     SSurface Src;
 
     Src.Width = Width;

@@ -1159,6 +1159,8 @@ bool8 S9xFreezeGame (const char *filename)
 {
 	STREAM	stream = NULL;
 
+	CallRegisteredLuaFunctions(LUACALL_BEFORESAVE);
+
 	if (S9xOpenSnapshotFile(filename, FALSE, &stream))
 	{
 		S9xFreezeToStream(stream);
@@ -1242,6 +1244,8 @@ bool8 S9xUnfreezeGame (const char *filename)
 			sprintf(String, SAVE_INFO_LOAD " %s", base);
 
 		S9xMessage(S9X_INFO, S9X_FREEZE_FILE_INFO, String);
+
+		CallRegisteredLuaFunctions(LUACALL_AFTERLOAD);
 
 		return (TRUE);
 	}
