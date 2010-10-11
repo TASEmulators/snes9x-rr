@@ -947,6 +947,7 @@ LRESULT CALLBACK RamWatchProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 			DragAcceptFiles(hDlg, TRUE);
 
+			RefreshWatchListSelectedCountControlStatus(hDlg);
 			return false;
 		}	break;
 		
