@@ -4891,9 +4891,7 @@ int WINAPI WinMain(
 	while (TRUE)
 	{
 		// note: using GUI.hWnd instead of NULL for PeekMessage/GetMessage breaks some non-modal dialogs
-		while (Settings.StopEmulation || (Settings.Paused && !Settings.FrameAdvance) ||
-			Settings.ForcedPause ||
-			PeekMessage (&msg, NULL, 0, 0, PM_NOREMOVE))
+		while (PeekMessage (&msg, NULL, 0, 0, PM_NOREMOVE))
 		{
 			if (!GetMessage (&msg, NULL, 0, 0))
 				goto loop_exit; // got WM_QUIT
@@ -4915,16 +4913,21 @@ int WINAPI WinMain(
 				TranslateMessage (&msg);
 				DispatchMessage (&msg);
 			}
-
-			// TODO: think better way to update GUI for Lua
-			if (Settings.Paused || Settings.ForcedPause)
+		}
+		if (Settings.StopEmulation || (Settings.Paused && !Settings.FrameAdvance) || Settings.ForcedPause)
+		{
+			DWORD lastTime = timeGetTime();
+			DWORD guiUpdateFrequency = 50;
+			if (lastTime - lastPaintTime >= guiUpdateFrequency)
 			{
-				DWORD lastTime = timeGetTime();
-				if (lastTime - lastPaintTime >= 250) {
-					InvalidateRect(GUI.hWnd, NULL, FALSE);
-					lastPaintTime = lastTime;
-				}
+				InvalidateRect(GUI.hWnd, NULL, FALSE);
+				lastPaintTime = lastTime;
 			}
+			else
+			{
+				Sleep(5);
+			}
+			continue;
 		}
 
 #ifdef NETPLAY_SUPPORT
