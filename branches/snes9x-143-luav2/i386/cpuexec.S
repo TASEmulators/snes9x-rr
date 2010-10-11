@@ -312,6 +312,10 @@ MainAsmLoop:
 	call S9xDeinterleaveMode2
 .NoSuperFXBrkTest:
 #endif
+	pushl $LUACALL_AFTEREMULATION
+	ccall CallRegisteredLuaFunctions
+	popl %eax
+
 	popl %ebx
 	popl %esi
 	popl %edi

@@ -241,6 +241,7 @@ void S9xMainLoop (void)
 	S9xDeinterleaveMode2 ();
     }
 #endif
+	CallRegisteredLuaFunctions(LUACALL_AFTEREMULATION);
 }
 
 void S9xSetIRQ (uint32 source)
