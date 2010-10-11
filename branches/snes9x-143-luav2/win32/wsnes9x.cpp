@@ -4920,6 +4920,7 @@ int WINAPI WinMain(
 			DWORD guiUpdateFrequency = 50;
 			if (lastTime - lastPaintTime >= guiUpdateFrequency)
 			{
+				UpdateToolWindows();
 				InvalidateRect(GUI.hWnd, NULL, FALSE);
 				lastPaintTime = lastTime;
 			}
