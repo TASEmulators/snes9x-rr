@@ -264,6 +264,17 @@ typedef unsigned long long	uint64;
 #endif	// HAVE_STDINT_H
 #endif	// snes9x_types_defined
 
+#ifndef HAVE_STDINT_H
+typedef int8 int8_t;
+typedef int16 int16_t;
+typedef int32 int32_t;
+typedef int64 int64_t;
+typedef uint8 uint8_t;
+typedef uint16 uint16_t;
+typedef uint32 uint32_t;
+typedef uint64 uint64_t;
+#endif
+
 #ifndef TRUE
 #define TRUE	1
 #endif

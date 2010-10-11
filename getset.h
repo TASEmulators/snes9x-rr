@@ -189,18 +189,18 @@
 
 extern uint8	OpenBus;
 
-inline uint8 S9xGetByte (uint32 Address)
+inline uint8 S9xGetByteInternal (uint32 Address, bool free = false)
 {
 	int		block;
 	uint8	*GetAddress = Memory.Map[block = ((Address & 0xffffff) >> MEMMAP_SHIFT)];
 
-	if (!CPU.InDMAorHDMA)
+	if (!CPU.InDMAorHDMA && !free)
 		CPU.Cycles += Memory.MemorySpeed[block];
 
 	if (GetAddress >= (uint8 *) CMemory::MAP_LAST)
 	{
 	#ifdef CPU_SHUTDOWN
-		if (Memory.BlockIsRAM[block])
+		if (Memory.BlockIsRAM[block] && !free)
 			CPU.WaitAddress = CPU.PBPCAtOpcodeStart;
 	#endif
 		return (*(GetAddress + (Address & 0xffff)));
@@ -264,7 +264,7 @@ inline uint8 S9xGetByte (uint32 Address)
 	}
 }
 
-inline uint16 S9xGetWord (uint32 Address, enum s9xwrap_t w = WRAP_NONE)
+inline uint16 S9xGetWordInternal (uint32 Address, enum s9xwrap_t w = WRAP_NONE, bool free = false)
 {
 	uint16 ret;
 	uint32	mask = MEMMAP_MASK & (w == WRAP_PAGE ? 0xff : (w == WRAP_BANK ? 0xffff : 0xffffff));
@@ -272,36 +272,36 @@ inline uint16 S9xGetWord (uint32 Address, enum s9xwrap_t w = WRAP_NONE)
 	{
 		PC_t	a;
 
-		OpenBus = S9xGetByte(Address);
+		OpenBus = S9xGetByteInternal(Address, free);
 
 		switch (w)
 		{
 			case WRAP_PAGE:
 				a.xPBPC = Address;
 				a.B.xPCl++;
-				return (OpenBus | (S9xGetByte(a.xPBPC) << 8));
+				return (OpenBus | (S9xGetByteInternal(a.xPBPC, free) << 8));
 
 			case WRAP_BANK:
 				a.xPBPC = Address;
 				a.W.xPC++;
-				return (OpenBus | (S9xGetByte(a.xPBPC) << 8));
+				return (OpenBus | (S9xGetByteInternal(a.xPBPC, free) << 8));
 
 			case WRAP_NONE:
 			default:
-				return (OpenBus | (S9xGetByte(Address + 1) << 8));
+				return (OpenBus | (S9xGetByteInternal(Address + 1, free) << 8));
 		}
 	}
 
 	int		block;
 	uint8	*GetAddress = Memory.Map[block = ((Address & 0xffffff) >> MEMMAP_SHIFT)];
 
-	if (!CPU.InDMAorHDMA)
+	if (!CPU.InDMAorHDMA && !free)
 		CPU.Cycles += (Memory.MemorySpeed[block] << 1);
 
 	if (GetAddress >= (uint8 *) CMemory::MAP_LAST)
 	{
 	#ifdef CPU_SHUTDOWN
-		if (Memory.BlockIsRAM[block])
+		if (Memory.BlockIsRAM[block] && !free)
 			CPU.WaitAddress = CPU.PBPCAtOpcodeStart;
 	#endif
 		return (READ_WORD(GetAddress + (Address & 0xffff)));
@@ -316,8 +316,8 @@ inline uint16 S9xGetWord (uint32 Address, enum s9xwrap_t w = WRAP_NONE)
 		case CMemory::MAP_PPU:
 			if (CPU.InDMAorHDMA)
 			{
-				OpenBus = S9xGetByte(Address);
-				return (OpenBus | (S9xGetByte(Address + 1) << 8));
+				OpenBus = S9xGetByteInternal(Address, free);
+				return (OpenBus | (S9xGetByteInternal(Address + 1, free) << 8));
 			}
 			
 			ret = S9xGetPPU(Address & 0xffff);
@@ -387,7 +387,7 @@ inline uint16 S9xGetWord (uint32 Address, enum s9xwrap_t w = WRAP_NONE)
 	}
 }
 
-inline void S9xSetByte (uint8 Byte, uint32 Address)
+inline void S9xSetByteInternal (uint8 Byte, uint32 Address, bool free = false)
 {
 #ifdef CPU_SHUTDOWN
 	CPU.WaitAddress = 0xffffffff;
@@ -396,7 +396,7 @@ inline void S9xSetByte (uint8 Byte, uint32 Address)
 	int		block;
 	uint8	*SetAddress = Memory.WriteMap[block = ((Address & 0xffffff) >> MEMMAP_SHIFT)];
 
-	if (!CPU.InDMAorHDMA)
+	if (!CPU.InDMAorHDMA && !free)
 		CPU.Cycles += Memory.MemorySpeed[block];
 
 	if (SetAddress >= (uint8 *) CMemory::MAP_LAST)
@@ -407,7 +407,7 @@ inline void S9xSetByte (uint8 Byte, uint32 Address)
 
 		if (Settings.SA1)
 		{
-			if (SetAddress == SA1.WaitByteAddress1 || SetAddress == SA1.WaitByteAddress2)
+			if ((SetAddress == SA1.WaitByteAddress1 || SetAddress == SA1.WaitByteAddress2) && !free)
 			{
 				SA1.Executing = SA1.S9xOpcodes != NULL;
 				SA1.WaitCounter = 0;
@@ -498,7 +498,7 @@ inline void S9xSetByte (uint8 Byte, uint32 Address)
 	}
 }
 
-inline void S9xSetWord (uint16 Word, uint32 Address, enum s9xwrap_t w = WRAP_NONE, enum s9xwriteorder_t o = WRITE_01)
+inline void S9xSetWordInternal (uint16 Word, uint32 Address, enum s9xwrap_t w = WRAP_NONE, enum s9xwriteorder_t o = WRITE_01, bool free = false)
 {
 	uint32	mask = MEMMAP_MASK & (w == WRAP_PAGE ? 0xff : (w == WRAP_BANK ? 0xffff : 0xffffff));
 	if ((Address & mask) == mask)
@@ -506,30 +506,30 @@ inline void S9xSetWord (uint16 Word, uint32 Address, enum s9xwrap_t w = WRAP_NON
 		PC_t	a;
 
 		if (!o)
-			S9xSetByte((uint8) Word, Address);
+			S9xSetByteInternal((uint8) Word, Address, free);
 
 		switch (w)
 		{
 			case WRAP_PAGE:
 				a.xPBPC = Address;
 				a.B.xPCl++;
-				S9xSetByte(Word >> 8, a.xPBPC);
+				S9xSetByteInternal(Word >> 8, a.xPBPC, free);
 				break;
 
 			case WRAP_BANK:
 				a.xPBPC = Address;
 				a.W.xPC++;
-				S9xSetByte(Word >> 8, a.xPBPC);
+				S9xSetByteInternal(Word >> 8, a.xPBPC, free);
 				break;
 
 			case WRAP_NONE:
 			default:
-				S9xSetByte(Word >> 8, Address + 1);
+				S9xSetByteInternal(Word >> 8, Address + 1, free);
 				break;
 		}
 
 		if (o)
-			S9xSetByte((uint8) Word, Address);
+			S9xSetByteInternal((uint8) Word, Address, free);
 
 		return;
 	}
@@ -541,7 +541,7 @@ inline void S9xSetWord (uint16 Word, uint32 Address, enum s9xwrap_t w = WRAP_NON
 	int		block;
 	uint8	*SetAddress = Memory.WriteMap[block = ((Address & 0xffffff) >> MEMMAP_SHIFT)];
 
-	if (!CPU.InDMAorHDMA)
+	if (!CPU.InDMAorHDMA && !free)
 		CPU.Cycles += (Memory.MemorySpeed[block] << 1);
 
 	if (SetAddress >= (uint8 *) CMemory::MAP_LAST)
@@ -552,7 +552,7 @@ inline void S9xSetWord (uint16 Word, uint32 Address, enum s9xwrap_t w = WRAP_NON
 
 		if (Settings.SA1)
 		{
-			if (SetAddress == SA1.WaitByteAddress1 || SetAddress == SA1.WaitByteAddress2)
+			if ((SetAddress == SA1.WaitByteAddress1 || SetAddress == SA1.WaitByteAddress2) && !free)
 			{
 				SA1.Executing = SA1.S9xOpcodes != NULL;
 				SA1.WaitCounter = 0;
@@ -749,6 +749,26 @@ inline void S9xSetWord (uint16 Word, uint32 Address, enum s9xwrap_t w = WRAP_NON
 		default:
 			return;
 	}
+}
+
+inline uint8 S9xGetByte (uint32 Address, bool free = false)
+{
+	return S9xGetByteInternal(Address, free);
+}
+
+inline uint16 S9xGetWord (uint32 Address, enum s9xwrap_t w = WRAP_NONE, bool free = false)
+{
+	return S9xGetWordInternal(Address, w, free);
+}
+
+inline void S9xSetByte (uint8 Byte, uint32 Address, bool free = false)
+{
+	S9xSetByteInternal(Byte, Address, free);
+}
+
+inline void S9xSetWord (uint16 Word, uint32 Address, enum s9xwrap_t w = WRAP_NONE, enum s9xwriteorder_t o = WRITE_01, bool free = false)
+{
+	S9xSetWordInternal(Word, Address, w, o, free);
 }
 
 inline void S9xSetPCBase (uint32 Address)

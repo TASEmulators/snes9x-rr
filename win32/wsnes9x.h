@@ -588,4 +588,6 @@ struct ICheat
 
 const char *S9xGetFilenameRel (const char *ex);
 
+void UpdateToolWindows();
+
 #endif // !defined(SNES9X_H_INCLUDED)
