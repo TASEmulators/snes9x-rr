@@ -1203,7 +1203,7 @@ void signal_new_size ()
 				continue;
 
 			// select the entire range
-			for (unsigned int j = selRangeTop; j <= selRangeBottom; j++)
+			for (int j = selRangeTop; j <= selRangeBottom; j++)
 			{
 				ListView_SetItemState(lv, j, LVIS_SELECTED|LVIS_FOCUSED, LVIS_SELECTED|LVIS_FOCUSED);
 			}

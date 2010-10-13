@@ -742,7 +742,7 @@ void S9xUpdateFrameCounter (int offset)
 			sprintf(GFX.LagCounterString, "%d", max(0,(int)(IPPU.LagCounter)));
 		else
 			FrameCountToTime(GFX.LagCounterString, max(0,(int)(IPPU.LagCounter)), Memory.ROMFramesPerSecond);
-		if (!IPPU.pad_read)
+		if (!IPPU.pad_read_last)
 			strcat(GFX.LagCounterString, " *");
 	}
 

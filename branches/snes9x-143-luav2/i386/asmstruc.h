@@ -167,6 +167,8 @@
 #define S9xLuaClearGui _S9xLuaClearGui
 #define CallRegisteredLuaFunctions _CallRegisteredLuaFunctions
 #define CallRegisteredLuaMemHook _CallRegisteredLuaMemHook
+#define OnFrameStart _OnFrameStart
+#define OnFrameEnd _OnFrameEnd
 #define S9xTraceCPU _S9xTraceCPU
 
 #define A1 _A1

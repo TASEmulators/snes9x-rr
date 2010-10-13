@@ -2935,10 +2935,6 @@ void S9xUpdateJoypadButtons ()
 	}
 
 	S9xMovieUpdate();
-	if(!IPPU.pad_read)
-		++IPPU.LagCounter;
-	IPPU.pad_read_last = IPPU.pad_read;
-	IPPU.pad_read = false;
 
 	if(!Settings.UpAndDown)
 	{

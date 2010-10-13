@@ -90,6 +90,7 @@
 #ifndef _CPUEXEC_H_
 #define _CPUEXEC_H_
 
+#include "cpuexec_sub.h"
 #include "snes9x.h"
 
 #define DO_HBLANK_CHECK() \

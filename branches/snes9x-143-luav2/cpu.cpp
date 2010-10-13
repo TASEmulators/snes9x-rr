@@ -104,7 +104,6 @@
 #include "snapshot.h"
 #include "logger.h"
 
-
 #ifndef ZSNES_FX
 #include "fxemu.h"
 

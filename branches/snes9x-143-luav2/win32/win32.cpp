@@ -1170,8 +1170,6 @@ bool8 S9xDeinitUpdate (int Width, int Height)
     bool PrimarySurfaceLockFailed = false;
     RECT srcRect;
 
-	CallRegisteredLuaFunctions(LUACALL_AFTEREMULATIONGUI);
-
 	Src.Width = Width;
 	if(Height%SNES_HEIGHT)
 		Src.Height = Height;
@@ -1247,6 +1245,13 @@ bool8 S9xDeinitUpdate (int Width, int Height)
 //		S9xLuaGui(Src.Surface, Width, Height, srcDepth, Src.Pitch);
 //		S9xLuaClearGui();
 	}
+
+	if (!GFX.Repainting)
+	{
+		// do not process the drawing during frame emulation
+		return true;
+	}
+	CallRegisteredLuaFunctions(LUACALL_AFTEREMULATIONGUI);
 
 	GUI.ScreenCleared = true;
 

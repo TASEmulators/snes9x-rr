@@ -112,7 +112,7 @@ void S9xMainLoop (void)
 		S9xSoftReset();
 	}
 
-	CallRegisteredLuaFunctions(LUACALL_BEFOREEMULATION);
+	OnFrameStart();
 
     for (;;)
     {
@@ -241,7 +241,7 @@ void S9xMainLoop (void)
 	S9xDeinterleaveMode2 ();
     }
 #endif
-	CallRegisteredLuaFunctions(LUACALL_AFTEREMULATION);
+	OnFrameEnd();
 }
 
 void S9xSetIRQ (uint32 source)

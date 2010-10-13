@@ -843,6 +843,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\cpuexec_sub.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\cpuexec_sub.h"
+				>
+			</File>
+			<File
 				RelativePath="..\cpumacro.h"
 				>
 			</File>

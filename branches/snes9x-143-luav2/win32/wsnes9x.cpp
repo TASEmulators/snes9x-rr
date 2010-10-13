@@ -5022,6 +5022,7 @@ int WINAPI WinMain(
 			{
 				//ProcessInput();
 				S9xMainLoop();
+				S9xReRefresh();
 				GUI.FrameCount++;
 
 				UpdateToolWindows();

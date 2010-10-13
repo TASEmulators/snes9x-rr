@@ -158,7 +158,7 @@ struct InternalPPU {
     int    PrevMouseY[2];
     struct ClipData Clip [2];
     bool8  pad_read;
-    bool8  pad_read_last;
+    bool8  pad_read_last; // TODO: remove this in future
 };
 
 struct SOBJ
