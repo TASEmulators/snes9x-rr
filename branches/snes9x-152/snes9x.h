@@ -424,7 +424,6 @@ struct SSettings
 	int		Port;
 
 	bool8	MovieTruncate;
-	bool8	MovieNotifyIgnored;
 	bool8	WrongMovieStateProtection;
 	bool8	DumpStreams;
 	int		DumpStreamsMaxFrames;

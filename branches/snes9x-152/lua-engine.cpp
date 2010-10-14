@@ -11,6 +11,7 @@
 #include "ppu.h"
 #include "display.h"
 #include "memmap.h"
+#include "cpuexec.h"
 
 #ifdef _WIN32
 #define NOMINMAX
@@ -1010,7 +1011,17 @@ DEFINE_LUA_FUNCTION(emu_message, "str")
 {
 	const char* str = toCString(L);
 //	osd->addLine(str);
-	S9xSetInfoString(str);
+
+	// do not call S9xSetInfoString here
+	// otherwise C stack overflow can happen in gui callback
+	static char infoStringBuf[256];
+	if (Settings.InitialInfoStringTimeout > 0)
+	{
+		strncpy(infoStringBuf, str, sizeof(infoStringBuf) / sizeof(infoStringBuf[0]));
+		infoStringBuf[(sizeof(infoStringBuf) / sizeof(infoStringBuf[0])) - 1] = '\0';
+		GFX.InfoString = infoStringBuf;
+		GFX.InfoStringTimeout = Settings.InitialInfoStringTimeout;
+	}
 	return 0;
 }
 
@@ -1407,8 +1418,8 @@ void printfToOutput(const char* fmt, ...)
 }
 
 bool FailVerifyAtFrameBoundary(lua_State* L, const char* funcName, int unstartedSeverity=2, int inframeSeverity=2)
-{//TODO
-/*	if (!((Genesis_Started)||(SegaCD_Started)||(_32X_Started)))
+{
+	if (Settings.StopEmulation)
 	{
 		static const char* msg = "cannot call %s() when emulation has not started.";
 		switch(unstartedSeverity)
@@ -1429,7 +1440,7 @@ bool FailVerifyAtFrameBoundary(lua_State* L, const char* funcName, int unstarted
 		default: case 2: luaL_error(L, msg, funcName); break;
 		}
 		return true;
-	}*/
+	}
 	return false;
 }
 /*
@@ -3011,20 +3022,21 @@ DEFINE_LUA_FUNCTION(emu_loadrom, "filename")
 {
 	lua_pushinteger(L, currFrameCounter);
 	return 1;
-}
+}*/
 DEFINE_LUA_FUNCTION(emu_getlagcount, "")
 {
-	lua_pushinteger(L, pcejin.lagFrameCounter);
+	lua_pushinteger(L, IPPU.LagCounter);
 	return 1;
 }
 DEFINE_LUA_FUNCTION(emu_lagged, "")
 {
-	lua_pushboolean(L, pcejin.isLagFrame);
+	extern bool8 pad_read;
+	lua_pushboolean(L, !pad_read);
 	return 1;
 }
 DEFINE_LUA_FUNCTION(emu_emulating, "")
 {
-	lua_pushboolean(L, Genesis_Started||SegaCD_Started||_32X_Started);
+	lua_pushboolean(L, !Settings.StopEmulation);
 	return 1;
 }
 DEFINE_LUA_FUNCTION(emu_atframeboundary, "")
@@ -3032,7 +3044,7 @@ DEFINE_LUA_FUNCTION(emu_atframeboundary, "")
 	lua_pushboolean(L, !Inside_Frame);
 	return 1;
 }
-DEFINE_LUA_FUNCTION(movie_getlength, "")
+/*DEFINE_LUA_FUNCTION(movie_getlength, "")
 {
 	lua_pushinteger(L, currMovieData.records.size());
 	return 1;
@@ -3634,10 +3646,10 @@ static const struct luaL_reg emulib [] =
 //	{"emulateframeinvisible", emu_emulateframeinvisible},
 //	{"redraw", emu_redraw},
 //	{"framecount", emu_getframecount},
-//	{"lagcount", emu_getlagcount},
-//	{"lagged", emu_lagged},
-//	{"emulating", emu_emulating},
-//	{"atframeboundary", emu_atframeboundary},
+	{"lagcount", emu_getlagcount},
+	{"lagged", emu_lagged},
+	{"emulating", emu_emulating},
+	{"atframeboundary", emu_atframeboundary},
 	{"registerbefore", emu_registerbefore},
 	{"registerafter", emu_registerafter},
 	{"registerstart", emu_registerstart},

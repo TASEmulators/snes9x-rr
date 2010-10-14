@@ -298,8 +298,6 @@ bool8 S9xContinueUpdate(int Width, int Height)
 // do the actual rendering of a frame
 bool8 S9xDeinitUpdate (int Width, int Height)
 {
-	CallRegisteredLuaFunctions(LUACALL_AFTEREMULATIONGUI);
-
     SSurface Src;
 
     Src.Width = Width;
@@ -319,6 +317,13 @@ bool8 S9xDeinitUpdate (int Width, int Height)
 
 	// avi writing
 	DoAVIVideoFrame(&Src, Width, Height);
+
+	// do not render images during frame emulation
+	// instead, we handle it just after the frame end
+	if(Inside_Frame)
+	{
+		return true;
+	}
 
 	GUI.ScreenCleared = true;
 

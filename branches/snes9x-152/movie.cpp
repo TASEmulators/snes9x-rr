@@ -1251,7 +1251,7 @@ void S9xToggleFrameDisplay (void)
 
 void S9xUpdateFrameCounter (int offset)
 {
-	extern bool8	pad_read;
+	extern bool8	pad_read_last;
 
 	offset++;
 
@@ -1259,8 +1259,8 @@ void S9xUpdateFrameCounter (int offset)
 		strcpy(GFX.FrameDisplayString, "");
 	else
 	if (Movie.State == MOVIE_STATE_RECORD)
-		sprintf(GFX.FrameDisplayString, "Recording frame: %d%s",
-			max(0, (int) (Movie.CurrentFrame + offset)), pad_read || !Settings.MovieNotifyIgnored ? "" : " (ignored)");
+		sprintf(GFX.FrameDisplayString, "Recording frame: %d",
+			max(0, (int) (Movie.CurrentFrame + offset)));
 	else
 	if (Movie.State == MOVIE_STATE_PLAY)
 		sprintf(GFX.FrameDisplayString, "Playing frame: %d / %d",
@@ -1272,8 +1272,8 @@ void S9xUpdateFrameCounter (int offset)
 			max(0, (int) (NetPlay.FrameCount + offset)));
 #endif
 	else
-		sprintf(GFX.FrameDisplayString, "Frame: %d%s",
-			max(0, (int) (IPPU.TotalEmulatedFrames + offset)), pad_read || !Settings.MovieNotifyIgnored ? "" : " (ignored)");
+		sprintf(GFX.FrameDisplayString, "Frame: %d",
+			max(0, (int) (IPPU.TotalEmulatedFrames + offset)));
 
 	if (Settings.DisplayLagCounter)
 	{
@@ -1284,5 +1284,12 @@ void S9xUpdateFrameCounter (int offset)
 		}
 		sprintf(temp, "%d", IPPU.LagCounter);
 		strcat(GFX.FrameDisplayString, temp);
+	}
+	if (!pad_read_last)
+	{
+		if (GFX.FrameDisplayString != NULL && strcmp(GFX.FrameDisplayString, ""))
+		{
+			strcat(GFX.FrameDisplayString, " *");
+		}
 	}
 }

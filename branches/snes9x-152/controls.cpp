@@ -3326,12 +3326,6 @@ void S9xControlEOF (void)
 	do_polling(POLL_ALL);
 
 	S9xMovieUpdate();
-
-	if(!pad_read)
-		++IPPU.LagCounter;
-
-	pad_read_last = pad_read;
-	pad_read      = false;
 }
 
 void S9xSetControllerCrosshair (enum crosscontrols ctl, int8 idx, const char *fg, const char *bg)

@@ -1947,9 +1947,12 @@ void S9xReRefresh (void)
 
 void S9xSetInfoString (const char *string)
 {
+	static char infoStringBuf[256];
 	if (Settings.InitialInfoStringTimeout > 0)
 	{
-		GFX.InfoString = string;
+		strncpy(infoStringBuf, string, sizeof(infoStringBuf) / sizeof(infoStringBuf[0]));
+		infoStringBuf[(sizeof(infoStringBuf) / sizeof(infoStringBuf[0])) - 1] = '\0';
+		GFX.InfoString = infoStringBuf;
 		GFX.InfoStringTimeout = Settings.InitialInfoStringTimeout;
 		S9xReRefresh();
 	}
