@@ -213,6 +213,8 @@ extern uint8			S9xOpLengthsM1X0[256];
 extern uint8			S9xOpLengthsM0X1[256];
 extern uint8			S9xOpLengthsM0X0[256];
 
+extern bool Inside_Frame;
+
 void S9xMainLoop (void);
 void S9xReset (void);
 void S9xSoftReset (void);

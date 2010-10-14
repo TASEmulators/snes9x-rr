@@ -3817,6 +3817,7 @@ int WINAPI WinMain(
 				}
 
 				S9xMainLoop();
+				WinRefreshDisplay(); // windows version doesn't render images during frame emulation, so we do it now
 				UpdateToolWindows();
 				GUI.FrameCount++;
 			}

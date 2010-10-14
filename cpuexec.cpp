@@ -187,7 +187,8 @@
 #include "debug.h"
 #include "missing.h"
 #endif
-
+void OnFrameStart();
+void OnFrameEnd();
 
 void S9xMainLoop (void)
 {
@@ -197,7 +198,7 @@ void S9xMainLoop (void)
 		S9xSoftReset();
 	}
 
-	CallRegisteredLuaFunctions(LUACALL_BEFOREEMULATION);
+	OnFrameStart();
 
 	for (;;)
 	{
@@ -332,6 +333,27 @@ void S9xMainLoop (void)
 		CPU.Flags &= ~SCAN_KEYS_FLAG;
 	}
 
+	OnFrameEnd();
+}
+
+bool Inside_Frame = false;
+extern bool8 pad_read, pad_read_last;
+
+void OnFrameStart()
+{
+	pad_read = 0;
+
+	Inside_Frame = true;
+	CallRegisteredLuaFunctions(LUACALL_BEFOREEMULATION);
+}
+
+void OnFrameEnd()
+{
+	if(!pad_read)
+		++IPPU.LagCounter;
+	pad_read_last = pad_read;
+
+	Inside_Frame = false;
 	CallRegisteredLuaFunctions(LUACALL_AFTEREMULATION);
 }
 
