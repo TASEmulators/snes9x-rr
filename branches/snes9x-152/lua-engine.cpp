@@ -3025,7 +3025,7 @@ DEFINE_LUA_FUNCTION(emu_loadrom, "filename")
 }*/
 DEFINE_LUA_FUNCTION(emu_getlagcount, "")
 {
-	lua_pushinteger(L, IPPU.LagCounter);
+	lua_pushinteger(L, Timings.LagCounter);
 	return 1;
 }
 DEFINE_LUA_FUNCTION(emu_lagged, "")
