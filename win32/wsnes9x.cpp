@@ -3104,9 +3104,9 @@ void S9xOnSNESPadRead()
 	if(!GUI.FASkipsNonInput)
 		return;
 
-	if(prevPadReadFrame != IPPU.TotalEmulatedFrames) // we want <= 1 calls per frame
+	if(prevPadReadFrame != Timings.FrameCounter) // we want <= 1 calls per frame
 	{
-		prevPadReadFrame = IPPU.TotalEmulatedFrames;
+		prevPadReadFrame = Timings.FrameCounter;
 
 		if(Settings.FrameAdvance && Settings.Paused && !skipNextFrameStop)
 		{
@@ -9936,7 +9936,7 @@ bool S9xPollButton(uint32 id, bool *pressed){
 
 	*pressed = false;
 
-#define CHECK_KEY(controller, button) (!S9xGetState(Joypad[controller].button) || (ToggleJoypadStorage[controller].button && !TurboToggleJoypadStorage[controller].button) || (IPPU.TotalEmulatedFrames%2 == ToggleJoypadStorage[controller].button && TurboToggleJoypadStorage[controller].button))
+#define CHECK_KEY(controller, button) (!S9xGetState(Joypad[controller].button) || (ToggleJoypadStorage[controller].button && !TurboToggleJoypadStorage[controller].button) || (Timings.FrameCounter%2 == ToggleJoypadStorage[controller].button && TurboToggleJoypadStorage[controller].button))
 
 	extern bool S9xGetState (WORD KeyIdent);
 	if (id & k_MO)	// mouse

@@ -406,7 +406,7 @@ void S9xStartScreenRefresh (void)
 	if (GFX.InfoStringTimeout > 0 && --GFX.InfoStringTimeout == 0)
 		GFX.InfoString = NULL;
 
-	IPPU.TotalEmulatedFrames++;
+	Timings.FrameCounter++;
 }
 
 void S9xEndScreenRefresh (void)

@@ -350,7 +350,7 @@ void OnFrameStart()
 void OnFrameEnd()
 {
 	if(!pad_read)
-		++IPPU.LagCounter;
+		++Timings.LagCounter;
 	pad_read_last = pad_read;
 
 	Inside_Frame = false;

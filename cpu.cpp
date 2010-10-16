@@ -270,8 +270,8 @@ static void S9xSoftResetCPU (void)
 
 void S9xReset (void)
 {
-	IPPU.TotalEmulatedFrames = 0;
-	IPPU.LagCounter = 0;
+	Timings.FrameCounter = 0;
+	Timings.LagCounter = 0;
 	extern bool8 pad_read, pad_read_last;
 	pad_read = pad_read_last = 0;
 

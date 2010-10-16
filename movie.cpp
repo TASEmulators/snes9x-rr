@@ -1273,7 +1273,7 @@ void S9xUpdateFrameCounter (int offset)
 #endif
 	else
 		sprintf(GFX.FrameDisplayString, "Frame: %d",
-			max(0, (int) (IPPU.TotalEmulatedFrames + offset)));
+			max(0, (int) (Timings.FrameCounter + offset)));
 
 	if (Settings.DisplayLagCounter)
 	{
@@ -1282,7 +1282,7 @@ void S9xUpdateFrameCounter (int offset)
 		{
 			strcat(GFX.FrameDisplayString, " | ");
 		}
-		sprintf(temp, "%d", IPPU.LagCounter);
+		sprintf(temp, "%d", Timings.LagCounter);
 		strcat(GFX.FrameDisplayString, temp);
 	}
 	if (!pad_read_last)

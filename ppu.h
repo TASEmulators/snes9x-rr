@@ -242,8 +242,6 @@ struct InternalPPU
 	uint32	FrameCount;
 	uint32	RenderedFramesCount;
 	uint32	DisplayedRenderedFrameCount;
-	uint32	TotalEmulatedFrames;
-	uint32	LagCounter;
 	uint32	SkippedFrames;
 	uint32	FrameSkip;
 };
