@@ -140,6 +140,27 @@ static const char *button_mappings[] = {
 	#define __forceinline __attribute__((always_inline))
 #endif
 
+
+// these are necessary for properly handling 32-bit integers that are expected to exceed 0x7FFFFFFF.
+// it depends on the platform and the luaconf.h Lua was compiled with, but defining these here/somewhere is safest.
+static inline unsigned int lua_tounsignedinteger (lua_State *L, int idx) {
+#if defined(LUA_NUMBER_DOUBLE) && !defined(LUA_ANSI) && !defined(__SSE2__) && (defined(__i386) || defined (_M_IX86) || defined(__i386__))
+	volatile union luaui_Cast { double l_d; unsigned int l_ul; } u;
+	u.l_d = lua_tonumber(L,idx) + 6755399441055744.0; // faster than regular casting, and still works for unsigned ints (unlike fld,fistp)
+	return u.l_ul;
+#else
+	return (unsigned int)lua_tonumber(L,idx);
+#endif
+}
+static inline unsigned int luaL_checkunsignedinteger (lua_State *L, int idx) {
+	luaL_checktype(L, idx, LUA_TNUMBER);
+	return lua_tounsignedinteger(L,idx);
+}
+static inline void lua_pushunsignedinteger (lua_State *L, unsigned int n) {
+	lua_pushnumber(L, (lua_Number)n); // this is not slower than lua_pushinteger, anyway
+}
+
+
 static const char* luaCallIDStrings [] =
 {
 	"CALL_BEFOREEMULATION",
@@ -1170,11 +1191,7 @@ static int memory_readdword(lua_State *L)
 	uint32 addr = luaL_checkinteger(L,1);
 	uint32 val = S9xGetDWord(addr);
 
-	// lua_pushinteger doesn't work properly for 32bit system, does it?
-	if (val >= 0x80000000 && sizeof(int) <= 4)
-		lua_pushnumber(L, val);
-	else
-		lua_pushinteger(L, val);
+	lua_pushunsignedinteger(L, val);
 	return 1;
 }
 
@@ -1224,7 +1241,7 @@ static int memory_writeword(lua_State *L)
 
 static int memory_writedword(lua_State *L)
 {
-	S9xSetDWord(luaL_checkinteger(L,2), luaL_checkinteger(L,1));
+	S9xSetDWord(luaL_checkunsignedinteger(L,2), luaL_checkinteger(L,1));
 	return 0;
 }
 
@@ -1282,11 +1299,7 @@ static int apu_readdword(lua_State *L)
 	uint32 addr = luaL_checkinteger(L,1);
 	uint32 val = LuaAPUGetDWord(addr);
 
-	// lua_pushinteger doesn't work properly for 32bit system, does it?
-	//if (val >= 0x80000000 && sizeof(int) <= 4)
-	//	lua_pushnumber(L, val);
-	//else
-		lua_pushinteger(L, val);
+	lua_pushunsignedinteger(L, val);
 	return 1;
 }
 
@@ -1347,7 +1360,7 @@ static int apu_writeword(lua_State *L)
 
 static int apu_writedword(lua_State *L)
 {
-	S9xAPUSetDWord(luaL_checkinteger(L,2), luaL_checkinteger(L,1));
+	S9xAPUSetDWord(luaL_checkunsignedinteger(L,2), luaL_checkinteger(L,1));
 	return 0;
 }
 
@@ -2214,7 +2227,7 @@ static inline uint32 gui_getcolour_wrapped(lua_State *L, int offset, bool hasDef
 		}
 	case LUA_TNUMBER:
 		{
-			uint32 colour = (uint32) lua_tointeger(L,offset);
+			uint32 colour = (uint32) lua_tounsignedinteger(L,offset);
 			return colour;
 		}
 	case LUA_TTABLE:
