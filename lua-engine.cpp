@@ -116,6 +116,26 @@ static std::map<lua_CFunction, const char*> s_cFuncInfoMap;
 #endif
 
 
+// these are necessary for properly handling 32-bit integers that are expected to exceed 0x7FFFFFFF.
+// it depends on the platform and the luaconf.h Lua was compiled with, but defining these here/somewhere is safest.
+static inline unsigned int lua_tounsignedinteger (lua_State *L, int idx) {
+#if defined(LUA_NUMBER_DOUBLE) && !defined(LUA_ANSI) && !defined(__SSE2__) && (defined(__i386) || defined (_M_IX86) || defined(__i386__))
+	volatile union luaui_Cast { double l_d; unsigned int l_ul; } u;
+	u.l_d = lua_tonumber(L,idx) + 6755399441055744.0; // faster than regular casting, and still works for unsigned ints (unlike fld,fistp)
+	return u.l_ul;
+#else
+	return (unsigned int)lua_tonumber(L,idx);
+#endif
+}
+static inline unsigned int luaL_checkunsignedinteger (lua_State *L, int idx) {
+	luaL_checktype(L, idx, LUA_TNUMBER);
+	return lua_tounsignedinteger(L,idx);
+}
+static inline void lua_pushunsignedinteger (lua_State *L, unsigned int n) {
+	lua_pushnumber(L, (lua_Number)n); // this is not slower than lua_pushinteger, anyway
+}
+
+
 static const char* luaCallIDStrings [] =
 {
 	"CALL_BEFOREEMULATION",
@@ -1698,7 +1718,7 @@ DEFINE_LUA_FUNCTION(memory_readword, "address")
 	int address = lua_tointeger(L,1);
 	unsigned short value = (unsigned short)S9xGetWord(address, WRAP_NONE, true);
 	lua_settop(L,0);
-	lua_pushinteger(L, value);
+	lua_pushunsignedinteger(L, value);
 	return 1;
 }
 DEFINE_LUA_FUNCTION(memory_readwordsigned, "address")
@@ -1714,7 +1734,7 @@ DEFINE_LUA_FUNCTION(memory_readdword, "address")
 	int address = luaL_checkinteger(L,1);
 	unsigned long value = (unsigned long)S9xGetDWord(address, true);
 	lua_settop(L,0);
-	lua_pushinteger(L, value);
+	lua_pushunsignedinteger(L, value);
 	return 1;
 }
 DEFINE_LUA_FUNCTION(memory_readdwordsigned, "address")
@@ -1744,7 +1764,7 @@ DEFINE_LUA_FUNCTION(memory_writeword, "address,value")
 DEFINE_LUA_FUNCTION(memory_writedword, "address,value")
 {
 	int address = luaL_checkinteger(L,1);
-	unsigned long value = (unsigned long)(luaL_checkinteger(L,2));
+	unsigned long value = (unsigned long)(luaL_checkunsignedinteger(L,2));
 	S9xSetDWord(value, address, true);
 	return 0;
 }
@@ -2390,7 +2410,7 @@ inline int getcolor_unmodified(lua_State *L, int idx, int defaultColor)
 	{
 		case LUA_TNUMBER:
 		{
-			return lua_tointeger(L,idx);
+			return (int)lua_tounsignedinteger(L,idx);
 		}	break;
 		case LUA_TSTRING:
 		{
