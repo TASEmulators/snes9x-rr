@@ -3137,7 +3137,7 @@ LRESULT CALLBACK WinProc(
 							int newWidth = GUI.AspectWidth;
 							int newHeight = (snesAspect == 1.0)
 									? (GUI.HeightExtend ? SNES_HEIGHT_EXTENDED : SNES_HEIGHT)
-									: (int) (newWidth / snesAspect);
+									: (int) ((newWidth / snesAspect) + 0.5f);
 							S9xResizeWindow(newWidth, newHeight, true);
 						}	break;
 						case ID_WINDOW_X2: {
@@ -3145,7 +3145,7 @@ LRESULT CALLBACK WinProc(
 							int newWidth = GUI.AspectWidth * 2;
 							int newHeight = (snesAspect == 1.0)
 									? ((GUI.HeightExtend ? SNES_HEIGHT_EXTENDED : SNES_HEIGHT) * 2)
-									: (int) (newWidth / snesAspect);
+									: (int) ((newWidth / snesAspect) + 0.5f);
 							S9xResizeWindow(newWidth, newHeight, true);
 						}	break;
 						case ID_WINDOW_X3: {
@@ -3153,7 +3153,7 @@ LRESULT CALLBACK WinProc(
 							int newWidth = GUI.AspectWidth * 3;
 							int newHeight = (snesAspect == 1.0)
 									? ((GUI.HeightExtend ? SNES_HEIGHT_EXTENDED : SNES_HEIGHT) * 3)
-									: (int) (newWidth / snesAspect);
+									: (int) ((newWidth / snesAspect) + 0.5f);
 							S9xResizeWindow(newWidth, newHeight, true);
 						}	break;
 						case ID_WINDOW_X4: {
@@ -3161,7 +3161,7 @@ LRESULT CALLBACK WinProc(
 							int newWidth = GUI.AspectWidth * 4;
 							int newHeight = (snesAspect == 1.0)
 									? ((GUI.HeightExtend ? SNES_HEIGHT_EXTENDED : SNES_HEIGHT) * 4)
-									: (int) (newWidth / snesAspect);
+									: (int) ((newWidth / snesAspect) + 0.5f);
 							S9xResizeWindow(newWidth, newHeight, true);
 						}	break;
 						case ID_WINDOW_LOCKRESIZE: {
