@@ -4506,7 +4506,7 @@ void HotkeyToggleFastForward (bool justPressed)
 void HotkeyFrameAdvance (bool justPressed)
 {
 	static DWORD lastTime = 0;
-	if((int)(timeGetTime() - lastTime) > 20 && (!ICPU.SavedAtOp || prevPadReadFrame == Timings.TotalEmulatedFrames))
+	if((timeGetTime() - lastTime) > 20 && (!ICPU.SavedAtOp || prevPadReadFrame == Timings.TotalEmulatedFrames))
 	{
 		lastTime = timeGetTime();
 		if(Settings.Paused || GUI.FASkipsNonInput)
