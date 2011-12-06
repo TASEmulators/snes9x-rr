@@ -335,6 +335,7 @@ static int32 newcontrollers[2]={ JOYPAD0, NONE };
     S(SwapJoypads), \
     S(SynchronizeSound), \
     S(ToggleBG0), S(ToggleBG1), S(ToggleBG2), S(ToggleBG3), \
+    S(ToggleBackdropColor), \
     S(ToggleEmuTurbo), \
     S(ToggleHDMA), \
     S(ToggleSprites), \
@@ -1966,6 +1967,10 @@ void S9xApplyCommand(s9xcommand_t cmd, int16 data1, int16 data2){
                 S9xDisplayStateChange ("Synchronised sound",
                                        Settings.SoundSync);
                 break;
+              case ToggleBackdropColor:
+                S9xSetInfoString("what? how did this happen? zeromus doesnt understand the hotkey system in this emulator");
+                break;
+
               case ToggleBG0:
                 Settings.BG_Forced ^= 1;
                 S9xDisplayStateChange ("BG#0", !(Settings.BG_Forced & 1));

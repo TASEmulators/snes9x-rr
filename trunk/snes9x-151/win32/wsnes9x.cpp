@@ -658,6 +658,7 @@ void HotkeyBGL2 (bool justPressed);
 void HotkeyBGL3 (bool justPressed);
 void HotkeyBGL4 (bool justPressed);
 void HotkeyBGL5 (bool justPressed);
+void HotkeyBGBDC (bool justPressed);
 void HotkeyClippingWindows (bool justPressed);
 void HotkeyTransparency (bool justPressed);
 void HotkeyHDMA (bool justPressed);
@@ -824,6 +825,7 @@ void InitCustomKeys (SCustomKeys *keys)
 	keys->BGL3.handleKeyDown = HotkeyBGL3;
 	keys->BGL4.handleKeyDown = HotkeyBGL4;
 	keys->BGL5.handleKeyDown = HotkeyBGL5;
+    keys->BGBDC.handleKeyDown = HotkeyBGBDC;
 	keys->ClippingWindows.handleKeyDown = HotkeyClippingWindows;
 	keys->Transparency.handleKeyDown = HotkeyTransparency;
 	keys->HDMA.handleKeyDown = HotkeyHDMA;
@@ -951,6 +953,7 @@ void InitCustomKeys (SCustomKeys *keys)
 	keys->BGL3.name = _T("Graphics Layer 3");
 	keys->BGL4.name = _T("Graphics Layer 4");
 	keys->BGL5.name = _T("Sprites Layer");
+    keys->BGBDC.name = _T("Cycle Backdrop Color");
 	keys->ClippingWindows.name = _T("Clipping Windows");
 	keys->Transparency.name = _T("Transparency");
 	keys->HDMA.name = _T("HDMA Emulation");
@@ -1078,6 +1081,7 @@ void InitCustomKeys (SCustomKeys *keys)
 	keys->BGL3.page = HOTKEY_PAGE_GRAPHICS;
 	keys->BGL4.page = HOTKEY_PAGE_GRAPHICS;
 	keys->BGL5.page = HOTKEY_PAGE_GRAPHICS;
+    keys->BGBDC.page = HOTKEY_PAGE_GRAPHICS;
 	keys->ClippingWindows.page = HOTKEY_PAGE_GRAPHICS;
 	keys->Transparency.page = HOTKEY_PAGE_GRAPHICS;
 	keys->HDMA.page = HOTKEY_PAGE_GRAPHICS;
@@ -1189,6 +1193,7 @@ void InitCustomKeys (SCustomKeys *keys)
 	keys->BGL3.key = '3';
 	keys->BGL4.key = '4';
 	keys->BGL5.key = '5';
+    keys->BGBDC.key = '1'; keys->BGBDC.modifiers = CUSTKEY_SHIFT_MASK;
 	keys->ClippingWindows.key = '8';
 	keys->Transparency.key = '9';
 	keys->HDMA.key = '0';
@@ -4541,6 +4546,14 @@ void HotkeyBGL5 (bool justPressed) { PostMenuCommand(ID_VIDEO_LAYERS_SPRITES); }
 void HotkeyClippingWindows (bool justPressed) { PostMenuCommand(ID_VIDEO_CLIPPINGWIDOWS); }
 void HotkeyTransparency (bool justPressed) { PostMenuCommand(ID_VIDEO_TRANSPARENCY); }
 void HotkeyHDMA (bool justPressed) { PostMenuCommand(ID_EMULATOR_HDMAEMULATION); }
+void HotkeyBGBDC (bool justPressed) { 
+    if(Settings.BG_BackdropColor == 0) { S9xSetInfoString ("BackdropColor=red"); Settings.BG_BackdropColor++; }
+    else if(Settings.BG_BackdropColor == 1) { S9xSetInfoString ("BackdropColor=green"); Settings.BG_BackdropColor++; }
+    else if(Settings.BG_BackdropColor == 2) { S9xSetInfoString ("BackdropColor=blue"); Settings.BG_BackdropColor++; }
+    else if(Settings.BG_BackdropColor == 3) { S9xSetInfoString ("BackdropColor=white"); Settings.BG_BackdropColor++; }
+    else if(Settings.BG_BackdropColor == 4) { S9xSetInfoString ("BackdropColor=black"); Settings.BG_BackdropColor++; }
+    else if(Settings.BG_BackdropColor == 5) { S9xSetInfoString ("BackdropColor=(unchanged)"); Settings.BG_BackdropColor=0; }
+}
 
 void HotkeyBGLHack (bool justPressed)
 {
