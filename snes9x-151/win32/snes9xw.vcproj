@@ -48,6 +48,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="3"
 				InlineFunctionExpansion="2"
 				FavorSizeOrSpeed="1"
@@ -156,6 +157,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories=".;..;zlib;directx;libpng;../lua/src;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig"
 				PreprocessorDefinitions="DEBUG;_DEBUG;SPC700_SHUTDOWN;CPU_SHUTDOWN;CORRECT_VRAM_READS;ZLIB;UNZIP_SUPPORT;JMA_SUPPORT;HAVE_LIBPNG;NEW_COLOUR_BLENDING;NETPLAY_SUPPORT;_WINDOWS;WIN32;__MSC__;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NOUNCRYPT;FMOD_SUPPORT;LUA_USE_APICHECK"
@@ -259,6 +261,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="3"
 				InlineFunctionExpansion="2"
 				FavorSizeOrSpeed="1"

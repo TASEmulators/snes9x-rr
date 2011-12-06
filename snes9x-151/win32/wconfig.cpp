@@ -1237,7 +1237,7 @@ void WinRegisterConfigItems()
 	ADD(TurboA); ADD(TurboB); ADD(TurboY); ADD(TurboX); ADD(TurboL); ADD(TurboR); ADD(TurboStart); ADD(TurboSelect); ADD(TurboUp); ADD(TurboDown); ADD(TurboLeft); ADD(TurboRight);
 	ADD(ScopeTurbo); ADD(ScopePause);
 	ADD(SpeedUp); ADD(SpeedDown); ADD(SkipUp); ADD(SkipDown); ADD(FastForward); ADD(ToggleFastForward); ADD(FrameAdvance);
-	ADD(BGL1); ADD(BGL2); ADD(BGL3); ADD(BGL4); ADD(BGL5);
+	ADD(BGL1); ADD(BGL2); ADD(BGL3); ADD(BGL4); ADD(BGL5); ADD(BGBDC);
 	ADD(ClippingWindows); ADD(Transparency); ADD(HDMA);
 	ADD(BGLHack); ADD(InterpMode7); ADD(GLCube);
 	ADDN(ToggleSound[0],ToggleSound0); ADDN(ToggleSound[1],ToggleSound1); ADDN(ToggleSound[2],ToggleSound2); ADDN(ToggleSound[3],ToggleSound3); ADDN(ToggleSound[4],ToggleSound4); ADDN(ToggleSound[5],ToggleSound5); ADDN(ToggleSound[6],ToggleSound6); ADDN(ToggleSound[7],ToggleSound7);

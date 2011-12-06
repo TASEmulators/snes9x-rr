@@ -504,6 +504,7 @@ typedef union {
 		SCustomKey BGL3;
 		SCustomKey BGL4;
 		SCustomKey BGL5;
+        SCustomKey BGBDC;
 		SCustomKey ClippingWindows;
 		SCustomKey Transparency;
 		SCustomKey HDMA;

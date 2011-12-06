@@ -253,6 +253,7 @@
 #define HOTKEYS_LABEL_2_3 "Graphics Layer 3"
 #define HOTKEYS_LABEL_2_4 "Graphics Layer 4"
 #define HOTKEYS_LABEL_2_5 "Sprites Layer"
+#define HOTKEYS_LABEL_2_5b "Cycle Backdrop Color"
 #define HOTKEYS_LABEL_2_6 "Clipping Windows"
 #define HOTKEYS_LABEL_2_7 "Transparency"
 #define HOTKEYS_LABEL_2_8 "HDMA Emulation"

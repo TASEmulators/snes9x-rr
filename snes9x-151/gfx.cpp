@@ -205,6 +205,7 @@ bool8 S9xGraphicsInit(){
     GFX.DoInterlace=0;
     GFX.InterlaceFrame=0;
     Settings.BG_Forced=0;
+    Settings.BG_BackdropColor=0;
     IPPU.OBJChanged=TRUE;
     IPPU.DirectColourMapsNeedRebuild=TRUE;
     GFX.RealPPL=GFX.Pitch>>1;
@@ -1421,12 +1422,15 @@ static inline void DrawBackdrop(void){
 
     uint32 Offset=GFX.StartY*GFX.PPL;
 
-    for(int clip=0; clip<GFX.Clip[5].Count; clip++){
-        GFX.ClipColors=!(GFX.Clip[5].DrawMode[clip]&1);
-        if(BG.EnableMath && (GFX.Clip[5].DrawMode[clip]&2)){
-            GFX.DrawBackdropMath(Offset, GFX.Clip[5].Left[clip], GFX.Clip[5].Right[clip]);
-        } else {
-            GFX.DrawBackdropNomath(Offset, GFX.Clip[5].Left[clip], GFX.Clip[5].Right[clip]);
+    if(Settings.BG_BackdropColor == 0)
+    {
+        for(int clip=0; clip<GFX.Clip[5].Count; clip++){
+            GFX.ClipColors=!(GFX.Clip[5].DrawMode[clip]&1);
+            if(BG.EnableMath && (GFX.Clip[5].DrawMode[clip]&2)){
+                GFX.DrawBackdropMath(Offset, GFX.Clip[5].Left[clip], GFX.Clip[5].Right[clip]);
+            } else {
+                GFX.DrawBackdropNomath(Offset, GFX.Clip[5].Left[clip], GFX.Clip[5].Right[clip]);
+            }
         }
     }
 }
@@ -1540,6 +1544,35 @@ void S9xUpdateScreen() {
     GFX.StartY = IPPU.PreviousLine;
     if ((GFX.EndY = IPPU.CurrentLine - 1) >= PPU.ScreenHeight)
         GFX.EndY = PPU.ScreenHeight - 1;
+
+    //backdrop hack clear color
+    //this doesnt work in cases where subscreen compositing is going on.
+    //thats complicated.. the subscreen can't composite through the color we set here
+    if(Settings.BG_BackdropColor != 0)
+    {
+        uint16 color;
+        switch(Settings.BG_BackdropColor)
+        {
+        case 1: color = BUILD_PIXEL(31,0,0); break;
+        case 2: color = BUILD_PIXEL(0,31,0); break;
+        case 3: color = BUILD_PIXEL(0,0,31); break;
+        case 4: color = BUILD_PIXEL(31,31,31); break;
+        case 5: color = BUILD_PIXEL(0,0,0); break;
+        }
+        uint32 StartY = IPPU.PreviousLine;
+        uint32 EndY;
+        uint16* S;
+        if ((EndY = IPPU.CurrentLine - 1) >= PPU.ScreenHeight)
+            EndY = PPU.ScreenHeight - 1;
+
+            S = GFX.Screen+GFX.StartY*GFX.PPL;
+            if(GFX.DoInterlace && GFX.InterlaceFrame) S+=GFX.RealPPL;
+            for(uint32 l=GFX.StartY; l<=GFX.EndY; l++, S+=GFX.PPL){
+                for(int x=0; x<IPPU.RenderedScreenWidth; x++){
+                    S[x]=color;
+                }
+            }
+    }    
 
     if(!PPU.ForcedBlanking){
         /* If force blank, may as well completely skip all this. We only did

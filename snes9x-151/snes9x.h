@@ -439,6 +439,7 @@ struct SSettings{
     bool8  Mode7Interpolate; // no longer used?
 	bool8  AutoDisplayMessages;
     uint8  BG_Forced;
+    int    BG_BackdropColor;
     bool8  SnapshotScreenshots;
     uint32 InitialInfoStringTimeout; // Messages normally display for this many frames
     bool8  LuaDrawingsInScreen;
