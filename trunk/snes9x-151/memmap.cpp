@@ -2047,12 +2047,6 @@ void CMemory::InitROM (void)
 	CPU.FastROMSpeed = 0;
 	ResetSpeedMap();
 
-	Timings.TotalEmulatedFrames = 0;
-	Timings.LagCounter = 0;
-	extern bool8 pad_read, pad_read_last;
-	pad_read = false;
-	pad_read_last = false;
-
 	Settings.Shutdown = Settings.ShutdownMaster;
 
 	//// Hack games

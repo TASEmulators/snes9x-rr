@@ -480,7 +480,6 @@ void S9xReRefresh ()
 
 
 void S9xEndScreenRefresh() {
-	CallRegisteredLuaFunctions(LUACALL_AFTEREMULATION);
     if(IPPU.RenderThisFrame) {
         FLUSH_REDRAW();
         if(GFX.DoInterlace && GFX.InterlaceFrame==0){

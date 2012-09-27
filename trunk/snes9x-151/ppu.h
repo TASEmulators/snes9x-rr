@@ -228,6 +228,7 @@ struct InternalPPU {
     int	   PreviousLine;
     int	   CurrentLine;
     struct ClipData Clip[2][6];
+    bool8  InMainLoop;
 };
 
 struct SOBJ

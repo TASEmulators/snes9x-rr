@@ -2708,6 +2708,11 @@ void S9xResetPPU ()
 	PPU.M7HOFS = 0;
 	PPU.M7VOFS = 0;
 	PPU.M7byte = 0;
+
+	extern bool8 pad_read, pad_read_last;
+	pad_read = pad_read_last = FALSE;
+	Timings.TotalEmulatedFrames = 0;
+	Timings.LagCounter = 0;
 }
 
 void S9xSoftResetPPU ()
