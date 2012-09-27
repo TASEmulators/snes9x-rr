@@ -318,6 +318,8 @@ void S9xReset (void)
     WinterGold = Settings.WinterGold;
 #endif
 //    Settings.Paused = FALSE;
+
+	CallRegisteredLuaFunctions(LUACALL_ONSTART);
 }
 
 void S9xSoftReset (void)

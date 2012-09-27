@@ -241,6 +241,7 @@ bool8 S9xMoviePlaying ();
 bool8 S9xMovieRecording ();
 // the following accessors return 0/false if !S9xMovieActive()
 bool8 S9xMovieReadOnly ();
+bool8 S9xMovieSetReadOnly (bool8 readonly);
 uint32 S9xMovieGetId ();
 const char* S9xMovieGetName ();
 uint32 S9xMovieGetLength ();
