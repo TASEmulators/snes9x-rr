@@ -3597,12 +3597,10 @@ LRESULT CALLBACK WinProc(
 								if (!Settings.NetPlay)
 #endif
 								{
+									S9xMovieUpdateOnReset ();
 									if(S9xMoviePlaying())
 										S9xMovieStop (TRUE);
-									if(S9xMovieActive())
-										S9xMovieRecordReset();
-									else
-										S9xSoftReset();
+									S9xSoftReset ();
 
 									// FIXME: necessary?
 									ReInitSound(1);

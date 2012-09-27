@@ -371,31 +371,6 @@ static const int ptrspeeds[4]={ 1, 1, 4, 8 };
 
 /*******************/
 
-uint16 S9xReadJoypadNext(int which){
-    uint16 pad = 0;
-
-    if (which < 0 || which > 7)
-        return 0;
-
-    if (MovieGetJoypadNext(which, pad))
-        return pad;
-    else
-        return joypad[which].buttons;
-}
-
-void LuaUpdateJoypads(){
-    int i;
-    if (!S9xLuaRunning())
-        return;
-	if (S9xMoviePlaying())
-		return;
-	for(i=0; i<8; i++){
-		if(S9xLuaUsingJoypad(i)){
-			joypad[i].buttons = S9xLuaReadJoypad(i);
-		}
-	}
-}
-
 static char buf[256];
 static string& operator+=(string &s, int i){
     snprintf(buf, sizeof(buf), "%d", i);
@@ -1623,7 +1598,7 @@ void S9xApplyCommand(s9xcommand_t cmd, int16 data1, int16 data2){
                 x=t; t=st; st=x;
             }
             if(data1){
-				if(!Settings.UpAndDown && !S9xMoviePlaying() && !S9xLuaUsingJoypad(cmd.button.joypad.idx)) // if up+down isn't allowed, we are NOT playing a movie, AND Lua doesn't overwrite input
+				if(!Settings.UpAndDown && !S9xMoviePlaying()) // if up+down isn't allowed, we are NOT playing a movie, AND Lua doesn't overwrite input
 				{
                 if(cmd.button.joypad.buttons&(SNES_LEFT_MASK|SNES_RIGHT_MASK)){
                     // if we're pressing left or right, then unpress and unturbo
@@ -1728,12 +1703,10 @@ void S9xApplyCommand(s9xcommand_t cmd, int16 data1, int16 data2){
                 S9xReset();
                 break;
               case SoftReset:
-				if(S9xMoviePlaying())
-					S9xMovieStop (TRUE);
-				if(S9xMovieActive())
-					S9xMovieRecordReset();
-				else
-					S9xSoftReset();
+				S9xMovieUpdateOnReset();
+				if (S9xMoviePlaying())
+					S9xMovieStop(TRUE);
+				S9xSoftReset();
                 break;
               case EmuTurbo:
                 Settings.TurboMode = TRUE;
@@ -2695,9 +2668,13 @@ uint16 MovieGetJoypad(int i){
     return joypad[i].buttons;
 }
 
-void MovieSetJoypad(int i, uint16 buttons){
-    if(i<0 || i>7) return;
-    joypad[i].buttons=buttons;
+void MovieSetJoypad(int i, uint16 buttons, uint16 mask)
+{
+	if (i < 0 || i > 7)
+		return;
+
+	joypad[i].buttons &= ~mask;
+	joypad[i].buttons |= buttons;
 }
 
 // from movie.cpp, used for MovieGetX functions to avoid platform-dependent byte order in the file

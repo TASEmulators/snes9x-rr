@@ -205,12 +205,6 @@
 #define SMV_EXTRAROMINFO_SIZE	(3 + sizeof(uint32) + 23)
 #define CONTROLLER_DATA_SIZE	2
 #define BUFFER_GROWTH_SIZE	4096
-#define PERIPHERAL_SUPPORT
-#ifdef PERIPHERAL_SUPPORT
-	#define MOUSE_DATA_SIZE	5
-	#define SCOPE_DATA_SIZE	6
-	#define JUSTIFIER_DATA_SIZE	11
-#endif
 
 // HACK: reduce movie size by not storing changes that can only affect polled input in the movie for these types, because currently no port sets these types to polling
 #define SKIPPED_POLLING_PORT_TYPE(x) ((x==CTL_NONE)||(x==CTL_JOYPAD)||(x==CTL_MP5))
@@ -254,10 +248,7 @@ static struct SMovie
 	uint8  PortType[2];
 	int8   PortIDs[2][4];
 
-	bool8  RecordedThisSession;
 	uint32 Version;
-
-	bool8  RequiresReset;
 } Movie;
 
 /*
@@ -697,8 +688,6 @@ static void change_state(MovieState new_state)
 		{
 			restore_previous_settings();
 		}
-
-		Movie.RequiresReset = false;
 	}
 
 	Movie.State=new_state;
@@ -716,50 +705,31 @@ static void reserve_buffer_space(uint32 space_needed)
 	}
 }
 
-
-/* accessors into controls.cpp static variables */
-uint16 MovieGetJoypad(int i);
-void MovieSetJoypad(int i, uint16 buttons);
-#ifdef PERIPHERAL_SUPPORT
-bool MovieGetMouse(int i, uint8 out [MOUSE_DATA_SIZE]);
-void MovieSetMouse(int i, const uint8 in [MOUSE_DATA_SIZE], bool inPolling);
-bool MovieGetScope(int i, uint8 out [SCOPE_DATA_SIZE]);
-void MovieSetScope(int i, const uint8 in [SCOPE_DATA_SIZE]);
-bool MovieGetJustifier(int i, uint8 out [JUSTIFIER_DATA_SIZE]);
-void MovieSetJustifier(int i, const uint8 in [JUSTIFIER_DATA_SIZE]);
-#endif
-
-static bool does_frame_data_mean_reset ()
+static void read_frame_controller_data(bool addFrame, void (*resetFunc)() = NULL)
 {
-	bool reset = false;
-	int i;
-
-	if (Movie.State == MOVIE_STATE_PLAY)
+	// reset code check
+	while (Movie.InputBufferPtr[0] == 0xff)
 	{
-		// one sample of all 1 bits = reset code
-		// (the SNES controller doesn't have enough buttons to possibly generate this sequence)
-		// (a single bit indicator was not used, to avoid having to special-case peripheral recording here)
-		if(Movie.InputBufferPtr[0] == 0xFF)
+		bool reset = true;
+		for (int i = 1; i < (int) Movie.BytesPerSample; i++)
 		{
-			reset = true;
-			for(i=1; i<(int)Movie.BytesPerSample; i++)
+			if (Movie.InputBufferPtr[i] != 0xff)
 			{
-				if(Movie.InputBufferPtr[i] != 0xFF)
-				{
-					reset = false;
-					break;
-				}
+				reset = false;
+				break;
 			}
 		}
+
+		if (reset)
+		{
+			Movie.InputBufferPtr += Movie.BytesPerSample;
+			if (resetFunc != (void(*)())NULL)
+				(*resetFunc)();
+			return;
+		}
 	}
-	return reset;
-}
 
-static void read_frame_controller_data(bool addFrame)
-{
-	int i;
-
-	for(i=0; i<8; ++i)
+	for(int i=0; i<8; ++i)
 	{
 		if(Movie.ControllersMask & (1<<i))
 		{
@@ -834,6 +804,33 @@ static void write_frame_controller_data()
 		}
 	}
 #endif
+}
+
+static bool8 movie_reset_processed = false;
+static void MovieOnReset(void)
+{
+	Movie.CurrentSample++;
+	Movie.CurrentFrame++; // it must be called at frame boundary
+	S9xSoftReset();
+	movie_reset_processed = true;
+}
+
+// apply the next input without changing any movie states
+void MovieApplyNextInput(void)
+{
+	if (Movie.State != MOVIE_STATE_PLAY)
+		return;
+
+	uint8 *InputBufferPtr = Movie.InputBufferPtr;
+	do
+	{
+		movie_reset_processed = false;
+		if (Movie.CurrentFrame < Movie.MaxFrame && Movie.CurrentSample < Movie.MaxSample)
+			read_frame_controller_data(false, MovieOnReset);
+		if (movie_reset_processed)
+			InputBufferPtr = Movie.InputBufferPtr;
+	} while (movie_reset_processed);
+	Movie.InputBufferPtr = InputBufferPtr;
 }
 
 void S9xMovieInit ()
@@ -1056,10 +1053,6 @@ int S9xMovieOpen (const char* filename, bool8 read_only)
 	reserve_buffer_space(to_read);
 	fread(Movie.InputBufferPtr, 1, to_read, fd);
 
-	// read "baseline" controller data
-	if(Movie.MaxSample && Movie.MaxFrame)
-		read_frame_controller_data(true);
-
 	strncpy(Movie.Filename, movie_filename, _MAX_PATH);
 	Movie.Filename[_MAX_PATH-1]='\0';
 	Movie.CurrentFrame=0;
@@ -1070,10 +1063,11 @@ int S9xMovieOpen (const char* filename, bool8 read_only)
 	Settings.Paused = wasPaused;
 	Settings.FrameTime = prevFrameTime; // restore emulation speed
 
-	Movie.RecordedThisSession = false;
-	S9xUpdateFrameCounter(-1);
+	// read "baseline" controller data
+	if(Movie.MaxSample && Movie.MaxFrame)
+		read_frame_controller_data(true);
 
-	Movie.RequiresReset = false;
+	S9xUpdateFrameCounter(-1);
 
 	S9xMessage(S9X_INFO, S9X_MOVIE_INFO, MOVIE_INFO_REPLAY);
 	return SUCCESS;
@@ -1202,10 +1196,7 @@ int S9xMovieCreate (const char* filename, uint8 controllers_mask, uint8 opts, co
 	Settings.Paused = wasPaused;
 	Settings.FrameTime = prevFrameTime; // restore emulation speed
 
-	Movie.RecordedThisSession = true;
 	S9xUpdateFrameCounter(-1);
-
-	Movie.RequiresReset = false;
 
 	S9xMessage(S9X_INFO, S9X_MOVIE_INFO, MOVIE_INFO_RECORD);
 	return SUCCESS;
@@ -1216,108 +1207,18 @@ bool8 S9xMovieRestart ()
 	return false; // NYI
 }
 
-void S9xMovieRecordReset ()
-{
-	switch(Movie.State)
-	{
-		case MOVIE_STATE_RECORD:
-		{
-			Movie.RequiresReset = true;
-		}
-		break;
-		default: break;
-	}
-}
-
-// do not refer to Movie.RequiresReset directly
-// because it is used only with movie recording
-bool S9xMovieRequiresReset ()
-{
-	switch(Movie.State)
-	{
-		case MOVIE_STATE_NONE:
-		{
-			Movie.RequiresReset = false;
-		}
-		break;
-
-		case MOVIE_STATE_PLAY:
-		{
-			Movie.RequiresReset = does_frame_data_mean_reset();
-		}
-		break;
-		default: break;
-	}
-	return Movie.RequiresReset!=0;
-}
-
 void S9xMovieUpdateOnReset ()
 {
-	switch(Movie.State)
+	if (Movie.State == MOVIE_STATE_RECORD)
 	{
-		case MOVIE_STATE_PLAY:
-		{
-			//assert(!does_frame_data_mean_reset()); // why would you want to crash the emulator on a reset?
-			// skip the reset
-			Movie.CurrentFrame++;
-			Movie.CurrentSample++;
-			Movie.InputBufferPtr += Movie.BytesPerSample;
-		}
-		break;
+		reserve_buffer_space((uint32) (Movie.InputBufferPtr + Movie.BytesPerSample - Movie.InputBuffer));
+		memset(Movie.InputBufferPtr, 0xFF, Movie.BytesPerSample);
+		Movie.InputBufferPtr += Movie.BytesPerSample;
+		Movie.MaxSample = ++Movie.CurrentSample;
+		Movie.MaxFrame = ++Movie.CurrentFrame;
 
-		case MOVIE_STATE_RECORD:
-		{
-			reserve_buffer_space((uint32)((Movie.InputBufferPtr+Movie.BytesPerSample)-Movie.InputBuffer));
-			memset(Movie.InputBufferPtr, 0xFF, Movie.BytesPerSample);
-			Movie.InputBufferPtr += Movie.BytesPerSample;
-			Movie.MaxSample = ++Movie.CurrentSample;
-			Movie.MaxFrame = ++Movie.CurrentFrame;
-			fwrite((Movie.InputBufferPtr - Movie.BytesPerSample), 1, Movie.BytesPerSample, Movie.File);
-			assert(!ferror(Movie.File));
-		}
-		break;
-		default: break;
-	}
-	Movie.RequiresReset = false;
-}
-
-bool MovieGetJoypadNext(int which, uint16 &pad)
-{
-	if (which < 0 || which > 7)
-		return false;
-
-	switch(Movie.State)
-	{
-	case MOVIE_STATE_PLAY:
-		{
-			if(Movie.CurrentFrame>=Movie.MaxFrame || Movie.CurrentSample>=Movie.MaxSample)
-				return false;
-			else
-			{
-				if(Movie.ControllersMask & (1<<which)) {
-					uint8 *inputBuf;
-					int padOffset;
-					int i;
-
-					padOffset = 0;
-					for (i = 0; i < which; i++) {
-						if (Movie.ControllersMask & (1<<i)) {
-							padOffset += 2;
-						}
-					}
-
-					inputBuf = &Movie.InputBufferPtr[padOffset];
-					pad = Read16(inputBuf);
-				}
-				else
-					pad = 0;		// pretend the controller is disconnected
-				return true;
-			}
-		}
-		break;
-
-	default:
-		return false;
+		size_t	ignore;
+		ignore = fwrite((Movie.InputBufferPtr - Movie.BytesPerSample), 1, Movie.BytesPerSample, Movie.File);
 	}
 }
 
@@ -1330,24 +1231,24 @@ movieUpdateStart:
 		{
 			if(Movie.CurrentFrame>=Movie.MaxFrame || Movie.CurrentSample>=Movie.MaxSample)
 			{
-				if(!Movie.RecordedThisSession)
+				//if(!Movie.RecordedThisSession)
 				{
 					// stop movie; it reached the end
 					change_state(MOVIE_STATE_NONE);
 					S9xMessage(S9X_INFO, S9X_MOVIE_INFO, MOVIE_INFO_END);
 					return;
 				}
-				else
-				{
-					// if user has been recording this movie since the last time it started playing,
-					// they probably don't want the movie to end now during playback,
-					// so switch back to recording when it reaches the end
-					change_state(MOVIE_STATE_RECORD);
-					S9xMessage(S9X_INFO, S9X_MOVIE_INFO, MOVIE_INFO_RECORD);
-					fseek(Movie.File, Movie.ControllerDataOffset+(Movie.BytesPerSample * (Movie.CurrentSample+1)), SEEK_SET);
-					Settings.Paused = true; // also pause so it doesn't keep going unless they want it to
-					goto movieUpdateStart;
-				}
+				//else
+				//{
+				//	// if user has been recording this movie since the last time it started playing,
+				//	// they probably don't want the movie to end now during playback,
+				//	// so switch back to recording when it reaches the end
+				//	change_state(MOVIE_STATE_RECORD);
+				//	S9xMessage(S9X_INFO, S9X_MOVIE_INFO, MOVIE_INFO_RECORD);
+				//	fseek(Movie.File, Movie.ControllerDataOffset+(Movie.BytesPerSample * (Movie.CurrentSample+1)), SEEK_SET);
+				//	Settings.Paused = true; // also pause so it doesn't keep going unless they want it to
+				//	goto movieUpdateStart;
+				//}
 			}
 			else
 			{
@@ -1377,8 +1278,6 @@ movieUpdateStart:
 				Movie.MaxFrame = ++Movie.CurrentFrame;
 			fwrite((Movie.InputBufferPtr - Movie.BytesPerSample), 1, Movie.BytesPerSample, Movie.File);
 			assert(!ferror(Movie.File));
-
-			Movie.RecordedThisSession = true;
 		}
 		break;
 
@@ -1682,7 +1581,6 @@ int S9xMovieUnfreeze (const uint8* buf, uint32 size)
 	}
 
 	Movie.InputBufferPtr = Movie.InputBuffer + (Movie.BytesPerSample * (Movie.CurrentSample));
-	Movie.RequiresReset = false;
 	read_frame_controller_data(true);
 
 	return SUCCESS;

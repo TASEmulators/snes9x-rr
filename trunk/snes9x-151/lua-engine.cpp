@@ -109,10 +109,6 @@ static bool8 frameAdvanceWaiting = FALSE;
 // Transparency strength. 255=opaque, 0=so transparent it's invisible
 static int transparencyModifier = 255;
 
-// Our joypads.
-static uint32 lua_joypads[8];
-static uint8 lua_joypads_used = 0;
-
 
 static bool8 gui_used = FALSE;
 static bool8 gui_enabled = TRUE;
@@ -237,12 +233,6 @@ INLINE void S9xSetDWord (uint32 DWord, uint32 Address)
 #define JUSTIFIER2_START     0x10
 #define JUSTIFIER2_SELECT    0x04
 #define JUSTIFIER2_OFFSCREEN 0x01
-#define MOUSE_DATA_SIZE	5
-#define SCOPE_DATA_SIZE	6
-#define JUSTIFIER_DATA_SIZE	11
-bool MovieGetMouse(int i, uint8 out [MOUSE_DATA_SIZE]);
-bool MovieGetScope(int i, uint8 out [SCOPE_DATA_SIZE]);
-bool MovieGetJustifier(int i, uint8 out [JUSTIFIER_DATA_SIZE]);
 void AddCommandTransformAxis(controllers type, int idx, int16 val, bool8 axis);
 void AddCommandTransformButton(controllers type, int idx, bool8 on, uint8 mask);
 void ClearCommandTransforms();
@@ -254,7 +244,6 @@ void ClearCommandTransforms();
  */
 static void S9xLuaOnStop() {
 	luaRunning = FALSE;
-	lua_joypads_used = 0;
 	ClearCommandTransforms();
 	gui_used = false;
 	//if (wasPaused)
@@ -1592,8 +1581,7 @@ static int joy_get_internal(lua_State *L, bool reportUp, bool reportDown) {
 	{
 	default: // joypad
 		{
-			extern uint16 S9xReadJoypadNext(int which);
-			uint32 buttons = S9xReadJoypadNext(which - 1);
+			uint32 buttons = MovieGetJoypad(which - 1);
 
 			// set table with joypad buttons
 			for (int i = 4; i < 16; i++) {
@@ -1756,22 +1744,24 @@ static int joypad_set(lua_State *L) {
 	{
 	default: // joypad
 		{
-			// Set up for taking control of the indicated controller
-			lua_joypads_used |= 1 << port;
-			lua_joypads[port] = 0;
+			uint16 input = 0;
+			uint16 mask = 0;
 
 			for (int i = 4; i < 16; i++) {
 				const char* name = button_mappings[i];
 				lua_getfield(L, tableIndex, name);
 				if (!lua_isnil(L,-1)) {
 					bool pressed = lua_toboolean(L,-1) != 0;
+					uint16 bitmask = 1 << i;
 					if (pressed)
-						lua_joypads[port] |= 1 << i;
+						input |= bitmask;
 					else
-						lua_joypads[port] &= ~(1 << i);
+						input &= ~bitmask;
+					mask |= bitmask;
 				}
 				lua_pop(L,1);
 			}
+			MovieSetJoypad(which - 1, input, mask);
 		}
 		break;
 	case CTL_MOUSE:
@@ -4459,7 +4449,6 @@ void S9xLuaFrameBoundary() {
 
 //	printf("Lua Frame\n");
 
-	lua_joypads_used = 0;
 	ClearCommandTransforms();
 
 	// HA!
@@ -4482,8 +4471,7 @@ void S9xLuaFrameBoundary() {
 	
 	if (result == LUA_YIELD) {
 		// Okay, we're fine with that.
-		extern void LuaUpdateJoypads();
-		LuaUpdateJoypads();
+		//LuaUpdateJoypads();
 	} else if (result != 0) {
 		// Done execution by bad causes
 		S9xLuaOnStop();
@@ -4626,7 +4614,6 @@ int S9xLoadLuaCode(const char *filename) {
 	skipRerecords = FALSE;
 	numMemHooks = 0;
 	transparencyModifier = 255; // opaque
-	lua_joypads_used = 0; // not used
 	ClearCommandTransforms();
 
 	//wasPaused = Settings.Paused;
@@ -4715,27 +4702,6 @@ int S9xLuaRunning() {
 	return (int) (LUA != NULL); // should return true if callback functions are active.
 }
 
-
-/**
- * Returns true if Lua would like to steal the given joypad control.
- *
- * Range is 0 through 4
- */
-int S9xLuaUsingJoypad(int which) {
-	return lua_joypads_used & (1 << which);
-}
-
-/**
- * Reads the buttons Lua is feeding for the given joypad, in the same
- * format as the OS-specific code.
- *
- * //This function must not be called more than once per frame. Ideally exactly once
- * //per frame (if S9xLuaUsingJoypad says it's safe to do so)
- */
-int S9xLuaReadJoypad(int which) {
-	//lua_joypads_used &= ~(1 << which);
-	return lua_joypads[which];
-}
 
 /**
  * If this function returns true, the movie code should NOT increment
