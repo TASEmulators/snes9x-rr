@@ -2148,14 +2148,20 @@ int snes9x_lagcount(lua_State *L) {
 
 // boolean snes9x.lagged()
 int snes9x_lagged(lua_State *L) {
-	extern bool8 pad_read_last; // from controls.cpp
-	lua_pushboolean(L, !pad_read_last);
+	extern bool8 pad_read; // from controls.cpp
+	lua_pushboolean(L, !pad_read);
 	return 1;
 }
 
 // boolean snes9x.emulating()
 int snes9x_emulating(lua_State *L) {
 	lua_pushboolean(L, !Settings.StopEmulation);
+	return 1;
+}
+
+// boolean snes9x.atframeboundary()
+int snes9x_atframeboundary(lua_State *L) {
+	lua_pushboolean(L, !IPPU.InMainLoop);
 	return 1;
 }
 
@@ -4173,6 +4179,56 @@ static void S9xLuaHookFunction(lua_State *L, lua_Debug *dbg) {
 
 }
 
+void printfToOutput(const char* fmt, ...)
+{
+	va_list list;
+	va_start(list, fmt);
+	int len = vscprintf(fmt, list);
+	char* str = new char[len+1];
+	vsprintf(str, fmt, list);
+	va_end(list);
+	if(info_print)
+	{
+		lua_State* L = LUA /*info.L*/;
+		int uid = info_uid /*luaStateToUIDMap[L]*/;
+		info_print(uid, str);
+		info_print(uid, "\r\n");
+		//worry(L,300);
+	}
+	else
+	{
+		fprintf(stdout, "%s\n", str);
+	}
+	delete[] str;
+}
+
+bool FailVerifyAtFrameBoundary(lua_State* L, const char* funcName, int unstartedSeverity=2, int inframeSeverity=2)
+{
+	if (Settings.StopEmulation)
+	{
+		static const char* msg = "cannot call %s() when emulation has not started.";
+		switch(unstartedSeverity)
+		{
+		case 0: break;
+		case 1: printfToOutput(msg, funcName); break;
+		default: case 2: luaL_error(L, msg, funcName); break;
+		}
+		return true;
+	}
+	if(IPPU.InMainLoop)
+	{
+		static const char* msg = "cannot call %s() inside an emulation frame.";
+		switch(inframeSeverity)
+		{
+		case 0: break;
+		case 1: printfToOutput(msg, funcName); break;
+		default: case 2: luaL_error(L, msg, funcName); break;
+		}
+		return true;
+	}
+	return false;
+}
+
 
 static const struct luaL_reg snes9xlib [] = {
 
@@ -4183,6 +4239,7 @@ static const struct luaL_reg snes9xlib [] = {
 	{"lagcount", snes9x_lagcount},
 	{"lagged", snes9x_lagged},
 	{"emulating", snes9x_emulating},
+	{"atframeboundary", snes9x_atframeboundary},
 	{"registerbefore", snes9x_registerbefore},
 	{"registerafter", snes9x_registerafter},
 	{"registerexit", snes9x_registerexit},

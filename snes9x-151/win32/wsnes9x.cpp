@@ -4919,6 +4919,9 @@ static void EnsureInputDisplayUpdated()
 		S9xReRefresh();
 }
 
+DWORD guiUpdateFrequency = 50;
+DWORD lastGUIUpdateTime = 0;
+
 // for "frame advance skips non-input frames" feature
 void S9xOnSNESPadRead()
 {
@@ -5583,6 +5586,17 @@ int WINAPI WinMain(
 			{
 				TranslateMessage (&msg);
 				DispatchMessage (&msg);
+			}
+
+			if (!Settings.StopEmulation && (Settings.Paused || Settings.ForcedPause))
+			{
+				DWORD lastTime = timeGetTime();
+				if (lastTime - lastGUIUpdateTime >= guiUpdateFrequency) {
+					//UpdateToolWindows();
+					S9xUpdateFrameCounter(-1);
+					InvalidateRect(GUI.hWnd, NULL, FALSE);
+					lastGUIUpdateTime = lastTime;
+				}
 			}
 		}
 

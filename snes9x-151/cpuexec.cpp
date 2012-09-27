@@ -188,15 +188,12 @@
 extern struct FxInit_s SuperFX;
 #endif
 
+static inline void StartS9xMainLoop (void);
+static inline void EndS9xMainLoop (void);
+
 void S9xMainLoop (void)
 {
-	if(S9xMovieRequiresReset())
-	{
-		S9xMovieUpdateOnReset();
-		S9xSoftReset();
-	}
-
-	CallRegisteredLuaFunctions(LUACALL_BEFOREEMULATION);
+	StartS9xMainLoop();
 
 	if(ICPU.SavedAtOp)
 	{
@@ -355,6 +352,37 @@ void S9xMainLoop (void)
 		S9xSyncSpeed();
 		CPU.Flags &= ~SCAN_KEYS_FLAG;
     }
+
+	EndS9xMainLoop();
+}
+
+static inline void StartS9xMainLoop (void)
+{
+	extern bool8 pad_read, pad_read_last;
+	pad_read_last = pad_read;
+	pad_read      = FALSE;
+
+	if(S9xMovieRequiresReset())
+	{
+		S9xMovieUpdateOnReset();
+		S9xSoftReset();
+	}
+//	MovieApplyNextInput(); // TODO
+
+	CallRegisteredLuaFunctions(LUACALL_BEFOREEMULATION);
+
+	IPPU.InMainLoop = TRUE;
+}
+
+static inline void EndS9xMainLoop (void)
+{
+	extern bool8 pad_read;
+	if(!pad_read)
+		Timings.LagCounter++;
+
+	IPPU.InMainLoop = FALSE;
+
+	CallRegisteredLuaFunctions(LUACALL_AFTEREMULATION);
 }
 
 void S9xSetIRQ (uint32 source)
