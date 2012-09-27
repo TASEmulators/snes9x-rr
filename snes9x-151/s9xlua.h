@@ -33,8 +33,6 @@ int S9xReloadLuaCode();
 void S9xLuaStop();
 int S9xLuaRunning();
 
-int S9xLuaUsingJoypad(int);
-int S9xLuaReadJoypad(int);
 int S9xLuaSpeed();
 bool8 S9xLuaRerecordCountSkip();
 

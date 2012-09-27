@@ -362,12 +362,7 @@ static inline void StartS9xMainLoop (void)
 	pad_read_last = pad_read;
 	pad_read      = FALSE;
 
-	if(S9xMovieRequiresReset())
-	{
-		S9xMovieUpdateOnReset();
-		S9xSoftReset();
-	}
-//	MovieApplyNextInput(); // TODO
+	MovieApplyNextInput();
 
 	CallRegisteredLuaFunctions(LUACALL_BEFOREEMULATION);
 

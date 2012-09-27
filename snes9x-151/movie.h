@@ -226,8 +226,6 @@ const char *S9xChooseMovieFilename(bool8 read_only);
 // methods used by the emulation
 void S9xMovieInit ();
 void S9xMovieShutdown ();
-void S9xMovieRecordReset ();
-bool S9xMovieRequiresReset ();
 void S9xMovieUpdate (bool addFrame=true);
 void S9xMovieUpdateOnReset ();
 //bool8 S9xMovieRewind (uint32 at_frame);
@@ -250,7 +248,25 @@ uint32 S9xMovieGetRerecordCount ();
 uint32 S9xMovieSetRerecordCount (uint32 newRerecordCount);
 uint8 S9xMovieControllers ();
 
-bool MovieGetJoypadNext(int which, uint16 &pad);
+#define PERIPHERAL_SUPPORT
+#ifdef PERIPHERAL_SUPPORT
+#define MOUSE_DATA_SIZE	5
+#define SCOPE_DATA_SIZE	6
+#define JUSTIFIER_DATA_SIZE	11
+#endif
+
+/* accessors into controls.cpp static variables */
+uint16 MovieGetJoypad(int i);
+void MovieSetJoypad(int i, uint16 buttons, uint16 mask = ~0);
+#ifdef PERIPHERAL_SUPPORT
+bool MovieGetMouse(int i, uint8 out [MOUSE_DATA_SIZE]);
+void MovieSetMouse(int i, const uint8 in [MOUSE_DATA_SIZE], bool inPolling);
+bool MovieGetScope(int i, uint8 out [SCOPE_DATA_SIZE]);
+void MovieSetScope(int i, const uint8 in [SCOPE_DATA_SIZE]);
+bool MovieGetJustifier(int i, uint8 out [JUSTIFIER_DATA_SIZE]);
+void MovieSetJustifier(int i, const uint8 in [JUSTIFIER_DATA_SIZE]);
+#endif
+void MovieApplyNextInput();
 
 END_EXTERN_C
 
