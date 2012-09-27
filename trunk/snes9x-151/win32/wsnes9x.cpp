@@ -2401,7 +2401,7 @@ LRESULT CALLBACK WinProc(
 		DragAcceptFiles(hWnd, GUI.allowDropFiles);
 		return 0;
 	case WM_KEYDOWN:
-		if(wParam != VK_PAUSE)
+		if(wParam != VK_PAUSE && GUI.BackgroundInput && !GUI.InactivePause)
 			break;
 	case WM_SYSKEYDOWN:
 	case WM_CUSTKEYDOWN:
@@ -2451,7 +2451,7 @@ LRESULT CALLBACK WinProc(
 		if (fileCount > 0) {
 			DragQueryFile(hDrop, 0, filename, COUNT(filename));
 
-			SetActiveWindow(hWnd);
+			//SetActiveWindow(hWnd);
 
 			LPCTSTR ext = PathFindExtension(filename);
 			if (lstrcmpi(ext, ".smv") == 0) {
@@ -4793,8 +4793,9 @@ VOID CALLBACK KeyInputTimer(UINT idEvent, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR
 			joyState[i].wasPressed = active;
 		}
 	}
-	if((!GUI.InactivePause || !Settings.ForcedPause)
-			|| (GUI.BackgroundInput || !(Settings.ForcedPause & (PAUSE_INACTIVE_WINDOW | PAUSE_WINDOW_ICONISED))))
+	//if((!GUI.InactivePause || !Settings.ForcedPause)
+	//		|| (GUI.BackgroundInput || !(Settings.ForcedPause & (PAUSE_INACTIVE_WINDOW | PAUSE_WINDOW_ICONISED))))
+	if(GUI.BackgroundInput && !GUI.InactivePause) // must be same with WinProc:WM_KEYDOWN
 	{
 		static JoyState joyState [256];
 		static bool joyStateInited = false;
@@ -7079,7 +7080,7 @@ bool8 MustDeferMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     switch (uMsg)
     {
         case WM_KEYDOWN:
-            if(wParam != VK_PAUSE && GUI.BackgroundInput)
+            if(wParam != VK_PAUSE && GUI.BackgroundInput && !GUI.InactivePause)
                 break;
         case WM_SYSKEYDOWN:
         case WM_CUSTKEYDOWN:
