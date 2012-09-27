@@ -1494,6 +1494,13 @@ bool8 S9xMovieReadOnly ()
 	return Movie.ReadOnly;
 }
 
+bool8 S9xMovieSetReadOnly (bool8 readonly)
+{
+	bool8 oldReadOnly = S9xMovieReadOnly();
+	Movie.ReadOnly = readonly;
+	return oldReadOnly;
+}
+
 uint32 S9xMovieGetId ()
 {
 	if(!S9xMovieActive())
