@@ -217,7 +217,8 @@ enum MovieState
 {
 	MOVIE_STATE_NONE=0,
 	MOVIE_STATE_PLAY,
-	MOVIE_STATE_RECORD
+	MOVIE_STATE_RECORD,
+	MOVIE_STATE_FINISHED
 };
 
 static struct SMovie
@@ -684,13 +685,24 @@ static void change_state(MovieState new_state)
 		fclose(Movie.File);
 		Movie.File=NULL;
 
-		if(S9xMoviePlaying() || S9xMovieRecording()) // even if recording, it could have been switched to from playback
+		if(S9xMovieActive())
 		{
 			restore_previous_settings();
 		}
 	}
 
+	if (new_state == MOVIE_STATE_FINISHED)
+	{
+		truncate_movie();
+	}
+
 	Movie.State=new_state;
+}
+
+static void finish_playback (void)
+{
+	change_state(MOVIE_STATE_FINISHED);
+	S9xMessage(S9X_INFO, S9X_MOVIE_INFO, MOVIE_INFO_END);
 }
 
 static void reserve_buffer_space(uint32 space_needed)
@@ -910,7 +922,7 @@ void S9xUpdateFrameCounter (int offset)
 		if (Settings.CounterInFrames)
 			sprintf(tmpBuf, "%d", max(0,(int)(Movie.CurrentFrame+offset)));
 		else
-			FrameCountToTime(tmpBuf, max(0,(int)(Movie.CurrentFrame)), Memory.ROMFramesPerSecond);
+			FrameCountToTime(tmpBuf, max(0,(int)(Movie.CurrentFrame+offset)), Memory.ROMFramesPerSecond);
 		sprintf(GFX.FrameDisplayString, "%s%s", Settings.OldFashionedFrameCounter ? "Recording frame: " : "", tmpBuf);
 		if (!Settings.OldFashionedFrameCounter)
 			strcat(GFX.FrameDisplayString, " [record]");
@@ -919,17 +931,26 @@ void S9xUpdateFrameCounter (int offset)
 		if (Settings.CounterInFrames)
 			sprintf(tmpBuf, "%d%s%d", max(0,(int)(Movie.CurrentFrame+offset)), Settings.OldFashionedFrameCounter ? " / " : "/", Movie.MaxFrame);
 		else
-			FrameCountToTime(tmpBuf, max(0,(int)(Movie.CurrentFrame)), Memory.ROMFramesPerSecond);
+			FrameCountToTime(tmpBuf, max(0,(int)(Movie.CurrentFrame+offset)), Memory.ROMFramesPerSecond);
 		sprintf(GFX.FrameDisplayString, "%s%s", Settings.OldFashionedFrameCounter ? "Playing frame: " : "", tmpBuf);
 		if (!Settings.OldFashionedFrameCounter)
 			strcat(GFX.FrameDisplayString, " [play]");
+	}
+	else if (Movie.State == MOVIE_STATE_FINISHED) {
+		if (Settings.CounterInFrames)
+			sprintf(tmpBuf, "%d%s%d", max(0,(int)(Movie.CurrentFrame+offset)), Settings.OldFashionedFrameCounter ? " / " : "/", Movie.MaxFrame);
+		else
+			FrameCountToTime(tmpBuf, max(0,(int)(Movie.CurrentFrame+offset)), Memory.ROMFramesPerSecond);
+		sprintf(GFX.FrameDisplayString, "%s%s", Settings.OldFashionedFrameCounter ? "Playing frame: " : "", tmpBuf);
+		if (!Settings.OldFashionedFrameCounter)
+			strcat(GFX.FrameDisplayString, " [finished]");
 	}
 #ifdef NETPLAY_SUPPORT
 	else if(Settings.NetPlay) {
 		if (Settings.CounterInFrames)
 			sprintf(GFX.FrameDisplayString, "%d", max(0,(int)(NetPlay.FrameCount+offset)));
 		else
-			FrameCountToTime(GFX.FrameDisplayString, max(0,(int)(NetPlay.FrameCount)), Memory.ROMFramesPerSecond);
+			FrameCountToTime(GFX.FrameDisplayString, max(0,(int)(NetPlay.FrameCount+offset)), Memory.ROMFramesPerSecond);
 		if (Settings.NetPlayServer)
 			strcat(GFX.FrameDisplayString, " [server]");
 		else
@@ -940,7 +961,7 @@ void S9xUpdateFrameCounter (int offset)
 		if (Settings.CounterInFrames)
 			sprintf(GFX.FrameDisplayString, "%d", max(0,(int)(Timings.TotalEmulatedFrames+offset)));
 		else
-			FrameCountToTime(GFX.FrameDisplayString, max(0,(int)(Timings.TotalEmulatedFrames)), Memory.ROMFramesPerSecond);
+			FrameCountToTime(GFX.FrameDisplayString, max(0,(int)(Timings.TotalEmulatedFrames+offset)), Memory.ROMFramesPerSecond);
 		if (!Settings.OldFashionedFrameCounter)
 			strcat(GFX.FrameDisplayString, " [no movie]");
 	}
@@ -1224,31 +1245,18 @@ void S9xMovieUpdateOnReset ()
 
 void S9xMovieUpdate (bool addFrame)
 {
-movieUpdateStart:
 	switch(Movie.State)
 	{
 	case MOVIE_STATE_PLAY:
 		{
-			if(Movie.CurrentFrame>=Movie.MaxFrame || Movie.CurrentSample>=Movie.MaxSample)
+			if (Movie.CurrentFrame >= Movie.MaxFrame || Movie.CurrentSample >= Movie.MaxSample)
 			{
-				//if(!Movie.RecordedThisSession)
-				{
-					// stop movie; it reached the end
-					change_state(MOVIE_STATE_NONE);
-					S9xMessage(S9X_INFO, S9X_MOVIE_INFO, MOVIE_INFO_END);
-					return;
+				finish_playback();
+				if (addFrame) {
+					S9xUpdateFrameCounter();
+					Movie.CurrentFrame++;
 				}
-				//else
-				//{
-				//	// if user has been recording this movie since the last time it started playing,
-				//	// they probably don't want the movie to end now during playback,
-				//	// so switch back to recording when it reaches the end
-				//	change_state(MOVIE_STATE_RECORD);
-				//	S9xMessage(S9X_INFO, S9X_MOVIE_INFO, MOVIE_INFO_RECORD);
-				//	fseek(Movie.File, Movie.ControllerDataOffset+(Movie.BytesPerSample * (Movie.CurrentSample+1)), SEEK_SET);
-				//	Settings.Paused = true; // also pause so it doesn't keep going unless they want it to
-				//	goto movieUpdateStart;
-				//}
+				return;
 			}
 			else
 			{
@@ -1280,6 +1288,16 @@ movieUpdateStart:
 			assert(!ferror(Movie.File));
 		}
 		break;
+
+		case MOVIE_STATE_FINISHED:
+		{
+			if (addFrame) {
+				S9xUpdateFrameCounter();
+				Movie.CurrentFrame++;
+			}
+
+			break;
+		}
 
 	default:
 		if(addFrame)
@@ -1378,6 +1396,11 @@ bool8 S9xMoviePlaying ()
 bool8 S9xMovieRecording ()
 {
 	return (Movie.State==MOVIE_STATE_RECORD);
+}
+
+bool8 S9xMovieFinished ()
+{
+	return (Movie.State == MOVIE_STATE_FINISHED);
 }
 
 uint8 S9xMovieControllers ()
@@ -1502,10 +1525,16 @@ void S9xMovieFreeze (uint8** buf, uint32* size)
 
 int S9xMovieUnfreeze (const uint8* buf, uint32 size)
 {
-	// sanity check
 	if(!S9xMovieActive())
 	{
-		return FILE_NOT_FOUND;
+		return SUCCESS;
+	}
+
+	// not a movie snapshot
+	if (buf == NULL)
+	{
+		finish_playback();
+		return (SUCCESS);
 	}
 
 	const uint8* ptr = buf;
@@ -1520,27 +1549,30 @@ int S9xMovieUnfreeze (const uint8* buf, uint32 size)
 	uint32 current_sample = Read32(ptr);
 	uint32 max_sample = Read32(ptr);
 	uint32 space_needed = (Movie.BytesPerSample * (max_sample+1));
+	uint32 space_played = (Movie.BytesPerSample * (current_sample+1));
 
-	if(current_frame > max_frame ||
-	   current_sample > max_sample ||
-	   space_needed > size)
-	{
+	// (current_frame > max_frame) is legal, because of "finished" state
+	if (current_sample > max_sample || space_needed > size)
 		return WRONG_MOVIE_SNAPSHOT;
-	}
 
-	if(movie_id != Movie.MovieId)
-		if(Settings.WrongMovieStateProtection)
-			if(max_frame < Movie.MaxFrame || max_sample < Movie.MaxSample ||
-			   memcmp(Movie.InputBuffer, ptr, space_needed))
-				return WRONG_MOVIE_SNAPSHOT;
+	// complex TAS logic for loadstate
+	// fully conforms to the savestate logic documented in the Laws of TAS
+	// http://tasvideos.org/LawsOfTAS/OnSavestates.html
+
+	if (Settings.WrongMovieStateProtection)
+		if (movie_id != Movie.MovieId) {
+			return WRONG_MOVIE_SNAPSHOT;
+		}
+
+	if (Settings.WrongMovieStateProtection)
+		if (Movie.ReadOnly) {
+			if (current_frame <= Movie.MaxFrame && current_sample <= Movie.MaxSample && memcmp(Movie.InputBuffer, ptr, space_played) != 0)
+				return SNAPSHOT_INCONSISTENT;
+		}
 
 	if(!Movie.ReadOnly)
 	{
-		// here, we are going to take the input data from the savestate
-		// and make it the input data for the current movie, then continue
-		// writing new input data at the currentframe pointer
 		change_state(MOVIE_STATE_RECORD);
-//		S9xMessage(S9X_INFO, S9X_MOVIE_INFO, MOVIE_INFO_RERECORD);
 
 		Movie.CurrentFrame = current_frame;
 		Movie.MaxFrame = max_frame;
@@ -1549,7 +1581,6 @@ int S9xMovieUnfreeze (const uint8* buf, uint32 size)
 		if (!S9xLuaRerecordCountSkip())
 			++Movie.RerecordCount;
 
-		// when re-recording, update the sync info in the movie to the new settings as of the last re-record.
 		store_movie_settings();
 
 		reserve_buffer_space(space_needed);
@@ -1559,29 +1590,21 @@ int S9xMovieUnfreeze (const uint8* buf, uint32 size)
 	}
 	else
 	{
-		// here, we are going to keep the input data from the movie file
-		// and simply rewind to the currentframe pointer
-		// this will cause a desync if the savestate is not in sync // <-- NOT ANYMORE
-		// with the on-disk recording data, but it's easily solved
-		// by loading another savestate or playing the movie from the beginning
-
-		// don't allow loading a state inconsistent with the current movie
-		uint32 space_shared = (Movie.BytesPerSample * (current_sample+1));
-		if(current_frame > Movie.MaxFrame || current_sample > Movie.MaxSample ||
-		   memcmp(Movie.InputBuffer, ptr, space_shared))
-		{
-			return SNAPSHOT_INCONSISTENT;
-		}
-
 		change_state(MOVIE_STATE_PLAY);
-//		S9xMessage(S9X_INFO, S9X_MOVIE_INFO, MOVIE_INFO_REWIND);
 
 		Movie.CurrentFrame = current_frame;
 		Movie.CurrentSample = current_sample;
 	}
 
-	Movie.InputBufferPtr = Movie.InputBuffer + (Movie.BytesPerSample * (Movie.CurrentSample));
-	read_frame_controller_data(true);
+	if (Movie.CurrentFrame <= Movie.MaxFrame && Movie.CurrentSample <= Movie.MaxSample)
+	{
+		Movie.InputBufferPtr = Movie.InputBuffer + (Movie.BytesPerSample * (Movie.CurrentSample));
+		read_frame_controller_data(true);
+	}
+	else
+	{
+		finish_playback();
+	}
 
 	return SUCCESS;
 }

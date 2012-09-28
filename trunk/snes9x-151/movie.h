@@ -237,6 +237,7 @@ void S9xUpdateFrameCounter (int offset=0);
 bool8 S9xMovieActive ();
 bool8 S9xMoviePlaying ();
 bool8 S9xMovieRecording ();
+bool8 S9xMovieFinished ();
 // the following accessors return 0/false if !S9xMovieActive()
 bool8 S9xMovieReadOnly ();
 bool8 S9xMovieSetReadOnly (bool8 readonly);
