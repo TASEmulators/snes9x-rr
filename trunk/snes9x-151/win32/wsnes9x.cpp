@@ -2422,9 +2422,6 @@ LRESULT CALLBACK WinProc(
 		}
 
 	case WM_KEYUP:
-		if(wParam != VK_PAUSE)
-			break;
-	case WM_SYSKEYUP:
 	case WM_CUSTKEYUP:
 		{
 			SCustomKey *key = CustomKeys.key;
@@ -4793,8 +4790,6 @@ VOID CALLBACK KeyInputTimer(UINT idEvent, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR
 			joyState[i].wasPressed = active;
 		}
 	}
-	//if((!GUI.InactivePause || !Settings.ForcedPause)
-	//		|| (GUI.BackgroundInput || !(Settings.ForcedPause & (PAUSE_INACTIVE_WINDOW | PAUSE_WINDOW_ICONISED))))
 	if(GUI.BackgroundInput && !GUI.InactivePause) // must be same with WinProc:WM_KEYDOWN
 	{
 		static JoyState joyState [256];
