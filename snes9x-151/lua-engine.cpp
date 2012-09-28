@@ -2211,8 +2211,8 @@ int movie_getmode(lua_State *L) {
 		lua_pushstring(L, "playback");
 	else if (S9xMovieRecording())
 		lua_pushstring(L, "record");
-	//else if (S9xMovieFinished())
-	//	lua_pushstring(L, "finished");
+	else if (S9xMovieFinished())
+		lua_pushstring(L, "finished");
 	else
 		lua_pushnil(L);
 	return 1;
