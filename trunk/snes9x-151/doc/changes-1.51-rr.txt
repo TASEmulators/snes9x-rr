@@ -1,3 +1,17 @@
+Snes9x 1.51+ v7 (svn209)
+
+This is a general bugfix/enhancement release.
+There are no emulation changes if I remembered correctly.
+
+Here's the list of some of changes.
+Check SVN commit log for more information.
+
+- Add movie "finished" state.                               (gocha)
+- Fix a sort of 1 frame delay problem, mostly.              (gocha)
+- Lua: fix joypad get/set function. (that was terrible)     (gocha)
+- Lua: add emu.registerstart, movie.[get|set]readonly.      (gocha)
+- Win32: fix interlaced AVI output.                         (gocha)
+
 Snes9x 1.51+ v6
 
 I hadn't released a new version for over a year.
