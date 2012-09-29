@@ -946,6 +946,7 @@ void HandleCallbackError(lua_State* L)
 	}
 }
 
+bool joy_set_queue = true;
 void CallRegisteredLuaFunctions(LuaCallID calltype)
 {
 	assert((unsigned int)calltype < (unsigned int)LUACALL_COUNT);
@@ -953,6 +954,9 @@ void CallRegisteredLuaFunctions(LuaCallID calltype)
 
 	if (!LUA)
 		return;
+
+	if(calltype == LUACALL_BEFOREEMULATION)
+		joy_set_queue = false;
 
 	if(calltype == LUACALL_BEFOREEMULATION)
 		CallDeferredFunctions(LUA, deferredJoySetIDString);
@@ -964,12 +968,16 @@ void CallRegisteredLuaFunctions(LuaCallID calltype)
 	if (lua_isfunction(LUA, -1))
 	{
 		errorcode = lua_pcall(LUA, 0, 0, 0);
+		if(calltype == LUACALL_BEFOREEMULATION)
+			joy_set_queue = true;
 		if (errorcode)
 			HandleCallbackError(LUA);
 	}
 	else
 	{
 		lua_pop(LUA, 1);
+		if(calltype == LUACALL_BEFOREEMULATION)
+			joy_set_queue = true;
 	}
 }
 
@@ -1801,7 +1809,7 @@ static int joypad_set(lua_State *L) {
 		luaL_error(L,"Invalid output port (valid range 1-8, specified %d)", which);
 	}
 
-	if (IPPU.InMainLoop)
+	if (IPPU.InMainLoop || joy_set_queue)
 	{
 		// defer this function until when we are processing input
 		DeferFunctionCall(L, deferredJoySetIDString);
