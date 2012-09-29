@@ -484,7 +484,6 @@ void S9xStartScreenRefresh(){
 		IPPU.RenderedFramesCount = 0;
 		IPPU.FrameCount = 0;
 	}
-	++IPPU.TotalEmulatedFrames;
 }
 
 void RenderLine (uint8 C)
@@ -600,8 +599,6 @@ void S9xReRefresh ()
 
 void S9xEndScreenRefresh ()
 {
-	CallRegisteredLuaFunctions(LUACALL_AFTEREMULATION);
-
 	PPU.HDMAStarted = FALSE;
 	if(IPPU.RenderThisFrame) {
 		FLUSH_REDRAW();
@@ -667,6 +664,7 @@ void S9xEndScreenRefresh ()
 			}
 		}
 	}
+	++IPPU.TotalEmulatedFrames;
 }
 
 inline void SelectTileRenderer (bool8 normal)

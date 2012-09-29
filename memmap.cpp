@@ -1688,11 +1688,6 @@ void CMemory::InitROM (bool8 Interleaved)
 	SetDSP=&DSP1SetByte;
 	GetDSP=&DSP1GetByte;
 
-	IPPU.TotalEmulatedFrames = 0;
-	IPPU.LagCounter = 0;
-	IPPU.pad_read = false;
-	IPPU.pad_read_last = false;
-
 	ResetSpeedMap();
 	ApplyROMFixes ();
 

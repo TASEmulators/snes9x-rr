@@ -4665,6 +4665,9 @@ static void ProcessInput(void)
 
 static void WinDisplayString (const char *string, int lines, bool linesFromBottom, int pixelsFromLeft, bool allowWrap);
 
+DWORD guiUpdateFrequency = 50;
+DWORD lastGUIUpdateTime = 0;
+
 /*****************************************************************************/
 /* WinMain                                                                   */
 /*****************************************************************************/
@@ -4901,6 +4904,17 @@ int WINAPI WinMain(
 			{
 				TranslateMessage (&msg);
 				DispatchMessage (&msg);
+			}
+
+			if (!Settings.StopEmulation && (Settings.Paused || Settings.ForcedPause))
+			{
+				DWORD lastTime = timeGetTime();
+				if (lastTime - lastGUIUpdateTime >= guiUpdateFrequency) {
+					//UpdateToolWindows();
+					S9xUpdateFrameCounter(-1);
+					InvalidateRect(GUI.hWnd, NULL, FALSE);
+					lastGUIUpdateTime = lastTime;
+				}
 			}
 		}
 

@@ -2637,6 +2637,11 @@ void S9xResetPPU ()
 	memset (&Memory.FillRAM [0x1000], 0, 0x1000);
 
 	Memory.FillRAM[0x4201]=Memory.FillRAM[0x4213]=0xFF;
+
+	IPPU.TotalEmulatedFrames = 0;
+	IPPU.LagCounter = 0;
+	IPPU.pad_read = false;
+	IPPU.pad_read_last = false;
 }
 
 void S9xSoftResetPPU ()
@@ -2937,10 +2942,6 @@ void S9xUpdateJoypadButtons ()
 	}
 
 	S9xMovieUpdate();
-	if(!IPPU.pad_read)
-		++IPPU.LagCounter;
-	IPPU.pad_read_last = IPPU.pad_read;
-	IPPU.pad_read = false;
 
 	if(!Settings.UpAndDown)
 	{

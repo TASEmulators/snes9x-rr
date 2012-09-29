@@ -695,14 +695,14 @@ void S9xUpdateFrameCounter (int offset)
 {
 	static char tmpBuf[1024];
 
-//	offset++;
+	offset++;
 	if (!Settings.DisplayFrame)
 		*GFX.FrameDisplayString = 0;
 	else if (Movie.State == MOVIE_STATE_RECORD) {
 		if (Settings.CounterInFrames)
 			sprintf(tmpBuf, "%d", max(0,(int)(Movie.CurrentFrame+offset)));
 		else
-			FrameCountToTime(tmpBuf, max(0,(int)(Movie.CurrentFrame)), Memory.ROMFramesPerSecond);
+			FrameCountToTime(tmpBuf, max(0,(int)(Movie.CurrentFrame+offset)), Memory.ROMFramesPerSecond);
 		sprintf(GFX.FrameDisplayString, "%s%s", Settings.OldFashionedFrameCounter ? "Recording frame: " : "", tmpBuf);
 		if (!Settings.OldFashionedFrameCounter)
 			strcat(GFX.FrameDisplayString, " [record]");
@@ -711,7 +711,7 @@ void S9xUpdateFrameCounter (int offset)
 		if (Settings.CounterInFrames)
 			sprintf(tmpBuf, "%d%s%d", max(0,(int)(Movie.CurrentFrame+offset)), Settings.OldFashionedFrameCounter ? " / " : "/", Movie.MaxFrame);
 		else
-			FrameCountToTime(tmpBuf, max(0,(int)(Movie.CurrentFrame)), Memory.ROMFramesPerSecond);
+			FrameCountToTime(tmpBuf, max(0,(int)(Movie.CurrentFrame+offset)), Memory.ROMFramesPerSecond);
 		sprintf(GFX.FrameDisplayString, "%s%s", Settings.OldFashionedFrameCounter ? "Playing frame: " : "", tmpBuf);
 		if (!Settings.OldFashionedFrameCounter)
 			strcat(GFX.FrameDisplayString, " [play]");
@@ -721,7 +721,7 @@ void S9xUpdateFrameCounter (int offset)
 		if (Settings.CounterInFrames)
 			sprintf(GFX.FrameDisplayString, "%d", max(0,(int)(NetPlay.FrameCount+offset)));
 		else
-			FrameCountToTime(GFX.FrameDisplayString, max(0,(int)(NetPlay.FrameCount)), Memory.ROMFramesPerSecond);
+			FrameCountToTime(GFX.FrameDisplayString, max(0,(int)(NetPlay.FrameCount+offset)), Memory.ROMFramesPerSecond);
 		if (Settings.NetPlayServer)
 			strcat(GFX.FrameDisplayString, " [server]");
 		else
@@ -732,7 +732,7 @@ void S9xUpdateFrameCounter (int offset)
 		if (Settings.CounterInFrames)
 			sprintf(GFX.FrameDisplayString, "%d", max(0,(int)(IPPU.TotalEmulatedFrames+offset)));
 		else
-			FrameCountToTime(GFX.FrameDisplayString, max(0,(int)(IPPU.TotalEmulatedFrames)), Memory.ROMFramesPerSecond);
+			FrameCountToTime(GFX.FrameDisplayString, max(0,(int)(IPPU.TotalEmulatedFrames+offset)), Memory.ROMFramesPerSecond);
 		if (!Settings.OldFashionedFrameCounter)
 			strcat(GFX.FrameDisplayString, " [no movie]");
 	}
@@ -744,8 +744,8 @@ void S9xUpdateFrameCounter (int offset)
 			sprintf(GFX.LagCounterString, "%d", max(0,(int)(IPPU.LagCounter)));
 		else
 			FrameCountToTime(GFX.LagCounterString, max(0,(int)(IPPU.LagCounter)), Memory.ROMFramesPerSecond);
-		if (!IPPU.pad_read)
-			strcat(GFX.LagCounterString, " *");
+		//if (!IPPU.pad_read)
+		//	strcat(GFX.LagCounterString, " *");
 	}
 
 	if (Settings.OldFashionedFrameCounter && *GFX.LagCounterString != 0) {

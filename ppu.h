@@ -159,6 +159,7 @@ struct InternalPPU {
     struct ClipData Clip [2];
     bool8  pad_read;
     bool8  pad_read_last;
+    bool8  InMainLoop;
 };
 
 struct SOBJ
