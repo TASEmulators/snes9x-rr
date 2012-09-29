@@ -656,6 +656,75 @@ static const char* toCString(lua_State* L, int idx)
 	}
 }
 
+static const char* deferredJoySetIDString = "lazyjoy";
+#define MAX_DEFERRED_COUNT 16384
+
+// store the most recent C function call from Lua (and all its arguments)
+// for later evaluation
+void DeferFunctionCall(lua_State* L, const char* idstring)
+{
+	// there might be a cleaner way of doing this using lua_pushcclosure and lua_getref
+
+	int num = lua_gettop(L);
+
+	// get the C function pointer
+	//lua_CFunction cf = lua_tocfunction(L, -(num+1));
+	lua_CFunction cf = (L->ci->func)->value.gc->cl.c.f;
+	assert(cf);
+	lua_pushcfunction(L,cf);
+
+	// make a list of the function and its arguments (and also pop those arguments from the stack)
+	lua_createtable(L, num+1, 0);
+	lua_insert(L, 1);
+	for(int n = num+1; n > 0; n--)
+		lua_rawseti(L, 1, n);
+
+	// put the list into a global array
+	lua_getfield(L, LUA_REGISTRYINDEX, idstring);
+	lua_insert(L, 1);
+	int curSize = lua_objlen(L, 1);
+	lua_rawseti(L, 1, curSize+1);
+
+	// clean the stack
+	lua_settop(L, 0);
+}
+void CallDeferredFunctions(lua_State* L, const char* idstring)
+{
+	lua_settop(L, 0);
+	lua_getfield(L, LUA_REGISTRYINDEX, idstring);
+	int numCalls = lua_objlen(L, 1);
+	for(int i = 1; i <= numCalls; i++)
+	{
+        lua_rawgeti(L, 1, i);  // get the function+arguments list
+		int listSize = lua_objlen(L, 2);
+
+		// push the arguments and the function
+		for(int j = 1; j <= listSize; j++)
+			lua_rawgeti(L, 2, j);
+
+		// get and pop the function
+		lua_CFunction cf = lua_tocfunction(L, -1);
+		lua_pop(L, 1);
+
+		// shift first argument to slot 1 and call the function
+		lua_remove(L, 2);
+		lua_remove(L, 1);
+		cf(L);
+
+		// prepare for next iteration
+		lua_settop(L, 0);
+		lua_getfield(L, LUA_REGISTRYINDEX, idstring);
+	}
+
+	// clear the list of deferred functions
+	lua_newtable(L);
+	lua_setfield(L, LUA_REGISTRYINDEX, idstring);
+	//LuaContextInfo& info = GetCurrentInfo();
+
+	// clean the stack
+	lua_settop(L, 0);
+}
+
 // replacement for luaB_print() that goes to the appropriate textbox instead of stdout
 static int print(lua_State *L)
 {
@@ -884,6 +953,9 @@ void CallRegisteredLuaFunctions(LuaCallID calltype)
 
 	if (!LUA)
 		return;
+
+	if(calltype == LUACALL_BEFOREEMULATION)
+		CallDeferredFunctions(LUA, deferredJoySetIDString);
 
 	lua_settop(LUA, 0);
 	lua_getfield(LUA, LUA_REGISTRYINDEX, idstring);
@@ -1727,6 +1799,13 @@ static int joypad_set(lua_State *L) {
 	int which = !lua_isnumber(L,1) ? 1 : luaL_checkinteger(L,1);
 	if (which < 1 || which > 8) {
 		luaL_error(L,"Invalid output port (valid range 1-8, specified %d)", which);
+	}
+
+	if (IPPU.InMainLoop)
+	{
+		// defer this function until when we are processing input
+		DeferFunctionCall(L, deferredJoySetIDString);
+		return 0;
 	}
 
 	// And the table of buttons.
@@ -4580,6 +4659,10 @@ int S9xLoadLuaCode(const char *filename) {
 			lua_newtable(LUA);
 			lua_setfield(LUA, LUA_REGISTRYINDEX, luaMemHookTypeStrings[i]);
 		}
+
+		// deferred evaluation table
+		lua_newtable(LUA);
+		lua_setfield(LUA, LUA_REGISTRYINDEX, deferredJoySetIDString);
 	}
 
 	// We make our thread NOW because we want it at the bottom of the stack.
