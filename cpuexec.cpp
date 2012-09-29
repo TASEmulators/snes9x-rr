@@ -107,13 +107,7 @@
 
 void S9xMainLoop (void)
 {
-	if(S9xMovieRequiresReset())
-	{
-		S9xMovieUpdateOnReset();
-		S9xSoftReset();
-	}
-
-	CallRegisteredLuaFunctions(LUACALL_BEFOREEMULATION);
+	StartS9xMainLoop();
 
     for (;;)
     {
@@ -242,6 +236,8 @@ void S9xMainLoop (void)
 	S9xDeinterleaveMode2 ();
     }
 #endif
+
+	EndS9xMainLoop();
 }
 
 void S9xSetIRQ (uint32 source)

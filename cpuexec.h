@@ -122,6 +122,8 @@ struct SICPU
 };
 
 START_EXTERN_C
+void StartS9xMainLoop (void);
+void EndS9xMainLoop (void);
 void S9xMainLoop (void);
 void S9xReset (void);
 void S9xSoftReset (void);
