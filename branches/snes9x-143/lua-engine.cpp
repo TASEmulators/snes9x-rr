@@ -166,6 +166,7 @@ static const char* luaCallIDStrings [] =
 	"CALL_BEFOREEMULATION",
 	"CALL_AFTEREMULATION",
 	"CALL_BEFOREEXIT",
+	"CALL_ONSTART",
 };
 
 //make sure we have the right number of strings
@@ -377,6 +378,20 @@ static int snes9x_registerexit(lua_State *L) {
 	lua_getfield(L, LUA_REGISTRYINDEX, luaCallIDStrings[LUACALL_BEFOREEXIT]);
 	lua_insert(L,1);
 	lua_setfield(L, LUA_REGISTRYINDEX, luaCallIDStrings[LUACALL_BEFOREEXIT]);
+	//StopScriptIfFinished(luaStateToUIDMap[L]);
+	return 1;
+}
+
+static int snes9x_registerstart(lua_State *L) {
+	if (!lua_isnil(L,1))
+		luaL_checktype(L, 1, LUA_TFUNCTION);
+	lua_settop(L,1);
+	lua_getfield(L, LUA_REGISTRYINDEX, luaCallIDStrings[LUACALL_ONSTART]);
+	lua_insert(L,1);
+	lua_pushvalue(L,-1); // copy the function so we can also call it
+	lua_setfield(L, LUA_REGISTRYINDEX, luaCallIDStrings[LUACALL_ONSTART]);
+	if (!lua_isnil(L,-1) && !Settings.StopEmulation)
+		lua_call(L,0,0); // call the function now since the game has already started and this start function hasn't been called yet
 	//StopScriptIfFinished(luaStateToUIDMap[L]);
 	return 1;
 }
@@ -1813,6 +1828,27 @@ static int movie_rerecordcounting(lua_State *L) {
 		luaL_error(L, "no parameters specified");
 
 	skipRerecords = lua_toboolean(L,1);
+	return 0;
+}
+
+static int movie_getreadonly(lua_State *L) {
+#ifdef __WIN32__
+	if (S9xMovieActive())
+		lua_pushboolean(L, S9xMovieReadOnly());
+	else
+		lua_pushboolean(L, GUI.MovieReadOnly);
+#else
+	lua_pushboolean(L, S9xMovieReadOnly());
+#endif
+	return 1;
+}
+
+static int movie_setreadonly(lua_State *L) {
+	int readonly = lua_toboolean(L,1) ? 1 : 0;
+	S9xMovieSetReadOnly(readonly);
+#ifdef __WIN32__
+	GUI.MovieReadOnly = readonly;
+#endif
 	return 0;
 }
 
@@ -3835,6 +3871,7 @@ static const struct luaL_reg snes9xlib [] = {
 	{"atframeboundary", snes9x_atframeboundary},
 	{"registerbefore", snes9x_registerbefore},
 	{"registerafter", snes9x_registerafter},
+	{"registerstart", snes9x_registerstart},
 	{"registerexit", snes9x_registerexit},
 	{"message", snes9x_message},
 	{"print", print}, // sure, why not
@@ -3938,6 +3975,8 @@ static const struct luaL_reg movielib[] = {
 	{"setrerecordcount", movie_setrerecordcount},
 
 	{"rerecordcounting", movie_rerecordcounting},
+	{"readonly", movie_getreadonly},
+	{"setreadonly", movie_setreadonly},
 	{"framecount", snes9x_framecount}, // for those familiar with other emulators that have movie.framecount() instead of emulatorname.framecount()
 
 	{"stop", movie_stop},
@@ -3945,6 +3984,7 @@ static const struct luaL_reg movielib[] = {
 	// alternative names
 	{"close", movie_stop},
 	{"getname", movie_getname},
+	{"getreadonly", movie_getreadonly},
 	{NULL,NULL}
 };
 
