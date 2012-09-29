@@ -165,7 +165,8 @@
 #define S9xMovieUpdateOnReset _S9xMovieUpdateOnReset
 #define S9xSoftReset _S9xSoftReset
 #define S9xLuaClearGui _S9xLuaClearGui
-#define CallRegisteredLuaFunctions _CallRegisteredLuaFunctions
+#define StartS9xMainLoop _StartS9xMainLoop
+#define EndS9xMainLoop _EndS9xMainLoop
 #define CallRegisteredLuaMemHook _CallRegisteredLuaMemHook
 #define S9xTraceCPU _S9xTraceCPU
 

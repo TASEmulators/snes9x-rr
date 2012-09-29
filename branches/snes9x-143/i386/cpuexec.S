@@ -87,15 +87,7 @@ S9xMainLoop:
 	pushl %edi
 	pushl %esi
 	pushl %ebx
-	ccall S9xMovieRequiresReset
-	testl %eax, %eax
-	jz .NoMovieReset
-	ccall S9xMovieUpdateOnReset
-	ccall S9xSoftReset
-.NoMovieReset:
-	pushl $LUACALL_BEFOREEMULATION
-	ccall CallRegisteredLuaFunctions
-	popl %eax
+	ccall StartS9xMainLoop
 .START_MAIN_LOOP:
 	LOAD_REGISTERS
 .L9:
@@ -312,6 +304,7 @@ MainAsmLoop:
 	call S9xDeinterleaveMode2
 .NoSuperFXBrkTest:
 #endif
+	call EndS9xMainLoop
 	popl %ebx
 	popl %esi
 	popl %edi

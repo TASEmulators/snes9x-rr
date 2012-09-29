@@ -103,6 +103,7 @@
 #include "obc1.h"
 #include "snapshot.h"
 #include "logger.h"
+#include "movie.h"
 
 
 #ifndef ZSNES_FX
@@ -116,6 +117,21 @@ void S9xResetSuperFX ()
     FxReset (&SuperFX);
 }
 #endif
+
+void StartS9xMainLoop (void)
+{
+	if(S9xMovieRequiresReset())
+	{
+		S9xMovieUpdateOnReset();
+		S9xSoftReset();
+	}
+
+	CallRegisteredLuaFunctions(LUACALL_BEFOREEMULATION);
+}
+
+void EndS9xMainLoop (void)
+{
+}
 
 void S9xSoftResetCPU ()
 {
