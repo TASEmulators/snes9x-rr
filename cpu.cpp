@@ -262,6 +262,7 @@ void S9xReset (void)
 	if(Settings.OBC1)
 		ResetOBC1();
 
+	CallRegisteredLuaFunctions(LUACALL_ONSTART);
 //    Settings.Paused = FALSE;
 }
 void S9xSoftReset (void)

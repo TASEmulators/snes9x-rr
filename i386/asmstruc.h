@@ -246,7 +246,6 @@
 #define SAVE_CYCLES movl CYCLES, Cycles
 
 // see also: s9xlua.h
-#define LUACALL_BEFOREEMULATION 0
 #define LUAMEMHOOK_WRITE 0
 #define LUAMEMHOOK_READ  1
 #define LUAMEMHOOK_EXEC  2
