@@ -120,6 +120,9 @@ void S9xResetSuperFX ()
 
 void StartS9xMainLoop (void)
 {
+	IPPU.pad_read_last = IPPU.pad_read;
+	IPPU.pad_read      = FALSE;
+
 	if(S9xMovieRequiresReset())
 	{
 		S9xMovieUpdateOnReset();
@@ -127,10 +130,19 @@ void StartS9xMainLoop (void)
 	}
 
 	CallRegisteredLuaFunctions(LUACALL_BEFOREEMULATION);
+
+	IPPU.InMainLoop = TRUE;
 }
 
 void EndS9xMainLoop (void)
 {
+	if(!IPPU.pad_read)
+		IPPU.LagCounter++;
+	IPPU.pad_read_last = IPPU.pad_read;
+
+	IPPU.InMainLoop = FALSE;
+
+	CallRegisteredLuaFunctions(LUACALL_AFTEREMULATION);
 }
 
 void S9xSoftResetCPU ()

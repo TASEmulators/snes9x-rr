@@ -1898,6 +1898,8 @@ int S9xUnfreezeFromStream (STREAM stream)
 			S9xUpdateFrameCounter (-1);
 			IPPU.pad_read = pad_read_temp;
 		}
+		else
+			S9xUpdateFrameCounter (-1);
 
 		Memory.FixROMSpeed ();
 		CPU.Flags |= old_flags & (DEBUG_MODE_FLAG | TRACE_FLAG |
