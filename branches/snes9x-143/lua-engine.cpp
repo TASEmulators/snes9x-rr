@@ -4455,8 +4455,9 @@ void S9xLuaGui(void *s, int width, int height, int bpp, int pitch) {
 		return;
 	}
 
-	int x, y, x2;
+	int x, y, x2, y2;
 	int xscale = (width == 512) ? 2 : 1;
+	int yscale = (height >= 448) ? 2 : 1;
 
 	switch(bpp)
 	{
@@ -4493,7 +4494,9 @@ void S9xLuaGui(void *s, int width, int height, int bpp, int pitch) {
 						green = (((int) gui_green - scr_green) * gui_alpha / 255 + scr_green) & 255;
 						blue  = (((int) gui_blue  - scr_blue)  * gui_alpha / 255 + scr_blue)  & 255;
 					}
-					screen[y*ppl + (x*xscale+x2)] =  ((red >> 3) << 11) | ((green >> 2) << 5) | (blue >> 3);
+					for (y2 = 0; y2 < yscale; y2++) {
+						screen[(y*yscale+y2)*ppl + (x*xscale+x2)] =  ((red >> 3) << 11) | ((green >> 2) << 5) | (blue >> 3);
+					}
 				}
 			}
 		}
@@ -4532,9 +4535,11 @@ void S9xLuaGui(void *s, int width, int height, int bpp, int pitch) {
 						green = (((int) gui_green - scr_green) * gui_alpha / 255 + scr_green) & 255;
 						blue  = (((int) gui_blue  - scr_blue)  * gui_alpha / 255 + scr_blue)  & 255;
 					}
-					screen[y*pitch + (x*xscale+x2)*bytesPerPixel] = blue;
-					screen[y*pitch + (x*xscale+x2)*bytesPerPixel + 1] = green;
-					screen[y*pitch + (x*xscale+x2)*bytesPerPixel + 2] = red;
+					for (y2 = 0; y2 < yscale; y2++) {
+						screen[(y*yscale+y2)*pitch + (x*xscale+x2)*bytesPerPixel] = blue;
+						screen[(y*yscale+y2)*pitch + (x*xscale+x2)*bytesPerPixel + 1] = green;
+						screen[(y*yscale+y2)*pitch + (x*xscale+x2)*bytesPerPixel + 2] = red;
+					}
 				}
 			}
 		}
@@ -4574,9 +4579,11 @@ void S9xLuaGui(void *s, int width, int height, int bpp, int pitch) {
 						green = (((int) gui_green - scr_green) * gui_alpha / 255 + scr_green) & 255;
 						blue  = (((int) gui_blue  - scr_blue)  * gui_alpha / 255 + scr_blue)  & 255;
 					}
-					screen[y*pitch + (x*xscale+x2)*bytesPerPixel] = blue;
-					screen[y*pitch + (x*xscale+x2)*bytesPerPixel + 1] = green;
-					screen[y*pitch + (x*xscale+x2)*bytesPerPixel + 2] = red;
+					for (y2 = 0; y2 < yscale; y2++) {
+						screen[(y*yscale+y2)*pitch + (x*xscale+x2)*bytesPerPixel] = blue;
+						screen[(y*yscale+y2)*pitch + (x*xscale+x2)*bytesPerPixel + 1] = green;
+						screen[(y*yscale+y2)*pitch + (x*xscale+x2)*bytesPerPixel + 2] = red;
+					}
 				}
 			}
 		}
