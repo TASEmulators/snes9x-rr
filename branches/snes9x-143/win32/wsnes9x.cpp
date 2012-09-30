@@ -3290,12 +3290,10 @@ LRESULT CALLBACK WinProc(
 								if (!Settings.NetPlay)
 #endif
 								{
+									S9xMovieUpdateOnReset();
 									if(S9xMoviePlaying())
 										S9xMovieStop (TRUE);
-									if(S9xMovieActive())
-										S9xMovieRecordReset();
-									else
-										S9xSoftReset();
+									S9xSoftReset();
 									ReInitSound(1);
 								}
 								if(!S9xMovieRecording())
@@ -4995,6 +4993,10 @@ int WINAPI WinMain(
 			ProcessInput(); // report input first for joypad.read()
 			if (S9xLuaRunning())
 			{
+				for (int i = 0; i < 5; i++) {
+					IPPU.JoypadsIntermediate[i] = S9xReadJoypad(i);
+				}
+
 				S9xLuaFrameBoundary();
 				if (S9xLuaSpeed() > 0) {
 					run_loop = 1;

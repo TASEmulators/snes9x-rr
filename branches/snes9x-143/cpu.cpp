@@ -104,6 +104,7 @@
 #include "snapshot.h"
 #include "logger.h"
 #include "movie.h"
+#include "display.h"
 
 
 #ifndef ZSNES_FX
@@ -123,11 +124,13 @@ void StartS9xMainLoop (void)
 	IPPU.pad_read_last = IPPU.pad_read;
 	IPPU.pad_read      = FALSE;
 
-	if(S9xMovieRequiresReset())
+	// get user input
+	for (int i = 0; i < 5; i++)
 	{
-		S9xMovieUpdateOnReset();
-		S9xSoftReset();
+		IPPU.JoypadsIntermediate[i] = S9xReadJoypad (i);
 	}
+
+	MovieApplyNextInput();
 
 	CallRegisteredLuaFunctions(LUACALL_BEFOREEMULATION);
 
