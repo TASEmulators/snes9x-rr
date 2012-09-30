@@ -4138,6 +4138,11 @@ void S9xLuaFrameBoundary() {
 	if (!LUA || !luaRunning)
 		return;
 
+	// read joypad for joypad.get()
+	for (int i = 0; i < 5; i++) {
+		IPPU.JoypadsIntermediate[i] = S9xReadJoypad(i);
+	}
+
 	// Our function needs calling
 	lua_settop(LUA,0);
 	lua_getfield(LUA, LUA_REGISTRYINDEX, frameAdvanceThread);
