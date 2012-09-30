@@ -1,6 +1,6 @@
 Snes9x 1.43+
 
-Newest changes in 1.43+ v18 (svn223):
+Newest changes in 1.43+ v18 (svn224):
 
 This is a general bugfix/enhancement release.
 There are no emulation changes if I remembered correctly.
