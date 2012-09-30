@@ -1,5 +1,19 @@
 Snes9x 1.43+
 
+Newest changes in 1.43+ v18 (svn223):
+
+This is a general bugfix/enhancement release.
+There are no emulation changes if I remembered correctly.
+
+Here's the list of some of changes.
+Check SVN commit log for more information.
+
+- Add movie "finished" state.                               (gocha)
+- Fix a sort of 1 frame delay problem, mostly.              (gocha)
+- Lua: fix joypad get/set function. (that was terrible)     (gocha)
+- Lua: add emu.registerstart, movie.[get|set]readonly.      (gocha)
+- Win32: fix AVI, HUD and Lua drawings of interlaced games. (gocha)
+
 Newest changes in 1.43+ v17:
 
 Probably this become the final version of snes9x-rr 1.43.
