@@ -152,8 +152,6 @@ void DoAVIClose(int reason);
 static void DoAVIVideoFrame(void);
 static void BuildAVIVideoFrame1X (void);
 static void BuildAVIVideoFrame2X (void);
-static void BuildAVIVideoFrame1XHiRes (void);
-static void BuildAVIVideoFrame2XHiRes (void);
 bool ReInitSound(int mode);
 
 #define BMP_PITCH(width, bpp)   ((((width)*(bpp)+31)/8)&~3)
@@ -2361,18 +2359,15 @@ void DoAVIOpen(const char* filename)
 	// IPPU.RenderThisFrame must be true during AVI recording
 	AVISetFramerate(framerate, frameskip, GUI.AVIOut);
 
-	avi_width = IPPU.RenderedScreenWidth;
-	avi_height = IPPU.RenderedScreenHeight;
+	avi_width = SNES_WIDTH;
+	avi_height = GUI.HeightExtend ? SNES_HEIGHT_EXTENDED : SNES_HEIGHT;
 	avi_skip_frames = Settings.SkipFrames;
 
-	if(GUI.AVIDoubleScale && avi_width <= SNES_WIDTH)
-		avi_width = SNES_WIDTH*2;
-	else if(!GUI.AVIDoubleScale && avi_width > SNES_WIDTH)
-		avi_width = SNES_WIDTH;
-	if(GUI.HeightExtend && avi_height < SNES_HEIGHT_EXTENDED)
-		avi_height = SNES_HEIGHT_EXTENDED;
-	if(GUI.AVIDoubleScale)
+	if(GUI.AVIDoubleScale) {
+		avi_width *= 2;
 		avi_height *= 2;
+	}
+
 	if(avi_height % 2 != 0) // most codecs can't handle odd-height images
 		avi_height++;
 
@@ -2482,31 +2477,10 @@ static void DoAVIVideoFrame(void)
 		return;
 	}
 
-	// convert to bitdepth 24
-	const int snesWidth = IPPU.RenderedScreenWidth;
-	const int snesHeight = IPPU.RenderedScreenHeight;
-	if(snesWidth < SNES_WIDTH*2) // normal
-	{
-		if(avi_width < snesWidth*2) // 1x
-		{
-			BuildAVIVideoFrame1X();
-		}
-		else // 2x
-		{
-			BuildAVIVideoFrame2X();
-		}
-	}
-	else // high-res
-	{
-		if(avi_width < snesWidth) // 1x
-		{
-			BuildAVIVideoFrame1XHiRes();
-		}
-		else // 2x
-		{
-			BuildAVIVideoFrame2XHiRes();
-		}
-	}
+	if(GUI.AVIDoubleScale)
+		BuildAVIVideoFrame2X();
+	else
+		BuildAVIVideoFrame1X();
 
 	// write to AVI
 	AVIAddVideoFrame(avi_buffer, GUI.AVIOut);
@@ -2514,34 +2488,59 @@ static void DoAVIVideoFrame(void)
 	// sound samples should be added independently via AVIAddSoundSamples
 }
 
-// Dst: GFX.Screen 256xH  (1x1) 16bpp top-down
-// Src: avi_buffer 256xH  (1x1) 24bpp bottom-up
-static void BuildAVIVideoFrame1X (void)
+#define Interp(c1, c2) \
+	(c1 == c2) ? c1 : \
+	(((((c1 & 0x07E0)      + (c2 & 0x07E0)) >> 1) & 0x07E0) + \
+	((((c1 & 0xF81F)      + (c2 & 0xF81F)) >> 1) & 0xF81F))
+
+// Src: GFX.Screen (variable size) 16bpp top-down
+// Dst: avi_buffer 256xH     (1x1) 24bpp bottom-up
+void BuildAVIVideoFrame1X (void)
 {
-	const int snesWidth = IPPU.RenderedScreenWidth;
-	const int snesHeight = IPPU.RenderedScreenHeight;
-	const int width = min(snesWidth, avi_width);
-	const int height = min(snesHeight, avi_height);
-	const int pitch = GFX.Pitch;
+	const int srcWidth = IPPU.RenderedScreenWidth;
+	const int srcHeight = IPPU.RenderedScreenHeight;
+
+	const bool hires = srcWidth > SNES_WIDTH;
+	const bool interlaced = srcHeight > SNES_HEIGHT_EXTENDED;
+
+	const int srcPitch = GFX.Pitch >> 1;
+	const int srcStep = (interlaced ? srcPitch << 1 : srcPitch) - (hires ? avi_width << 1 : avi_width);
+	const int dstStep = avi_pitch + avi_width * 3;
+
 #ifdef LSB_FIRST
 	const bool order_is_rgb = (GUI.RedShift < GUI.BlueShift);
 #else
 	const bool order_is_rgb = (GUI.RedShift > GUI.BlueShift);
 #endif
-	const int src_step = pitch - width*2;
-	const int dst_step = -(avi_pitch + width*3);
-	const int image_offset = (avi_height - height) * avi_pitch;
-	uint16 *s = (uint16*)GFX.Screen;
-	uint8  *d = &avi_buffer[(avi_height - 1) * avi_pitch];
 
-	for(int y = 0; y < height; y++)
+	const int image_offset = (avi_height - (interlaced?srcHeight>>1:srcHeight)) * avi_pitch;
+	uint16 *s = (uint16*)GFX.Screen;
+	uint8  *d = avi_buffer + (avi_height - 1) * avi_pitch;
+
+	for(int y = 0; y < avi_height; y++)
 	{
-		for(int x = 0; x < width; x++)
+		for(int x = 0; x < avi_width; x++)
 		{
+			uint32 pixel;
+			if(hires && interlaced) {
+				uint16 *s2 = s + srcPitch;
+				pixel = Interp(Interp(*s,*(s+1)),Interp(*s2,*(s2+1)));
+				s+=2;
+			} else if(interlaced) {
+				uint16 *s2 = s + srcPitch;
+				pixel = Interp(*s,*s2);
+				s++;
+			} else if(hires) {
+				pixel = Interp(*s,*(s+1));
+				s+=2;
+			} else {
+				pixel = *s;
+				s++;
+			}
+
 			if(order_is_rgb)
 			{
 				// Order is RGB
-				uint32 pixel = *s++;
 				*(d + 0) = (pixel >> (11 - 3)) & 0xf8;
 				*(d + 1) = (pixel >> (6 - 3)) & 0xf8;
 				*(d + 2) = (pixel & 0x1f) << 3;
@@ -2550,15 +2549,14 @@ static void BuildAVIVideoFrame1X (void)
 			else
 			{
 				// Order is BGR
-				uint32 pixel = *s++;
 				*(d + 0) = (pixel & 0x1f) << 3;
 				*(d + 1) = (pixel >> (6 - 3)) & 0xf8;
 				*(d + 2) = (pixel >> (11 - 3)) & 0xf8;
 				d += 3;
 			}
 		}
-		s = (uint16*)((uint8*)s + src_step);
-		d += dst_step;
+		s += srcStep;
+		d -= dstStep;
 	}
 
 	// black out what we might have missed
@@ -2566,162 +2564,103 @@ static void BuildAVIVideoFrame1X (void)
 		memset(avi_buffer, 0, image_offset);
 }
 
-// Dst: GFX.Screen 256xH  (1x1) 16bpp top-down
-// Src: avi_buffer 512x2H (2x2) 24bpp bottom-up
-static void BuildAVIVideoFrame2X (void)
+// Src: GFX.Screen (variable size) 16bpp top-down
+// Dst: avi_buffer 512x2H    (2x2) 24bpp bottom-up
+void BuildAVIVideoFrame2X (void)
 {
-	const int snesWidth = IPPU.RenderedScreenWidth;
-	const int snesHeight = IPPU.RenderedScreenHeight;
-	const int width = min(snesWidth, avi_width/2);
-	const int height = min(snesHeight, avi_height/2);
-	const int pitch = GFX.Pitch;
+	const int srcWidth = IPPU.RenderedScreenWidth;
+	const int srcHeight = IPPU.RenderedScreenHeight;
+
+	const bool hires = srcWidth > SNES_WIDTH;
+	const bool interlaced = srcHeight > SNES_HEIGHT_EXTENDED;
+
+	const int srcPitch = GFX.Pitch >> 1;
+	const int srcStep = (interlaced ? srcPitch << 1 : srcPitch) - (hires ? avi_width : avi_width >> 1);
+	const int dstStep = (avi_pitch << 1) + avi_width * 3;
+
 #ifdef LSB_FIRST
 	const bool order_is_rgb = (GUI.RedShift < GUI.BlueShift);
 #else
 	const bool order_is_rgb = (GUI.RedShift > GUI.BlueShift);
 #endif
-	const int src_step[2] = { -width*2, pitch - width*2 };
-	const int dst_step = -(avi_pitch + width*3*2);
-	const int image_offset = (avi_height - height*2) * avi_pitch;
-	uint16 *s = (uint16*)GFX.Screen;
-	uint8  *d = &avi_buffer[(avi_height - 1) * avi_pitch];
 
-	for(int y = 0; y < height*2; y++)
+	const int image_offset = (avi_height - (interlaced?srcHeight:srcHeight<<1)) * avi_pitch;
+	uint16 *s = (uint16*)GFX.Screen;
+	uint8  *d = avi_buffer + (avi_height - 1) * avi_pitch;
+	uint8  *d2 = d - avi_pitch;
+
+	for(int y = 0; y < avi_height >> 1; y++)
 	{
-		for(int x = 0; x < width; x++)
+		for(int x = 0; x < avi_width >> 1; x++)
 		{
+			uint32 pixel, pixel2, pixel3, pixel4;
+			if(hires && interlaced) {
+				uint16 *s2 = s + srcPitch;
+				pixel = *s;
+				pixel2 = *(s+1);
+				pixel3 = *s2;
+				pixel4 = *(s2+1);
+				s+=2;
+			} else if(interlaced) {
+				uint16 *s2 = s + srcPitch;
+				pixel = pixel2 = *s;
+				pixel3 = pixel4 = *s2;
+				s++;
+			} else if(hires) {
+				pixel = pixel3 = *s;
+				pixel2 = pixel4 = *(s+1);
+				s+=2;
+			} else {
+				pixel = pixel2 = pixel3 = pixel4 = *s;
+				s++;
+			}
+
 			if(order_is_rgb)
 			{
 				// Order is RGB
-				uint32 pixel = *s++;
-				*(d + 0) = *(d + 3) = (pixel >> (11 - 3)) & 0xf8;
-				*(d + 1) = *(d + 4) = (pixel >> (6 - 3)) & 0xf8;
-				*(d + 2) = *(d + 5) = (pixel & 0x1f) << 3;
+				*(d + 0) = (pixel >> (11 - 3)) & 0xf8;
+				*(d + 1) = (pixel >> (6 - 3)) & 0xf8;
+				*(d + 2) = (pixel & 0x1f) << 3;
+
+				*(d + 0) = (pixel2 >> (11 - 3)) & 0xf8;
+				*(d + 1) = (pixel2 >> (6 - 3)) & 0xf8;
+				*(d + 2) = (pixel2 & 0x1f) << 3;
 				d += 6;
+
+				*(d2 + 0) = (pixel3 >> (11 - 3)) & 0xf8;
+				*(d2 + 1) = (pixel3 >> (6 - 3)) & 0xf8;
+				*(d2 + 2) = (pixel3 & 0x1f) << 3;
+
+				*(d2 + 0) = (pixel4 >> (11 - 3)) & 0xf8;
+				*(d2 + 1) = (pixel4 >> (6 - 3)) & 0xf8;
+				*(d2 + 2) = (pixel4 & 0x1f) << 3;
+				d2 += 6;
 			}
 			else
 			{
 				// Order is BGR
-				uint32 pixel = *s++;
-				*(d + 0) = *(d + 3) = (pixel & 0x1f) << 3;
-				*(d + 1) = *(d + 4) = (pixel >> (6 - 3)) & 0xf8;
-				*(d + 2) = *(d + 5) = (pixel >> (11 - 3)) & 0xf8;
+				*(d + 0) = (pixel & 0x1f) << 3;
+				*(d + 1) = (pixel >> (6 - 3)) & 0xf8;
+				*(d + 2) = (pixel >> (11 - 3)) & 0xf8;
+
+				*(d + 3) = (pixel2 & 0x1f) << 3;
+				*(d + 4) = (pixel2 >> (6 - 3)) & 0xf8;
+				*(d + 5) = (pixel2 >> (11 - 3)) & 0xf8;
 				d += 6;
+
+				*(d2 + 0) = (pixel3 & 0x1f) << 3;
+				*(d2 + 1) = (pixel3 >> (6 - 3)) & 0xf8;
+				*(d2 + 2) = (pixel3 >> (11 - 3)) & 0xf8;
+
+				*(d2 + 3) = (pixel4 & 0x1f) << 3;
+				*(d2 + 4) = (pixel4 >> (6 - 3)) & 0xf8;
+				*(d2 + 5) = (pixel4 >> (11 - 3)) & 0xf8;
+				d2 += 6;
 			}
 		}
-		s = (uint16*)((uint8*)s + src_step[y % 2]);
-		d += dst_step;
-	}
-
-	// black out what we might have missed
-	if(image_offset > 0)
-		memset(avi_buffer, 0, image_offset);
-}
-
-// Dst: GFX.Screen 512xH  (2x1) 16bpp top-down
-// Src: avi_buffer 256xH  (1x1) 24bpp bottom-up
-static void BuildAVIVideoFrame1XHiRes (void)
-{
-	const int snesWidth = IPPU.RenderedScreenWidth;
-	const int snesHeight = IPPU.RenderedScreenHeight;
-	const int width = min(snesWidth/2, avi_width);
-	const int height = min(snesHeight, avi_height);
-	const int pitch = GFX.Pitch;
-#ifdef LSB_FIRST
-	const bool order_is_rgb = (GUI.RedShift < GUI.BlueShift);
-#else
-	const bool order_is_rgb = (GUI.RedShift > GUI.BlueShift);
-#endif
-	const int src_step = pitch - width*2*2;
-	const int dst_step = -(avi_pitch + width*3);
-	const int image_offset = (avi_height - height) * avi_pitch;
-	uint16 *s = (uint16*)GFX.Screen;
-	uint8  *d = &avi_buffer[(avi_height - 1) * avi_pitch];
-
-	#define Interp(c1, c2) \
-		(c1 == c2) ? c1 : \
-		(((((c1 & 0x07E0)      + (c2 & 0x07E0)) >> 1) & 0x07E0) + \
-		((((c1 & 0xF81F)      + (c2 & 0xF81F)) >> 1) & 0xF81F))
-
-	for(int y = 0; y < height; y++)
-	{
-		for(int x = 0; x < width; x++)
-		{
-			if(order_is_rgb)
-			{
-				// Order is RGB
-				uint32 pixel = Interp(s[0],s[1]);
-				s += 2;
-				*(d + 0) = (pixel >> (11 - 3)) & 0xf8;
-				*(d + 1) = (pixel >> (6 - 3)) & 0xf8;
-				*(d + 2) = (pixel & 0x1f) << 3;
-				d += 3;
-			}
-			else
-			{
-				// Order is BGR
-				uint32 pixel = Interp(s[0],s[1]);
-				s += 2;
-				*(d + 0) = (pixel & 0x1f) << 3;
-				*(d + 1) = (pixel >> (6 - 3)) & 0xf8;
-				*(d + 2) = (pixel >> (11 - 3)) & 0xf8;
-				d += 3;
-			}
-		}
-		s = (uint16*)((uint8*)s + src_step);
-		d += dst_step;
-	}
-
-	// black out what we might have missed
-	if(image_offset > 0)
-		memset(avi_buffer, 0, image_offset);
-}
-
-// Dst: GFX.Screen 512xH  (1x1) 16bpp top-down
-// Src: avi_buffer 512x2H (1x2) 24bpp bottom-up
-static void BuildAVIVideoFrame2XHiRes (void)
-{
-	const int snesWidth = IPPU.RenderedScreenWidth;
-	const int snesHeight = IPPU.RenderedScreenHeight;
-	const int width = min(snesWidth, avi_width);
-	const int height = min(snesHeight, avi_height/2);
-	const int pitch = GFX.Pitch;
-#ifdef LSB_FIRST
-	const bool order_is_rgb = (GUI.RedShift < GUI.BlueShift);
-#else
-	const bool order_is_rgb = (GUI.RedShift > GUI.BlueShift);
-#endif
-	const int src_step[2] = { -width*2, pitch - width*2 };
-	const int dst_step = -(avi_pitch + width*3);
-	const int image_offset = (avi_height - height*2) * avi_pitch;
-	uint16 *s = (uint16*)GFX.Screen;
-	uint8  *d = &avi_buffer[(avi_height - 1) * avi_pitch];
-
-	for(int y = 0; y < height*2; y++)
-	{
-		for(int x = 0; x < width; x++)
-		{
-			if(order_is_rgb)
-			{
-				// Order is RGB
-				uint32 pixel = *s++;
-				*(d + 0) = (pixel >> (11 - 3)) & 0xf8;
-				*(d + 1) = (pixel >> (6 - 3)) & 0xf8;
-				*(d + 2) = (pixel & 0x1f) << 3;
-				d += 3;
-			}
-			else
-			{
-				// Order is BGR
-				uint32 pixel = *s++;
-				*(d + 0) = (pixel & 0x1f) << 3;
-				*(d + 1) = (pixel >> (6 - 3)) & 0xf8;
-				*(d + 2) = (pixel >> (11 - 3)) & 0xf8;
-				d += 3;
-			}
-		}
-		s = (uint16*)((uint8*)s + src_step[y % 2]);
-		d += dst_step;
+		s += srcStep;
+		d -= dstStep;
+		d2 -= dstStep;
 	}
 
 	// black out what we might have missed

@@ -12073,10 +12073,11 @@ void WinDisplayChar(screenPtrType *s, uint8 c) {
     int offset = ((c - 32) & 15) * display_fontwidth;
     int h, w;
 	bool hiRes = (IPPU.RenderedScreenWidth >= SNES_WIDTH*2);
+	bool interlaced = (IPPU.RenderedScreenHeight >= SNES_HEIGHT*2);
     uint32 RealPPL = GFX.Pitch2/2;
 	if(!display_paramsinited) display_ppl = Settings.OpenGLEnable ? IPPU.RenderedScreenWidth : RealPPL;
 	if(display_hfontaccessscale == 1 && display_vfontaccessscale == 1) {
-		if (hiRes && (display_screen == (uint16*)GFX.Screen || GUI.ScaleHiRes == FILTER_NONE)) {
+		if (hiRes && !interlaced && (display_screen == (uint16*)GFX.Screen || GUI.ScaleHiRes == FILTER_NONE)) {
 			for(h=0; h<display_fontheight; h++, line++, s+=display_ppl-display_fontwidth*2)
 				for(w=0; w<display_fontwidth; w++, s+=2) {
 					FontPixToScreen(font [(line)] [(offset + w)], s);
@@ -12122,6 +12123,7 @@ static void WinDisplayStringI (const char *string, int lines, bool linesFromBott
     int char_count = 0;
 	int prev_hfont_access_scale = display_hfontaccessscale;
 	bool hiRes = (IPPU.RenderedScreenWidth >= SNES_WIDTH*2);
+	bool interlaced = (IPPU.RenderedScreenHeight >= SNES_HEIGHT*2);
 
 	// squash if it won't fit on 1 line and we're drawing greater than 1x scale and we're not allowing wrapping
 	while(len > max_chars && !allowWrap && display_hfontaccessscale > 1)
@@ -12151,7 +12153,7 @@ static void WinDisplayStringI (const char *string, int lines, bool linesFromBott
 		if((unsigned char) string[i]<32) continue;
 
 		WinDisplayChar(Screen, string[i]);
-		Screen += /*Settings.SixteenBit ? (display_fontwidth-display_hfontaccessscale)*sizeof(uint16) :*/ (display_fontwidth-display_hfontaccessscale) * ((hiRes && (display_screen == (uint16*)GFX.Screen || GUI.ScaleHiRes == FILTER_NONE)) ? 2 : 1);
+		Screen += /*Settings.SixteenBit ? (display_fontwidth-display_hfontaccessscale)*sizeof(uint16) :*/ (display_fontwidth-display_hfontaccessscale) * ((hiRes && !interlaced && (display_screen == (uint16*)GFX.Screen || GUI.ScaleHiRes == FILTER_NONE)) ? 2 : 1);
 		char_count++;
 	}
 
