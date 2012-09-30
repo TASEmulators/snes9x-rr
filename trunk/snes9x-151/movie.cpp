@@ -691,11 +691,6 @@ static void change_state(MovieState new_state)
 		}
 	}
 
-	if (new_state == MOVIE_STATE_FINISHED)
-	{
-		truncate_movie();
-	}
-
 	Movie.State=new_state;
 }
 
