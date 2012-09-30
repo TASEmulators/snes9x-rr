@@ -1882,15 +1882,16 @@ int movie_getlength(lua_State *L) {
 //
 //   "record", "playback" or nil
 int movie_getmode(lua_State *L) {
-	if (!S9xMovieActive()) {
-		lua_pushnil(L);
-		return 1;
-	}
-	
-	if (S9xMovieRecording())
-		lua_pushstring(L, "record");
-	else
+	if (!S9xMovieActive())
+		lua_pushstring(L, "inactive");
+	else if (S9xMoviePlaying())
 		lua_pushstring(L, "playback");
+	else if (S9xMovieRecording())
+		lua_pushstring(L, "record");
+	else if (S9xMovieFinished())
+		lua_pushstring(L, "finished");
+	else
+		lua_pushnil(L);
 	return 1;
 }
 

@@ -4993,10 +4993,6 @@ int WINAPI WinMain(
 			ProcessInput(); // report input first for joypad.read()
 			if (S9xLuaRunning())
 			{
-				for (int i = 0; i < 5; i++) {
-					IPPU.JoypadsIntermediate[i] = S9xReadJoypad(i);
-				}
-
 				S9xLuaFrameBoundary();
 				if (S9xLuaSpeed() > 0) {
 					run_loop = 1;
