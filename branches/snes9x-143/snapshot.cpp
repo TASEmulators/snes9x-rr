@@ -1586,7 +1586,9 @@ int S9xUnfreezeFromStream (STREAM stream)
     char buffer [_MAX_PATH + 1];
     char rom_filename [_MAX_PATH + 1];
     int result;
-	
+
+	int movieResult = SUCCESS;
+
     int version;
     int len = strlen (SNAPSHOT_MAGIC) + 1 + 4 + 1;
     if (READ_STREAM (buffer, len, stream) != len)
@@ -1699,29 +1701,30 @@ int S9xUnfreezeFromStream (STREAM stream)
 		// movie
 		{
 			SnapshotMovieInfo mi;
-			if ((result = UnfreezeStruct (stream, "MOV", &mi, SnapMovie, COUNT(SnapMovie), version)) != SUCCESS)
+			movieResult = UnfreezeStruct (stream, "MOV", &mi, SnapMovie, COUNT(SnapMovie), version);
+			if (movieResult != SUCCESS)
 			{
-				if (S9xMovieActive ())
+				movieResult = NOT_A_MOVIE_SNAPSHOT;
+			}
+			else
+			{
+				movieResult = UnfreezeBlockCopy (stream, "MID", &local_movie_data, mi.MovieInputDataSize);
+				if (movieResult != SUCCESS)
 				{
-					result = NOT_A_MOVIE_SNAPSHOT;
-					break;
+					movieResult = NOT_A_MOVIE_SNAPSHOT;
+					if (local_movie_data) {
+						delete [] local_movie_data;
+						local_movie_data = NULL;
+					}
 				}
-			} else {
-
-				if ((result = UnfreezeBlockCopy (stream, "MID", &local_movie_data, mi.MovieInputDataSize)) != SUCCESS)
+				else
 				{
 					if (S9xMovieActive ())
 					{
-						result = NOT_A_MOVIE_SNAPSHOT;
-						break;
+						result = S9xMovieUnfreeze(local_movie_data, mi.MovieInputDataSize);
+						if(result != SUCCESS)
+							break;
 					}
-				}
-
-				if (S9xMovieActive ())
-				{
-					result = S9xMovieUnfreeze(local_movie_data, mi.MovieInputDataSize);
-					if(result != SUCCESS)
-						break;
 				}
 			}
 		}
@@ -1900,6 +1903,15 @@ int S9xUnfreezeFromStream (STREAM stream)
 		}
 		else
 			S9xUpdateFrameCounter (-1);
+		if (S9xMovieActive())
+		{
+			result = movieResult;
+		}
+		if (result == NOT_A_MOVIE_SNAPSHOT)
+		{
+			// finish the movie
+			S9xMovieUnfreeze(NULL, 0);
+		}
 
 		Memory.FixROMSpeed ();
 		CPU.Flags |= old_flags & (DEBUG_MODE_FLAG | TRACE_FLAG |
