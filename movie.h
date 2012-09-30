@@ -157,8 +157,6 @@ void S9xMovieToggleFrameDisplay ();
 // methods used by the emulation
 void S9xMovieInit ();
 void S9xMovieShutdown ();
-void S9xMovieRecordReset ();
-bool S9xMovieRequiresReset ();
 void S9xMovieUpdate ();
 void S9xMovieUpdateOnReset ();
 //bool8 S9xMovieRewind (uint32 at_frame);
@@ -181,7 +179,7 @@ uint32 S9xMovieGetFrameCounter ();
 uint32 S9xMovieGetRerecordCount ();
 uint32 S9xMovieSetRerecordCount (uint32 newRerecordCount);
 
-bool MovieGetJoypadNext(int which, uint16 &pad);
+void MovieApplyNextInput();
 
 END_EXTERN_C
 

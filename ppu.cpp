@@ -2915,37 +2915,18 @@ void S9xUpdateJustifiers()
 	}
 }
 
-uint16 S9xReadJoypadNext(int which){
-    uint16 pad = 0;
-
-    if (which < 0 || which > 4)
-        return 0;
-
-    if (MovieGetJoypadNext(which, pad))
-        return pad;
-    else if (S9xLuaUsingJoypad(which))
-        return S9xLuaReadJoypad(which);
-    else
-        return S9xReadJoypad(which);
-}
-
 void S9xUpdateJoypadButtons ()
 {
-    int i;
-
-	for (i = 0; i < 5; i++)
+	for (int i = 0; i < 5; i++)
 	{
-		if (S9xLuaUsingJoypad(i))
-			IPPU.Joypads[i] = S9xLuaReadJoypad(i);
-		else
-			IPPU.Joypads[i] = S9xReadJoypad (i);
+		IPPU.Joypads[i] = IPPU.JoypadsIntermediate[i];
 	}
 
 	S9xMovieUpdate();
 
 	if(!Settings.UpAndDown)
 	{
-		for (i = 0; i < 5; i++)
+		for (int i = 0; i < 5; i++)
 		{
 			if (IPPU.Joypads [i] & SNES_LEFT_MASK)
 				IPPU.Joypads [i] &= ~SNES_RIGHT_MASK;
@@ -2957,7 +2938,7 @@ void S9xUpdateJoypadButtons ()
     // BJ: This is correct behavior AFAICT (used to be Touhaiden hack)
     if (IPPU.Controller == SNES_JOYPAD || IPPU.Controller == SNES_MULTIPLAYER5)
     {
-		for (i = 0; i < 5; i++)
+		for (int i = 0; i < 5; i++)
 		{
 			if (IPPU.Joypads [i])
 				IPPU.Joypads [i] |= 0xffff0000;

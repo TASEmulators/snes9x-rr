@@ -160,6 +160,7 @@ struct InternalPPU {
     bool8  pad_read;
     bool8  pad_read_last;
     bool8  InMainLoop;
+    uint32 JoypadsIntermediate[5];
 };
 
 struct SOBJ

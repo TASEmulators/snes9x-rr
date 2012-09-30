@@ -108,10 +108,6 @@ static bool8 frameAdvanceWaiting = FALSE;
 // Transparency strength. 255=opaque, 0=so transparent it's invisible
 static int transparencyModifier = 255;
 
-// Our joypads.
-static uint32 lua_joypads[5];
-static uint8 lua_joypads_used = 0;
-
 static bool8 gui_used = FALSE;
 static bool8 gui_enabled = TRUE;
 static uint8 *gui_data = NULL; // BGRA
@@ -220,7 +216,6 @@ INLINE void S9xSetDWord (uint32 DWord, uint32 Address)
  */
 static void S9xLuaOnStop() {
 	luaRunning = FALSE;
-	lua_joypads_used = 0;
 	gui_used = false;
 	//if (wasPaused)
 	//	Settings.Paused = TRUE;
@@ -638,6 +633,75 @@ static const char* toCString(lua_State* L, int idx)
 	}
 }
 
+static const char* deferredJoySetIDString = "lazyjoy";
+#define MAX_DEFERRED_COUNT 16384
+
+// store the most recent C function call from Lua (and all its arguments)
+// for later evaluation
+void DeferFunctionCall(lua_State* L, const char* idstring)
+{
+	// there might be a cleaner way of doing this using lua_pushcclosure and lua_getref
+
+	int num = lua_gettop(L);
+
+	// get the C function pointer
+	//lua_CFunction cf = lua_tocfunction(L, -(num+1));
+	lua_CFunction cf = (L->ci->func)->value.gc->cl.c.f;
+	assert(cf);
+	lua_pushcfunction(L,cf);
+
+	// make a list of the function and its arguments (and also pop those arguments from the stack)
+	lua_createtable(L, num+1, 0);
+	lua_insert(L, 1);
+	for(int n = num+1; n > 0; n--)
+		lua_rawseti(L, 1, n);
+
+	// put the list into a global array
+	lua_getfield(L, LUA_REGISTRYINDEX, idstring);
+	lua_insert(L, 1);
+	int curSize = lua_objlen(L, 1);
+	lua_rawseti(L, 1, curSize+1);
+
+	// clean the stack
+	lua_settop(L, 0);
+}
+void CallDeferredFunctions(lua_State* L, const char* idstring)
+{
+	lua_settop(L, 0);
+	lua_getfield(L, LUA_REGISTRYINDEX, idstring);
+	int numCalls = lua_objlen(L, 1);
+	for(int i = 1; i <= numCalls; i++)
+	{
+        lua_rawgeti(L, 1, i);  // get the function+arguments list
+		int listSize = lua_objlen(L, 2);
+
+		// push the arguments and the function
+		for(int j = 1; j <= listSize; j++)
+			lua_rawgeti(L, 2, j);
+
+		// get and pop the function
+		lua_CFunction cf = lua_tocfunction(L, -1);
+		lua_pop(L, 1);
+
+		// shift first argument to slot 1 and call the function
+		lua_remove(L, 2);
+		lua_remove(L, 1);
+		cf(L);
+
+		// prepare for next iteration
+		lua_settop(L, 0);
+		lua_getfield(L, LUA_REGISTRYINDEX, idstring);
+	}
+
+	// clear the list of deferred functions
+	lua_newtable(L);
+	lua_setfield(L, LUA_REGISTRYINDEX, idstring);
+	//LuaContextInfo& info = GetCurrentInfo();
+
+	// clean the stack
+	lua_settop(L, 0);
+}
+
 // replacement for luaB_print() that goes to the appropriate textbox instead of stdout
 static int print(lua_State *L)
 {
@@ -860,6 +924,7 @@ void HandleCallbackError(lua_State* L)
 	}
 }
 
+bool joy_set_queue = true;
 void CallRegisteredLuaFunctions(LuaCallID calltype)
 {
 	assert((unsigned int)calltype < (unsigned int)LUACALL_COUNT);
@@ -868,6 +933,12 @@ void CallRegisteredLuaFunctions(LuaCallID calltype)
 	if (!LUA)
 		return;
 
+	if(calltype == LUACALL_BEFOREEMULATION)
+		joy_set_queue = false;
+
+	if(calltype == LUACALL_BEFOREEMULATION)
+		CallDeferredFunctions(LUA, deferredJoySetIDString);
+
 	lua_settop(LUA, 0);
 	lua_getfield(LUA, LUA_REGISTRYINDEX, idstring);
 
@@ -875,12 +946,16 @@ void CallRegisteredLuaFunctions(LuaCallID calltype)
 	if (lua_isfunction(LUA, -1))
 	{
 		errorcode = lua_pcall(LUA, 0, 0, 0);
+		if(calltype == LUACALL_BEFOREEMULATION)
+			joy_set_queue = true;
 		if (errorcode)
 			HandleCallbackError(LUA);
 	}
 	else
 	{
 		lua_pop(LUA, 1);
+		if(calltype == LUACALL_BEFOREEMULATION)
+			joy_set_queue = true;
 	}
 }
 
@@ -1398,20 +1473,19 @@ static int apu_writespc(lua_State *L) {
 }
 
 
-// table joypad.get(int which = 1)
+// table joypad.get([int which = 1])
 //
 //  Reads the joypads as inputted by the user.
 static int joy_get_internal(lua_State *L, bool reportUp, bool reportDown) {
 
 	// Reads the joypads as inputted by the user
-	int which = luaL_checkinteger(L,1);
+	int which = lua_isnoneornil(L,1) ? 1 : luaL_checkinteger(L,1);
 	
 	if (which < 1 || which > 5) {
 		luaL_error(L,"Invalid input port (valid range 1-5, specified %d)", which);
 	}
 	
-	extern uint16 S9xReadJoypadNext(int which);
-	uint32 buttons = S9xReadJoypadNext(which - 1);
+	uint32 buttons = IPPU.JoypadsIntermediate[which - 1];
 	
 	lua_newtable(L);
 	
@@ -1449,7 +1523,7 @@ static int joypad_getup(lua_State *L)
 }
 
 
-// joypad.set(int which, table buttons)
+// joypad.set([int which = 1,] table buttons)
 //
 //   Sets the given buttons to be pressed during the next
 //   frame advance. The table should have the right 
@@ -1457,32 +1531,43 @@ static int joypad_getup(lua_State *L)
 static int joypad_set(lua_State *L) {
 
 	// Which joypad we're tampering with
-	int which = luaL_checkinteger(L,1);
+	int which = !lua_isnumber(L,1) ? 1 : luaL_checkinteger(L,1);
 	if (which < 1 || which > 5) {
 		luaL_error(L,"Invalid output port (valid range 1-5, specified %d)", which);
 
 	}
 
+	if (IPPU.InMainLoop || joy_set_queue)
+	{
+		// defer this function until when we are processing input
+		DeferFunctionCall(L, deferredJoySetIDString);
+		return 0;
+	}
+
 	// And the table of buttons.
-	luaL_checktype(L,2,LUA_TTABLE);
+	int tableIndex = !lua_isnumber(L,1) ? 1 : 2;
+	luaL_checktype(L,tableIndex,LUA_TTABLE);
 
-	// Set up for taking control of the indicated controller
-	lua_joypads_used |= 1 << (which-1);
-	lua_joypads[which-1] = 0;
-
+	uint16 input = 0;
+	uint16 mask = 0;
 	for (int i = 4; i < 16; i++) {
 		const char* name = button_mappings[i];
-		lua_getfield(L, 2, name);
+		lua_getfield(L, tableIndex, name);
 		if (!lua_isnil(L,-1)) {
 			bool pressed = lua_toboolean(L,-1) != 0;
+			uint16 bitmask = 1 << i;
 			if (pressed)
-				lua_joypads[which-1] |= 1 << i;
+				input |= bitmask;
 			else
-				lua_joypads[which-1] &= ~(1 << i);
+				input &= ~bitmask;
+			mask |= bitmask;
 		}
 		lua_pop(L,1);
 	}
-	
+	IPPU.JoypadsIntermediate[which - 1] &= ~mask;
+	IPPU.JoypadsIntermediate[which - 1] |= input;
+	IPPU.JoypadsIntermediate[which - 1] |= 0x80000000;
+
 	return 0;
 }
 
@@ -4049,8 +4134,6 @@ void S9xLuaFrameBoundary() {
 
 //	printf("Lua Frame\n");
 
-	lua_joypads_used = 0;
-
 	// HA!
 	if (!LUA || !luaRunning)
 		return;
@@ -4180,6 +4263,10 @@ int S9xLoadLuaCode(const char *filename) {
 			lua_newtable(LUA);
 			lua_setfield(LUA, LUA_REGISTRYINDEX, luaMemHookTypeStrings[i]);
 		}
+
+		// deferred evaluation table
+		lua_newtable(LUA);
+		lua_setfield(LUA, LUA_REGISTRYINDEX, deferredJoySetIDString);
 	}
 
 	// We make our thread NOW because we want it at the bottom of the stack.
@@ -4214,7 +4301,6 @@ int S9xLoadLuaCode(const char *filename) {
 	skipRerecords = FALSE;
 	numMemHooks = 0;
 	transparencyModifier = 255; // opaque
-	lua_joypads_used = 0; // not used
 
 	//wasPaused = Settings.Paused;
 	//Settings.Paused = FALSE;
@@ -4301,35 +4387,6 @@ int S9xLuaRunning() {
 	return (int) (LUA != NULL); // should return true if callback functions are active.
 }
 
-
-/**
- * Returns true if Lua would like to steal the given joypad control.
- *
- * Range is 0 through 4
- */
-int S9xLuaUsingJoypad(int which) {
-	if (!S9xLuaRunning())
-		return 0;
-	return lua_joypads_used & (1 << which);
-}
-
-/**
- * Reads the buttons Lua is feeding for the given joypad, in the same
- * format as the OS-specific code.
- *
- * This function must not be called more than once per frame. Ideally exactly once
- * per frame (if S9xLuaUsingJoypad says it's safe to do so)
- */
-int S9xLuaReadJoypad(int which) {
-	if (!S9xLuaRunning())
-		return 0;
-	if (lua_joypads_used & (1 << which)) {
-		//lua_joypads_used &= ~(1 << which);
-		return lua_joypads[which] | 0x80000000;
-	}
-	else
-		return 0; // disconnected
-}
 
 /**
  * If this function returns true, the movie code should NOT increment
