@@ -1,4 +1,4 @@
-Snes9x 1.51+ v7 (svn213)
+Snes9x 1.51+ v7 (svn225)
 
 This is a general bugfix/enhancement release.
 There are no emulation changes if I remembered correctly.
