@@ -18,7 +18,7 @@
   C4 x86 assembler and some C emulation code
   (c) Copyright 2000 - 2003 zsKnight (zsknight@zsnes.com),
                             _Demo_ (_demo_@zsnes.com), and Nach
-
+ 
   C4 C++ code
   (c) Copyright 2003 Brad Jorsch
 
