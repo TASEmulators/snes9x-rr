@@ -1,4 +1,4 @@
-# Snes9x
+# Snes9x rerecording (legacy)
 *Snes9x - Portable Super Nintendo Entertainment System (TM) emulator*
 
 This is the archived source code repository for the legacy Snes9x rerecording project.
