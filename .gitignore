@@ -1,5 +1,5 @@
 # Files that can arise when using snes9x
-win32/snes9x.conf
+win32/snes9x14.cfg
 win32/Valid.Ext
 win32/stdout.txt
 win32/stderr.txt
