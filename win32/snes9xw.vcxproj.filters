@@ -407,7 +407,6 @@
     </ClCompile>
     <ClCompile Include="ioapi.c" />
     <ClCompile Include="..\SFMT\SFMT.c" />
-    <ClCompile Include="_lazyiobfix.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\3d.h">
