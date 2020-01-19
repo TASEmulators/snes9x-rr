@@ -1,0 +1,43 @@
+version: 1.51-{build}
+
+image: Visual Studio 2017
+
+environment:
+  matrix:
+  - generator: "Visual Studio 15"
+    config: Release
+    platform: Win32
+    arch: win32
+    output: win32\snes9x.exe
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+
+init:
+  - git config --global core.autocrlf input
+
+before_build:
+  - git submodule update --init --recursive
+
+build_script:
+  - msbuild win32\snes9xw.sln /t:build /p:Configuration="%config%";Platform="%platform%" /m /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+
+after_build:
+  - ps: $env:gitrev = git describe --tags
+  - ps: $env:my_version = "$env:APPVEYOR_REPO_COMMIT"
+  - set package_name=snes9x-1.51-rerecording-%my_version%-%arch%
+  - if exist artifacts rmdir /s /q artifacts
+  - mkdir artifacts
+  - copy "%output%" artifacts
+  - if "%config%"=="Release"
+    copy docs\changes.txt artifacts |
+    copy docs\changes-1.51-rr.txt artifacts |
+    copy docs\faqs.txt artifacts |
+    copy docs\lazymacro.txt artifacts |
+    copy docs\readme.txt artifacts |
+    copy docs\snes9x-license.txt artifacts |
+    copy win32\FMOD\api\fmod.dll artifacts |
+    copy lua\lib\lua51.dll artifacts
+  - 7z a %package_name%.zip .\artifacts\*
+
+artifacts:
+  - path: $(package_name).zip
+    name: $(arch)
