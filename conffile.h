@@ -234,7 +234,7 @@ class ConfigFile {
 		mutable bool used;
 
         struct section_then_key_less {
-            bool operator()(const ConfigEntry &a, const ConfigEntry &b);
+            bool operator()(const ConfigEntry &a, const ConfigEntry &b) const;
         };
 
         struct key_less {
@@ -245,7 +245,7 @@ class ConfigFile {
         };
 
         struct line_less {
-            bool operator()(const ConfigEntry &a, const ConfigEntry &b){
+            bool operator()(const ConfigEntry &a, const ConfigEntry &b) const{
                 if(a.line==b.line){
                     if(b.val.empty() == a.val.empty()) return a.key<b.key;
                     if(a.val.empty()) return false;
