@@ -21,7 +21,6 @@ build_script:
   - msbuild win32\snes9xw.sln /t:build /p:Configuration="%config%";Platform="%platform%" /m /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 after_build:
-  - ps: $env:gitrev = git describe --tags
   - ps: $env:my_version = $env:APPVEYOR_REPO_COMMIT.Substring(0, 7)
   - set package_name=snes9x-1.51-rerecording-%my_version%-%arch%
   - if exist artifacts rmdir /s /q artifacts
