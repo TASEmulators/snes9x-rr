@@ -343,8 +343,12 @@ int AVIBegin(const char* filename, struct AVIFile* _avi_out)
 		// create the video stream
 		memset(&avi.avi_video_header, 0, sizeof(AVISTREAMINFO));
 		avi.avi_video_header.fccType = streamtypeVIDEO;
-		avi.avi_video_header.dwScale = ONE_DOT_CYCLE*SNES_HCOUNTER_MAX*SNES_MAX_NTSC_VCOUNTER;
-		avi.avi_video_header.dwRate = (int)NTSC_MASTER_CLOCK;
+		avi.avi_video_header.dwScale = avi.frameskip;
+		avi.avi_video_header.dwRate = avi.fps;
+		// The following frame rate settings are more accurate,
+		// but will lead to AV desync unless you update the corresponding sound generation code correctly.
+		//avi.avi_video_header.dwScale = ONE_DOT_CYCLE*SNES_HCOUNTER_MAX*SNES_MAX_NTSC_VCOUNTER;
+		//avi.avi_video_header.dwRate = (int)NTSC_MASTER_CLOCK;
 		avi.avi_video_header.dwSuggestedBufferSize = avi.bitmap_format.biSizeImage;
 		if(FAILED(AVIFileCreateStream(avi.avi_file, &avi.streams[VIDEO_STREAM], &avi.avi_video_header)))
 			break;
