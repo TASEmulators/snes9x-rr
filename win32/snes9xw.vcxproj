@@ -9,10 +9,6 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release FastBuild|Win32">
-      <Configuration>Release FastBuild</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -25,13 +21,6 @@
     <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141_xp</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
-    <WholeProgramOptimization>false</WholeProgramOptimization>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -54,11 +43,6 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="s9x.props" />
-    <Import Project="lua51.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -98,13 +82,6 @@
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
     <TargetName>$(ProjectName)-debug</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">
-    <OutDir>$(SolutionDir)</OutDir>
-    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\$(PlatformTarget)\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
-    <GenerateManifest>true</GenerateManifest>
-    <TargetName>$(ProjectName)-releaseFastBuild</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='C core (Deprecated)|Win32'">
     <BuildLog />
@@ -270,64 +247,6 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">
-    <BuildLog />
-    <PreBuildEvent />
-    <Midl>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MkTypLibCompatible>true</MkTypLibCompatible>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\Release/snes9xw.tlb</TypeLibraryName>
-      <HeaderFileName />
-    </Midl>
-    <ClCompile>
-      <Optimization>Full</Optimization>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <OmitFramePointers>true</OmitFramePointers>
-      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>.;..;$(ProjectDir)zlib\src;$(ProjectDir)libpng\src;directx;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>ZSNES_C4;ZSNES_FX;NDEBUG;HAVE_LIBPNG;SPC700_C;JMA_SUPPORT;SDD1_DECOMP;CORRECT_VRAM_READS;JP_FIX;SPC700_SHUTDOWN;CPU_SHUTDOWN;ZLIB;VAR_CYCLES;UNZIP_SUPPORT;EXECUTE_SUPERFX_PER_LINE;NEW_COLOUR_BLENDING;WIN32;__MSC__;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NOUNCRYPT;FMOD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)</ObjectFileName>
-      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
-      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
-      <BrowseInformation />
-      <WarningLevel>Level3</WarningLevel>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <CompileAs>Default</CompileAs>
-      <DisableSpecificWarnings>4290;4996;4200;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>0x0809</Culture>
-    </ResourceCompile>
-    <Link>
-      <AdditionalOptions>/ignore:4199 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>comctl32.lib;winmm.lib;opengl32.lib;glu32.lib;wsock32.lib;directx/ddraw.lib;directx/dsound.lib;directx/dxguid.lib;vfw32.lib;shlwapi.lib;delayimp.lib;legacy_stdio_definitions.lib;fmodvc.lib;fmodexp_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>directx;FMOD/api/lib;FMODEx/api/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ManifestFile>$(IntDir)$(TargetFileName).intermediate.manifest</ManifestFile>
-      <DelayLoadDLLs>fmod.dll;fmodexp.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(TargetDir)$(TargetName).pdb</ProgramDatabaseFile>
-      <SubSystem>Windows</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <LinkTimeCodeGeneration />
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention />
-      <TargetMachine>MachineX86</TargetMachine>
-      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-    </Link>
-  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\2xsai.cpp" />
     <ClCompile Include="..\apu.cpp" />
@@ -335,7 +254,6 @@
     <ClCompile Include="..\c4.cpp" />
     <ClCompile Include="..\c4emu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\cheats.cpp" />
@@ -345,12 +263,10 @@
     <ClCompile Include="..\cpu.cpp" />
     <ClCompile Include="..\cpuexec.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\cpuops.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\data.cpp" />
@@ -361,31 +277,26 @@
     <ClCompile Include="..\dsp3emu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='C core (Deprecated)|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\dsp4emu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='C core (Deprecated)|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\fxdbg.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='C core (Deprecated)|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\fxemu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='C core (Deprecated)|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\fxinst.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='C core (Deprecated)|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\gfx.cpp" />
@@ -410,7 +321,6 @@
     <ClCompile Include="..\offsets.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='C core (Deprecated)|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\ppu.cpp" />
@@ -418,7 +328,6 @@
     <ClCompile Include="..\sa1.cpp" />
     <ClCompile Include="..\sa1cpu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\screenshot.cpp" />
@@ -432,7 +341,6 @@
     <ClCompile Include="..\SFMT\SFMT.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='C core (Deprecated)|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\snaporig.cpp" />
@@ -494,20 +402,17 @@
     <CustomBuild Include="..\dsp4.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='C core (Deprecated)|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </CustomBuild>
     <ClInclude Include="..\font.h" />
     <CustomBuild Include="..\fxemu.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='C core (Deprecated)|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </CustomBuild>
     <CustomBuild Include="..\fxinst.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='C core (Deprecated)|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </CustomBuild>
     <ClInclude Include="..\getset.h" />
@@ -608,10 +513,6 @@
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
-</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
@@ -626,10 +527,6 @@
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
-</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
@@ -645,10 +542,6 @@
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
-</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
@@ -664,10 +557,6 @@
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">cd %(RootDir)%(Directory).. &amp; gcc -c -DEXECUTE_SUPERFX_PER_LINE -DVAR_CYCLES -DMICROSOFT_C -DSPC700_C -DCPU_SHUTDOWN -DSPC700_SHUTDOWN -Ii386 "i386/%(Filename)%(Extension)" -o "$(IntDir)i386_%(Filename).obj"
-</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd %(RootDir)%(Directory).. &amp; gcc -c -DEXECUTE_SUPERFX_PER_LINE -DVAR_CYCLES -DMICROSOFT_C -DSPC700_C -DCPU_SHUTDOWN -DSPC700_SHUTDOWN -Ii386 "i386/%(Filename)%(Extension)" -o "$(IntDir)i386_%(Filename).obj"
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
@@ -683,10 +572,6 @@
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">cd %(RootDir)%(Directory).. &amp; gcc -c -DEXECUTE_SUPERFX_PER_LINE -DVAR_CYCLES -DMICROSOFT_C -DSPC700_C -DCPU_SHUTDOWN -DSPC700_SHUTDOWN -Ii386 "i386/%(Filename)%(Extension)" -o "$(IntDir)i386_%(Filename).obj"
-</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd %(RootDir)%(Directory).. &amp; gcc -c -DEXECUTE_SUPERFX_PER_LINE -DVAR_CYCLES -DMICROSOFT_C -DSPC700_C -DCPU_SHUTDOWN -DSPC700_SHUTDOWN -Ii386 "i386/%(Filename)%(Extension)" -o "$(IntDir)i386_%(Filename).obj"
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
@@ -701,10 +586,6 @@
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
-</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
@@ -719,10 +600,6 @@
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
-</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
@@ -737,10 +614,6 @@
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
-</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
@@ -755,10 +628,6 @@
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
-</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
@@ -774,10 +643,6 @@
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">cd %(RootDir)%(Directory).. &amp; gcc -c -DEXECUTE_SUPERFX_PER_LINE -DVAR_CYCLES -DMICROSOFT_C -DSPC700_C -DCPU_SHUTDOWN -DSPC700_SHUTDOWN -Ii386 "i386/%(Filename)%(Extension)" -o "$(IntDir)i386_%(Filename).obj"
-</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd %(RootDir)%(Directory).. &amp; gcc -c -DEXECUTE_SUPERFX_PER_LINE -DVAR_CYCLES -DMICROSOFT_C -DSPC700_C -DCPU_SHUTDOWN -DSPC700_SHUTDOWN -Ii386 "i386/%(Filename)%(Extension)" -o "$(IntDir)i386_%(Filename).obj"
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
@@ -792,10 +657,6 @@
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
-</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
@@ -811,10 +672,6 @@
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
-</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
@@ -829,10 +686,6 @@
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
-</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
@@ -848,10 +701,6 @@
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
-</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">$(IntDir)i386_%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd %(RootDir)%(Directory).. &amp; nasmw -d__DJGPP__=1 -dZSNES_FX -f win32 -i . -i i386 -o "$(IntDir)i386_%(Filename).obj" "i386/%(Filename)%(Extension)"
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../i386/offset.h;%(AdditionalInputs)</AdditionalInputs>

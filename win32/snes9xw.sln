@@ -12,7 +12,6 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		C core (Deprecated)|Win32 = C core (Deprecated)|Win32
 		Debug|Win32 = Debug|Win32
-		Release FastBuild|Win32 = Release FastBuild|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
@@ -20,24 +19,18 @@ Global
 		{B86059D8-C9A6-46BE-8FBA-3170C54F1DFD}.C core (Deprecated)|Win32.Build.0 = C core (Deprecated)|Win32
 		{B86059D8-C9A6-46BE-8FBA-3170C54F1DFD}.Debug|Win32.ActiveCfg = Debug|Win32
 		{B86059D8-C9A6-46BE-8FBA-3170C54F1DFD}.Debug|Win32.Build.0 = Debug|Win32
-		{B86059D8-C9A6-46BE-8FBA-3170C54F1DFD}.Release FastBuild|Win32.ActiveCfg = Release FastBuild|Win32
-		{B86059D8-C9A6-46BE-8FBA-3170C54F1DFD}.Release FastBuild|Win32.Build.0 = Release FastBuild|Win32
 		{B86059D8-C9A6-46BE-8FBA-3170C54F1DFD}.Release|Win32.ActiveCfg = Release|Win32
 		{B86059D8-C9A6-46BE-8FBA-3170C54F1DFD}.Release|Win32.Build.0 = Release|Win32
 		{95804E5F-B69E-4E2A-925E-52FAFC19EDBF}.C core (Deprecated)|Win32.ActiveCfg = Release|Win32
 		{95804E5F-B69E-4E2A-925E-52FAFC19EDBF}.C core (Deprecated)|Win32.Build.0 = Release|Win32
 		{95804E5F-B69E-4E2A-925E-52FAFC19EDBF}.Debug|Win32.ActiveCfg = Debug|Win32
 		{95804E5F-B69E-4E2A-925E-52FAFC19EDBF}.Debug|Win32.Build.0 = Debug|Win32
-		{95804E5F-B69E-4E2A-925E-52FAFC19EDBF}.Release FastBuild|Win32.ActiveCfg = Release|Win32
-		{95804E5F-B69E-4E2A-925E-52FAFC19EDBF}.Release FastBuild|Win32.Build.0 = Release|Win32
 		{95804E5F-B69E-4E2A-925E-52FAFC19EDBF}.Release|Win32.ActiveCfg = Release|Win32
 		{95804E5F-B69E-4E2A-925E-52FAFC19EDBF}.Release|Win32.Build.0 = Release|Win32
 		{99E9817A-4605-44AF-8433-7048F0EC1859}.C core (Deprecated)|Win32.ActiveCfg = Release|Win32
 		{99E9817A-4605-44AF-8433-7048F0EC1859}.C core (Deprecated)|Win32.Build.0 = Release|Win32
 		{99E9817A-4605-44AF-8433-7048F0EC1859}.Debug|Win32.ActiveCfg = Debug|Win32
 		{99E9817A-4605-44AF-8433-7048F0EC1859}.Debug|Win32.Build.0 = Debug|Win32
-		{99E9817A-4605-44AF-8433-7048F0EC1859}.Release FastBuild|Win32.ActiveCfg = Release|Win32
-		{99E9817A-4605-44AF-8433-7048F0EC1859}.Release FastBuild|Win32.Build.0 = Release|Win32
 		{99E9817A-4605-44AF-8433-7048F0EC1859}.Release|Win32.ActiveCfg = Release|Win32
 		{99E9817A-4605-44AF-8433-7048F0EC1859}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
