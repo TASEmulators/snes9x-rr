@@ -2,7 +2,6 @@
 // Microsoft Visual C++ generated include file.
 // Used by snes9x.rc
 //
-#define IDR_RT_MANIFEST2                1
 #define IDR_MENU_US                     101
 #define IDC_CURSOR_SCOPE                102
 #define IDD_SPC7110_CACHE               103

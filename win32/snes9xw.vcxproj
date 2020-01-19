@@ -1,0 +1,632 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release FastBuild|Win32">
+      <Configuration>Release FastBuild</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>Snes9X</ProjectName>
+    <ProjectGuid>{B86059D8-C9A6-46BE-8FBA-3170C54F1DFD}</ProjectGuid>
+    <RootNamespace>Snes9X</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>15.0.28307.799</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)\__bins\</OutDir>
+    <IntDir>$(SolutionDir)\.vsbuild\$(Configuration)\$(Platform)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <GenerateManifest>true</GenerateManifest>
+    <TargetName>snes9x</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)\__bins\</OutDir>
+    <IntDir>$(SolutionDir)\.vsbuild\$(Configuration)\$(Platform)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <GenerateManifest>true</GenerateManifest>
+    <TargetName>snes9x-debug</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">
+    <OutDir>$(SolutionDir)\__bins\</OutDir>
+    <IntDir>$(SolutionDir)\.vsbuild\$(Configuration)\$(Platform)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <GenerateManifest>true</GenerateManifest>
+    <TargetName>snes9x-releaseFastBuild</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Command>defaultconfig\SubWCRev.bat</Command>
+    </PreBuildEvent>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\Release/snes9xw.tlb</TypeLibraryName>
+      <HeaderFileName />
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>.;..;zlib;directx;libpng;../lua/src;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;SPC700_SHUTDOWN;CPU_SHUTDOWN;CORRECT_VRAM_READS;ZLIB;UNZIP_SUPPORT;JMA_SUPPORT;HAVE_LIBPNG;NEW_COLOUR_BLENDING;NETPLAY_SUPPORT;_WINDOWS;WIN32;__MSC__;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NOUNCRYPT;FMOD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc80.pdb</ProgramDataBaseFileName>
+      <BrowseInformation />
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4290;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0809</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalOptions>/ignore:4199 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>comctl32.lib;winmm.lib;wsock32.lib;directx/ddraw.lib;directx/dsound.lib;directx/dxguid.lib;vfw32.lib;shlwapi.lib;delayimp.lib;legacy_stdio_definitions.lib;fmodvc.lib;fmodexp_vc.lib;zlib-2008-x32.lib;libpng-2008-x32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>directx;../lua/lib;FMOD/api/lib;FMODEx/api/lib;zlib;libpng;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>fmod.dll;fmodexp.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <ProgramDatabaseFile>$(TargetDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Command>defaultconfig\SubWCRev.bat</Command>
+    </PreBuildEvent>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\Debug/snes9xw.tlb</TypeLibraryName>
+      <HeaderFileName />
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.;..;zlib;directx;libpng;../lua/src;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG;_DEBUG;SPC700_SHUTDOWN;CPU_SHUTDOWN;CORRECT_VRAM_READS;ZLIB;UNZIP_SUPPORT;JMA_SUPPORT;HAVE_LIBPNG;NEW_COLOUR_BLENDING;NETPLAY_SUPPORT;_WINDOWS;WIN32;__MSC__;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NOUNCRYPT;FMOD_SUPPORT;LUA_USE_APICHECK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc80.pdb</ProgramDataBaseFileName>
+      <BrowseInformation />
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4290;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0413</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalOptions>/ignore:4199 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>comctl32.lib;winmm.lib;wsock32.lib;directx/ddraw.lib;directx/dsound.lib;directx/dxguid.lib;vfw32.lib;shlwapi.lib;delayimp.lib;legacy_stdio_definitions.lib;fmodvc.lib;fmodexp_vc.lib;zlib-2008-x32.lib;libpng-2008-x32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>directx;../lua/lib;FMOD/api/lib;FMODEx/api/lib;zlib;libpng;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>fmod.dll;fmodexp.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(TargetDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <GenerateMapFile>true</GenerateMapFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">
+    <PreBuildEvent>
+      <Command>defaultconfig\SubWCRev.bat</Command>
+    </PreBuildEvent>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\Release/snes9xw.tlb</TypeLibraryName>
+      <HeaderFileName />
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>.;..;zlib;directx;libpng;../lua/src;FMOD/api/inc;FMODEx/api/inc;userconfig;defaultconfig;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;SPC700_SHUTDOWN;CPU_SHUTDOWN;CORRECT_VRAM_READS;ZLIB;UNZIP_SUPPORT;JMA_SUPPORT;HAVE_LIBPNG;NEW_COLOUR_BLENDING;NETPLAY_SUPPORT;_WINDOWS;WIN32;__MSC__;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NOUNCRYPT;FMOD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc80.pdb</ProgramDataBaseFileName>
+      <BrowseInformation />
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4290;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0809</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalOptions>/ignore:4199 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>comctl32.lib;winmm.lib;wsock32.lib;directx/ddraw.lib;directx/dsound.lib;directx/dxguid.lib;vfw32.lib;shlwapi.lib;delayimp.lib;legacy_stdio_definitions.lib;fmodvc.lib;fmodexp_vc.lib;zlib-2008-x32.lib;libpng-2008-x32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>directx;../lua/lib;FMOD/api/lib;FMODEx/api/lib;zlib;libpng;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>fmod.dll;fmodexp.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(TargetDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration />
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\2xsai.cpp" />
+    <ClCompile Include="..\apu.cpp" />
+    <ClCompile Include="..\apudebug.cpp" />
+    <ClCompile Include="..\bsx.cpp" />
+    <ClCompile Include="..\c4.cpp" />
+    <ClCompile Include="..\c4emu.cpp" />
+    <ClCompile Include="..\cheats.cpp" />
+    <ClCompile Include="..\cheats2.cpp" />
+    <ClCompile Include="..\clip.cpp" />
+    <ClCompile Include="..\conffile.cpp" />
+    <ClCompile Include="..\controls.cpp" />
+    <ClCompile Include="..\cpu.cpp" />
+    <ClCompile Include="..\cpuexec.cpp" />
+    <ClCompile Include="..\cpuops.cpp" />
+    <ClCompile Include="..\crosshairs.cpp" />
+    <ClCompile Include="..\data.cpp" />
+    <ClCompile Include="..\debug.cpp" />
+    <ClCompile Include="..\disasm.cpp" />
+    <ClCompile Include="..\dma.cpp" />
+    <ClCompile Include="..\dsp1.cpp" />
+    <ClCompile Include="..\dsp1emu.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\dsp2emu.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\dsp3emu.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\dsp4emu.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\fxdbg.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\fxemu.cpp" />
+    <ClCompile Include="..\fxinst.cpp" />
+    <ClCompile Include="..\gfx.cpp" />
+    <ClCompile Include="..\globals.cpp" />
+    <ClCompile Include="..\jma\7zlzma.cpp" />
+    <ClCompile Include="..\jma\crc32.cpp" />
+    <ClCompile Include="..\jma\iiostrm.cpp" />
+    <ClCompile Include="..\jma\inbyte.cpp" />
+    <ClCompile Include="..\jma\jma.cpp" />
+    <ClCompile Include="..\jma\lzma.cpp" />
+    <ClCompile Include="..\jma\lzmadec.cpp" />
+    <ClCompile Include="..\jma\s9x-jma.cpp" />
+    <ClCompile Include="..\jma\winout.cpp" />
+    <ClCompile Include="..\loadzip.cpp" />
+    <ClCompile Include="..\logger.cpp" />
+    <ClCompile Include="..\lua-engine.cpp" />
+    <ClCompile Include="..\luasav.cpp" />
+    <ClCompile Include="..\lua\src\lapi.c" />
+    <ClCompile Include="..\lua\src\lauxlib.c" />
+    <ClCompile Include="..\lua\src\lbaselib.c" />
+    <ClCompile Include="..\lua\src\lcode.c" />
+    <ClCompile Include="..\lua\src\ldblib.c" />
+    <ClCompile Include="..\lua\src\ldebug.c" />
+    <ClCompile Include="..\lua\src\ldo.c" />
+    <ClCompile Include="..\lua\src\ldump.c" />
+    <ClCompile Include="..\lua\src\lfunc.c" />
+    <ClCompile Include="..\lua\src\lgc.c" />
+    <ClCompile Include="..\lua\src\linit.c" />
+    <ClCompile Include="..\lua\src\liolib.c" />
+    <ClCompile Include="..\lua\src\llex.c" />
+    <ClCompile Include="..\lua\src\lmathlib.c" />
+    <ClCompile Include="..\lua\src\lmem.c" />
+    <ClCompile Include="..\lua\src\loadlib.c" />
+    <ClCompile Include="..\lua\src\lobject.c" />
+    <ClCompile Include="..\lua\src\lopcodes.c" />
+    <ClCompile Include="..\lua\src\loslib.c" />
+    <ClCompile Include="..\lua\src\lparser.c" />
+    <ClCompile Include="..\lua\src\lstate.c" />
+    <ClCompile Include="..\lua\src\lstring.c" />
+    <ClCompile Include="..\lua\src\lstrlib.c" />
+    <ClCompile Include="..\lua\src\ltable.c" />
+    <ClCompile Include="..\lua\src\ltablib.c" />
+    <ClCompile Include="..\lua\src\ltm.c" />
+    <ClCompile Include="..\lua\src\lundump.c" />
+    <ClCompile Include="..\lua\src\lvm.c" />
+    <ClCompile Include="..\lua\src\lzio.c" />
+    <ClCompile Include="..\lua\src\print.c" />
+    <ClCompile Include="..\memmap.cpp" />
+    <ClCompile Include="..\movie.cpp" />
+    <ClCompile Include="..\netplay.cpp" />
+    <ClCompile Include="..\obc1.cpp" />
+    <ClCompile Include="..\ppu.cpp" />
+    <ClCompile Include="..\reader.cpp" />
+    <ClCompile Include="..\sa1.cpp" />
+    <ClCompile Include="..\sa1cpu.cpp" />
+    <ClCompile Include="..\screenshot.cpp" />
+    <ClCompile Include="..\sdd1.cpp" />
+    <ClCompile Include="..\sdd1emu.cpp" />
+    <ClCompile Include="..\server.cpp" />
+    <ClCompile Include="..\seta.cpp" />
+    <ClCompile Include="..\seta010.cpp" />
+    <ClCompile Include="..\seta011.cpp" />
+    <ClCompile Include="..\seta018.cpp" />
+    <ClCompile Include="..\SFMT\SFMT.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\snaporig.cpp" />
+    <ClCompile Include="..\snapshot.cpp" />
+    <ClCompile Include="..\snes9x.cpp" />
+    <ClCompile Include="..\soundux.cpp" />
+    <ClCompile Include="..\spc700.cpp" />
+    <ClCompile Include="..\spc7110.cpp" />
+    <ClCompile Include="..\srtc.cpp" />
+    <ClCompile Include="..\tile.cpp" />
+    <ClCompile Include="..\unzip\Explode.c" />
+    <ClCompile Include="..\unzip\Unreduce.c" />
+    <ClCompile Include="..\unzip\Unshrink.c" />
+    <ClCompile Include="..\unzip\Unzip.c" />
+    <ClCompile Include="auxmath.cpp" />
+    <ClCompile Include="AVIOutput.cpp" />
+    <ClCompile Include="CDirectDraw.cpp" />
+    <ClCompile Include="CDirectSound.cpp" />
+    <ClCompile Include="CFMOD.cpp" />
+    <ClCompile Include="CFMODEx.cpp" />
+    <ClCompile Include="CXAudio2.cpp" />
+    <ClCompile Include="Direct3D.cpp" />
+    <ClCompile Include="InputCustom.cpp" />
+    <ClCompile Include="ioapi.c" />
+    <ClCompile Include="lazymacro.cpp" />
+    <ClCompile Include="luaconsole.cpp" />
+    <ClCompile Include="oldramsearch.cpp" />
+    <ClCompile Include="ramwatch.cpp" />
+    <ClCompile Include="ram_search.cpp" />
+    <ClCompile Include="render.cpp" />
+    <ClCompile Include="snes_ntsc.c" />
+    <ClCompile Include="WAVOutput.cpp" />
+    <ClCompile Include="wconfig.cpp" />
+    <ClCompile Include="win32-snapshot.cpp" />
+    <ClCompile Include="win32.cpp" />
+    <ClCompile Include="win32_sound.cpp" />
+    <ClCompile Include="winaddcheat.cpp" />
+    <ClCompile Include="wincheat.cpp" />
+    <ClCompile Include="wsnes9x.cpp" />
+    <ClCompile Include="_lazyiobfix.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\3d.h" />
+    <ClInclude Include="..\65c816.h" />
+    <ClInclude Include="..\apu.h" />
+    <ClInclude Include="..\apumem.h" />
+    <ClInclude Include="..\bsx.h" />
+    <ClInclude Include="..\c4.h" />
+    <ClInclude Include="..\cheats.h" />
+    <ClInclude Include="..\conffile.h" />
+    <ClInclude Include="..\controls.h" />
+    <ClInclude Include="..\copyright.h" />
+    <ClInclude Include="..\cpuaddr.h" />
+    <ClInclude Include="..\cpuexec.h" />
+    <ClInclude Include="..\cpumacro.h" />
+    <ClInclude Include="..\cpuops.h" />
+    <ClInclude Include="..\crosshairs.h" />
+    <ClInclude Include="..\debug.h" />
+    <ClInclude Include="..\disasm.h" />
+    <ClInclude Include="..\display.h" />
+    <ClInclude Include="..\dma.h" />
+    <ClInclude Include="..\dsp1.h" />
+    <ClInclude Include="..\font.h" />
+    <ClInclude Include="..\fxemu.h" />
+    <ClInclude Include="..\fxinst.h" />
+    <ClInclude Include="..\getset.h" />
+    <ClInclude Include="..\gfx.h" />
+    <ClInclude Include="..\jma\7z.h" />
+    <ClInclude Include="..\jma\aribitcd.h" />
+    <ClInclude Include="..\jma\ariconst.h" />
+    <ClInclude Include="..\jma\ariprice.h" />
+    <ClInclude Include="..\jma\btreecd.h" />
+    <ClInclude Include="..\jma\crc32.h" />
+    <ClInclude Include="..\jma\iiostrm.h" />
+    <ClInclude Include="..\jma\inbyte.h" />
+    <ClInclude Include="..\jma\jma.h" />
+    <ClInclude Include="..\jma\lencoder.h" />
+    <ClInclude Include="..\jma\litcoder.h" />
+    <ClInclude Include="..\jma\lzma.h" />
+    <ClInclude Include="..\jma\lzmadec.h" />
+    <ClInclude Include="..\jma\portable.h" />
+    <ClInclude Include="..\jma\rcdefs.h" />
+    <ClInclude Include="..\jma\rngcoder.h" />
+    <ClInclude Include="..\jma\s9x-jma.h" />
+    <ClInclude Include="..\jma\winout.h" />
+    <ClInclude Include="..\language.h" />
+    <ClInclude Include="..\logger.h" />
+    <ClInclude Include="..\luasav.h" />
+    <ClInclude Include="..\memmap.h" />
+    <ClInclude Include="..\messages.h" />
+    <ClInclude Include="..\missing.h" />
+    <ClInclude Include="..\movie.h" />
+    <ClInclude Include="..\netplay.h" />
+    <ClInclude Include="..\obc1.h" />
+    <ClInclude Include="..\pixform.h" />
+    <ClInclude Include="..\port.h" />
+    <ClInclude Include="..\ppu.h" />
+    <ClInclude Include="..\reader.h" />
+    <ClInclude Include="..\s9xlua.h" />
+    <ClInclude Include="..\sa1.h" />
+    <ClInclude Include="..\sar.h" />
+    <ClInclude Include="..\screenshot.h" />
+    <ClInclude Include="..\sdd1.h" />
+    <ClInclude Include="..\sdd1emu.h" />
+    <ClInclude Include="..\seta.h" />
+    <ClInclude Include="..\snaporig.h" />
+    <ClInclude Include="..\snapshot.h" />
+    <ClInclude Include="..\snes9x.h" />
+    <ClInclude Include="..\soundux.h" />
+    <ClInclude Include="..\spc700.h" />
+    <ClInclude Include="..\spc7110.h" />
+    <ClInclude Include="..\srtc.h" />
+    <ClInclude Include="..\tile.h" />
+    <ClInclude Include="..\unzip\Unz.h" />
+    <ClInclude Include="..\unzip\Unzip.h" />
+    <ClInclude Include="..\unzip\unzipP.h" />
+    <ClInclude Include="..\version.h" />
+    <ClInclude Include="auxmath.h" />
+    <ClInclude Include="AVIOutput.h" />
+    <ClInclude Include="CDirectDraw.h" />
+    <ClInclude Include="CDirectSound.h" />
+    <ClInclude Include="CFMOD.h" />
+    <ClInclude Include="CFMODEx.h" />
+    <ClInclude Include="CXAudio2.h" />
+    <ClInclude Include="Direct3D.h" />
+    <ClInclude Include="InputCustom.h" />
+    <ClInclude Include="IS9xSoundOutput.h" />
+    <ClInclude Include="lazymacro.h" />
+    <ClInclude Include="oldramsearch.h" />
+    <ClInclude Include="ramwatch.h" />
+    <ClInclude Include="ram_search.h" />
+    <ClInclude Include="render.h" />
+    <ClInclude Include="rsrc\resource.h" />
+    <ClInclude Include="snes_ntsc.h" />
+    <ClInclude Include="snes_ntsc_config.h" />
+    <ClInclude Include="snes_ntsc_impl.h" />
+    <ClInclude Include="WAVOutput.h" />
+    <ClInclude Include="win32-snapshot.h" />
+    <ClInclude Include="wlanguage.h" />
+    <ClInclude Include="wsnes9x.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\i386\2xsaimmx.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\i386\bilinear.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\i386\fxemu2.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\i386\fxemu2b.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\i386\fxemu2c.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\i386\fxtable.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\i386\sfxproc.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\i386\spc.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\i386\zsnes.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\i386\zsnesc4.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\i386\2xsaimmx.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\i386\bilinear.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\i386\fxemu2.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <None Include="..\i386\fxemu2.mac" />
+    <CustomBuild Include="..\i386\fxemu2b.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <None Include="..\i386\fxemu2b.mac" />
+    <CustomBuild Include="..\i386\fxemu2c.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <None Include="..\i386\fxemu2c.mac" />
+    <CustomBuild Include="..\i386\fxtable.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <None Include="..\i386\macros.mac" />
+    <None Include="..\i386\regs.mac" />
+    <None Include="..\i386\regsw.mac" />
+    <CustomBuild Include="..\i386\sfxproc.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\i386\Spc.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\i386\Zsnes.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\i386\zsnesc4.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release FastBuild|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <None Include="rsrc\nodrop.cur" />
+    <None Include="rsrc\rt_manif.bin" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="rsrc\snes9x.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="rsrc\cdd.bmp" />
+    <Image Include="rsrc\closedfold.bmp" />
+    <Image Include="rsrc\hd.bmp" />
+    <Image Include="rsrc\hiddir.bmp" />
+    <Image Include="rsrc\icon1.ico" />
+    <Image Include="rsrc\nd.bmp" />
+    <Image Include="rsrc\openfold.bmp" />
+    <Image Include="rsrc\pad.bmp" />
+    <Image Include="rsrc\ram.bmp" />
+    <Image Include="rsrc\rd.bmp" />
+    <Image Include="rsrc\rodir.bmp" />
+    <Image Include="rsrc\ud.bmp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
