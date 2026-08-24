@@ -9672,7 +9672,7 @@ void LoadExts(void)
 				curr->compressed=true;
 			if(strlen(buffer)>1)
 			{
-				curr->extension=new char[strlen(buffer)-1];
+				curr->extension=new char[strlen(buffer)];
 				strncpy(curr->extension, buffer, strlen(buffer)-1);
 				curr->extension[strlen(buffer)-1]='\0';
 			}
