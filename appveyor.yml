@@ -1,15 +1,15 @@
 version: 1.43-{build}
 
-image: Visual Studio 2017
+image: Visual Studio 2022
 
 environment:
   matrix:
-  - generator: "Visual Studio 15"
+  - generator: "Visual Studio 17 2022"
     config: Release
     platform: Win32
     arch: win32
     output: win32\snes9x.exe
-    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
 
 init:
   - git config --global core.autocrlf input
