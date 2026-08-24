@@ -378,7 +378,7 @@ void S9xPrintAPUState ()
     printf ("Noise: %s, Frequency: %d, Pitch mod: %s\n", as_binary (APU.DSP [APU_NON]),
 	    NoiseFreq [APU.DSP [APU_FLG] & 0x1f],
 	    as_binary (SoundData.pitch_mod));
-    extern int FilterTaps [8];
+    extern int32 FilterTaps [8];
 
     printf ("Filter: ");
     for (int i = 0; i < 8; i++)
